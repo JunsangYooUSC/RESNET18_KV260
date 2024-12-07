@@ -124,6 +124,6 @@ int main(){
 	convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float);
 
 	// compare with golden result
-	compare_result<DTYPE_ACT, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1.0>>(W_ACT-I_ACT)));
+	compare_result<DTYPE_ACT, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
 
 }
