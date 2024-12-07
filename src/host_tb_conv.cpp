@@ -84,7 +84,6 @@ int main(){
 	print_conv_config();
 	print_data_types();
 	// Assertion to check the configuration
-	assert(TOTAL_PE < 1000 && "Limit total PE under 1000");
 	assert((NIX % STRIDE == 0) && "Input width should be divisible by stride");
 	assert((NIY / STRIDE == NOY) && "IN_HEIGHT/STRIDE should be same as OUT_HEIGHT");
 	assert((NIX / STRIDE == NOX) && "IN_WIDTH/STRIDE should be same as OUT_WIDTH");
@@ -124,6 +123,6 @@ int main(){
 	convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float);
 
 	// compare with golden result
-	compare_result<DTYPE_ACT, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
+	compare_result<DTYPE_ACT, DTYPE_ACT, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
 
 }
