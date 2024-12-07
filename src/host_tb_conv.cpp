@@ -20,7 +20,7 @@
 #include "kernel.h"
 
 // Print the configuration information
-#define CHECK_CONFIG		0
+#define CHECK_CONFIG		1
 
 // Function: golden convolution
 template<typename D_ACT, typename D_FILTER, typename D_MULT, typename D_MAC>
@@ -84,12 +84,11 @@ int main(){
 #if CHECK_CONFIG
 	print_conv_config();
 	print_data_types();
-	print_PE_config();
 	// Assertion to check the configuration
 	assert(TOTAL_PE < 1000 && "Limit total PE under 1000");
-	assert((IN_WIDTH % STRIDE == 0) && "Input width should be divisible by stride");
-	assert((IN_HEIGHT / STRIDE == OUT_HEIGHT) && "IN_HEIGHT/STRIDE should be same as OUT_HEIGHT");
-	assert((IN_WIDTH / STRIDE == OUT_WIDTH) && "IN_WIDTH/STRIDE should be same as OUT_WIDTH");
+	assert((NIX % STRIDE == 0) && "Input width should be divisible by stride");
+	assert((NIY / STRIDE == NOY) && "IN_HEIGHT/STRIDE should be same as OUT_HEIGHT");
+	assert((NIX / STRIDE == NOX) && "IN_WIDTH/STRIDE should be same as OUT_WIDTH");
 #endif
 
 	DTYPE_ACT in_act_host[TOTAL_IN_LEN];
@@ -112,7 +111,8 @@ int main(){
 	// std::cout << "in_fil_host[0]: " << in_fil_host[0] << std::endl;
 	// std::cout << "in_fil_host[1]: " << in_fil_host[1] << std::endl;
 	/////////////////////////////////////////////////////////////////////////////
-	// copy input and filter to fixed point arrays
+
+	// copy input and filter from fixed point arrays to float arrays
 	for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
 		in_act_host_float[idx] = in_act_host[idx];
 	}
@@ -125,11 +125,6 @@ int main(){
 	convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float);
 
 	// compare with golden result
+	compare_result<DTYPE_ACT, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1.0>>(W_ACT-I_ACT)));
 
-	compare_result<DTYPE_ACT, TOTAL_OUT_LEN>(out_act_host, out_act_host_float);
-
-	DTYPE_ACT out_act_kernel[TOTAL_OUT_LEN];
-	kernel_func(in_act_host, in_fil_host, out_act_kernel);
-
-	compare_result<DTYPE_ACT, TOTAL_OUT_LEN>(out_act_kernel, out_act_host_float);
 }

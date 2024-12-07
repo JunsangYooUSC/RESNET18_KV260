@@ -72,17 +72,17 @@ void gen_rand(DTYPE arr[LEN], float min_val, float max_val) {
 	}
 }
 
-// compare_result: compare fixed-point and floating-point outputs
-template<typename DTYPE, unsigned int LEN>
-void compare_result(DTYPE *mat_fixed, float *mat_float, float tolerance = 0.2) {
+// compare_result: compare values of two datatypes
+template<typename DTYPE1, typename DTYPE2, unsigned int LEN>
+void compare_result(DTYPE1 *mat1, DTYPE2 *mat2, float tolerance = 0.2) {
     bool mismatch_flag = false;
     bool diff_flag;
     int cnt = 0;
     for (int idx = 0; idx < LEN; idx++) {
-        float val_fixed = static_cast<float>(mat_fixed[idx]);
-        float val_float = mat_float[idx];
-        float diff = std::abs(val_fixed - val_float);
-        float max_val = (std::abs(val_fixed) > std::abs(val_float)) ? std::abs(val_fixed) : std::abs(val_float);
+        float val1 = static_cast<float>(mat1[idx]);
+        float val2 = static_cast<float>(mat2[idx]);
+        float diff = std::abs(val1 - val2);
+        float max_val = (std::abs(val1) > std::abs(val2)) ? std::abs(val1) : std::abs(val2);
 		if (max_val < 1) {
 			if (diff < tolerance) diff_flag = false;
 			else diff_flag = true;
@@ -93,7 +93,7 @@ void compare_result(DTYPE *mat_fixed, float *mat_float, float tolerance = 0.2) {
 		if (diff_flag) {
 			mismatch_flag = true;
 			if (cnt < 500) {
-				std::cout << "idx: " << idx << ", float: " << mat_float[idx] << ", fixed: " << mat_fixed[idx] << std::endl;
+				std::cout << "idx: " << idx << ", dtype1: " << mat1[idx] << ", dtype2: " << mat2[idx] << std::endl;
 				cnt++;
 			}
 		}

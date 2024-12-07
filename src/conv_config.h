@@ -21,6 +21,8 @@
 #include <cassert>
 
 // N
+#define NIX                 28
+#define NIY                 28
 #define NKX                 3
 #define NKY                 3
 // #define NIF                 64
@@ -75,4 +77,8 @@ typedef ap_fixed<W_FILTER, I_FILTER> DTYPE_FILTER;
 typedef ap_fixed<W_MULT, I_MULT> DTYPE_MULT;
 typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
 
+// size of mem blocks
+#define TOTAL_OUT_LEN       NOF*NOX*NOY
+#define TOTAL_IN_LEN        NIF*NIX*NIY
+#define TOTAL_FILTER_LEN    NOF*NKX*NKY
 #endif
