@@ -69,7 +69,7 @@
 constexpr unsigned int log2_ceil(unsigned int n) {
     return (n <= 1) ? 0 : 1 + log2_ceil((n + 1) / 2);
 }
-constexpr unsigned int MAC_EXTRA_BITS = log2_ceil(Nof * Nif * Nox * Noy) + 1;
+constexpr unsigned int MAC_EXTRA_BITS = log2_ceil(NOF * NIF * NOX * NOY) + 1;
 
 // Data type definition
 typedef ap_fixed<W_ACT, I_ACT> DTYPE_ACT;  // data type used for input / output activation
