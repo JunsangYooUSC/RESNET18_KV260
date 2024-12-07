@@ -17,7 +17,6 @@
 // Include project headers
 #include "conv_config.h"
 #include "host_utils.h"
-#include "kernel.h"
 
 // Print the configuration information
 #define CHECK_CONFIG		1
