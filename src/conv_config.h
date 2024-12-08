@@ -16,6 +16,7 @@
 
 // Include Vitis HLS headers
 #include <ap_fixed.h>
+#include <ap_int.h>
 #include <hls_vector.h>
 // Include C++ headers
 #include <cmath>
@@ -89,6 +90,8 @@ typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
 #define BUF2PE_REG_SIZE     POF*POY*(POX+1)
 
 constexpr unsigned int ACT_MEM_SIZE = 2*MAX_ACT_SIZE/(64/W_ACT);
+#define FIL_MEM_SIZE     POF*NIF*NKX*NKY
+typedef ap_uint<64> DTYPE_MEM;
 
 // BUF2PE vectors
 typedef hls::vector<DTYPE_ACT,POX> BUF2PEVEC;
