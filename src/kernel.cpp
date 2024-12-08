@@ -18,6 +18,7 @@
 #include <ap_fixed.h>
 #include <ap_int.h>
 #include <hls_vector.h>
+#include <hls_stream.h>
 // Include project headers
 #include "conv_config.h"
 #include "kernel.h"
