@@ -32,7 +32,7 @@
 // #define NOY                 56
 #define NOY                 28
 // #define NOF                 64
-#define NOF                 32
+#define NOF                 12
 // parallel
 #define PKX                 1
 #define PKY                 1
