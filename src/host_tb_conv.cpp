@@ -98,7 +98,7 @@ int main(){
 	float out_act_host_float[TOTAL_OUT_LEN];
 	// generate random input activation and filter value with float
 	gen_rand<DTYPE_ACT, TOTAL_IN_LEN>(in_act_host, -1, 1);
-	gen_rand<DTYPE_ACT, TOTAL_FILTER_LEN>(in_fil_host, -1, 1);
+	gen_rand<DTYPE_ACT, TOTAL_FIL_LEN>(in_fil_host, -1, 1);
 
 	/////////////////////////////////////////////////////////////////////////////
 	// for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
