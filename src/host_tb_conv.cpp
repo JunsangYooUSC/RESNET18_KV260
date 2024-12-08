@@ -114,7 +114,7 @@ int main(){
 	for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
 		in_act_host_float[idx] = in_act_host[idx];
 	}
-	for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
+	for (int idx = 0; idx < TOTAL_FILTER_LEN; idx++) {
 		in_fil_host_float[idx] = in_fil_host[idx];
 	}
 	std::cout << "in_act_host[0]:" << in_act_host[0] << std::endl;
