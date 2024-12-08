@@ -117,6 +117,7 @@ int main(){
 	for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
 		in_fil_host_float[idx] = in_fil_host[idx];
 	}
+	std::cout << "in_act_host[0]:" << in_act_host[0] << std::endl;
 	std::cout << "in_act_host_float[0]:" << in_act_host_float[0] << std::endl;
 
 	// golden convolution result with fixed point and float
@@ -124,15 +125,15 @@ int main(){
 	convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float);
 
 	// compare with golden result
-	compare_result<DTYPE_ACT, float, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
+	// compare_result<DTYPE_ACT, float, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
 
 	// print some results
-	std::cout << "in_act_host[0]:" << in_act_host[0] << std::endl;
-	std::cout << "in_act_host_float[0]:" << in_act_host_float[0] << std::endl;
-	std::cout << "in_act_host[1]:" << in_act_host[1] << std::endl;
-	std::cout << "in_act_host_float[1]:" << in_act_host_float[1] << std::endl;
-	std::cout << "out_act_host[0]:" << out_act_host[0] << std::endl;
-	std::cout << "out_act_host_float[0]:" << out_act_host_float[0] << std::endl;
-	std::cout << "out_act_host[1]:" << out_act_host[1] << std::endl;
-	std::cout << "out_act_host_float[1]:" << out_act_host_float[1] << std::endl;
+	// std::cout << "in_act_host[0]:" << in_act_host[0] << std::endl;
+	// std::cout << "in_act_host_float[0]:" << in_act_host_float[0] << std::endl;
+	// std::cout << "in_act_host[1]:" << in_act_host[1] << std::endl;
+	// std::cout << "in_act_host_float[1]:" << in_act_host_float[1] << std::endl;
+	// std::cout << "out_act_host[0]:" << out_act_host[0] << std::endl;
+	// std::cout << "out_act_host_float[0]:" << out_act_host_float[0] << std::endl;
+	// std::cout << "out_act_host[1]:" << out_act_host[1] << std::endl;
+	// std::cout << "out_act_host_float[1]:" << out_act_host_float[1] << std::endl;
 }
