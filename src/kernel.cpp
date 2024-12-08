@@ -15,7 +15,9 @@
 #define KERNEL_CPP
 
 // Include Vitis HLS headers
-#include "ap_fixed.h"
+#include <ap_fixed.h>
+#include <ap_int.h>
+#include <hls_vector.h>
 // Include project headers
 #include "conv_config.h"
 #include "kernel.h"
