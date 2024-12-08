@@ -117,6 +117,7 @@ int main(){
 	for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
 		in_fil_host_float[idx] = in_fil_host[idx];
 	}
+	std::cout << "in_act_host_float[0]:" << in_act_host_float[0] << std::endl;
 
 	// golden convolution result with fixed point and float
 	convolution_golden<DTYPE_ACT, DTYPE_FILTER, DTYPE_MULT, DTYPE_MAC>(in_act_host, in_fil_host, out_act_host);
