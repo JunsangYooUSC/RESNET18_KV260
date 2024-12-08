@@ -117,15 +117,13 @@ int main(){
 	for (int idx = 0; idx < TOTAL_FILTER_LEN; idx++) {
 		in_fil_host_float[idx] = in_fil_host[idx];
 	}
-	std::cout << "in_act_host[0]:" << in_act_host[0] << std::endl;
-	std::cout << "in_act_host_float[0]:" << in_act_host_float[0] << std::endl;
 
 	// golden convolution result with fixed point and float
-	// convolution_golden<DTYPE_ACT, DTYPE_FILTER, DTYPE_MULT, DTYPE_MAC>(in_act_host, in_fil_host, out_act_host);
-	// convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float);
+	convolution_golden<DTYPE_ACT, DTYPE_FILTER, DTYPE_MULT, DTYPE_MAC>(in_act_host, in_fil_host, out_act_host);
+	convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float);
 
 	// compare with golden result
-	// compare_result<DTYPE_ACT, float, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
+	compare_result<DTYPE_ACT, float, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
 
 	// print some results
 	// std::cout << "in_act_host[0]:" << in_act_host[0] << std::endl;
