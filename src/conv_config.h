@@ -57,10 +57,10 @@
 #define PIY                 (POY+PAD*2)
 
 // Bit widths needed for convolution calculation
-#define W_ACT               8
-#define I_ACT               2
-#define W_FILTER            8
-#define I_FILTER            2
+#define W_ACT               16
+#define I_ACT               8
+#define W_FILTER            16
+#define I_FILTER            8
 #define W_MULT              (W_ACT + W_FILTER)
 #define I_MULT              (I_ACT + I_FILTER)
 #define W_MAC               (W_MULT + MAC_EXTRA_BITS)
