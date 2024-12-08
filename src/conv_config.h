@@ -16,6 +16,7 @@
 
 // Include Vitis HLS headers
 #include <ap_fixed.h>
+#include <hls_vector.h>
 // Include C++ headers
 #include <cmath>
 #include <cassert>
