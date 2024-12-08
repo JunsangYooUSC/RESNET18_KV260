@@ -51,11 +51,11 @@ void print_data_types() {
     std::cout << "activation total bits:            " << W_ACT << std::endl;
     std::cout << "activation integer bits:          " << I_ACT << std::endl;
     std::cout << std::string(20, '-') << "FILTER datatype information" << std::string(20, '-') << std::endl;
-    std::cout << "FILTER total bits:                " << W_FILTER << std::endl;
-    std::cout << "FILTER integer bits:              " << I_FILTER << std::endl;
+    std::cout << "filter total bits:                " << W_FIL << std::endl;
+    std::cout << "filter integer bits:              " << I_FIL << std::endl;
     std::cout << std::string(20, '-') << "mult datatype information" << std::string(20, '-') << std::endl;
-    std::cout << "mult total bits:                  " << W_MULT << std::endl;
-    std::cout << "mult integer bits:                " << I_MULT << std::endl;
+    std::cout << "mult total bits:                  " << W_MUL << std::endl;
+    std::cout << "mult integer bits:                " << I_MUL << std::endl;
     std::cout << std::string(20, '-') << "MAC datatype information" << std::string(20, '-') << std::endl;
     std::cout << "extra bits needed for MAC:        " << MAC_EXTRA_BITS << std::endl;
     std::cout << "MAC total bits:                   " << W_MAC << std::endl;

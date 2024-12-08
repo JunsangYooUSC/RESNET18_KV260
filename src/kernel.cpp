@@ -20,13 +20,32 @@
 #include "conv_config.h"
 #include "kernel.h"
 
-
+// BUF2PE
+template<typename DTYPE, unsigned int LEN>
+void BUF2PE(DTYPE input_buffer[2][INPUT_BUFFER_Y][INPUT_BUFFER_X], DTYPE filter_buffer
+    DTYPE arr[LEN], float min_val, float max_val, unsigned int seed=1) {
 
 // kernel function
 void kernel_func(DTYPE_ACT *in_host,
                 DTYPE_ACT *filter_offchip,
                 DTYPE_ACT *out_host
 ) {
+    // on-chip buffers
+    DTYPE_ACT input_buffer[2*INPUT_BUFFER_SIZE];
+    #pragma HLS BIND_STORAGE variable=input_buffer type=register
+    DTYPE_ACT buf2pe_reg[2*BUF2PE_REG_SIZE];
+    #pragma HLS BIND_STORAGE variable=buf2pe_reg type=register
+    DTYPE_FIL filter_buffer[2*FILTER_BUFFER_SIZE];
+    #pragma HLS BIND_STORAGE variable=filter_buffer type=register
+    DTYPE_ACT output_buffer[2*OUTPUT_BUFFER_SIZE];
+    #pragma HLS BIND_STORAGE variable=output_buffer type=register
+
+    // fifo
+    hls::stream<BUF2PEVEC> fifo_arr[POF][POY-1];
+    #pragma HLS STREAM variable=fifo_arr depth=FIFO_ARR_DEPTH
+    hls::stream<BUF2PEVEC> mac_in_fifo_arr[POF][POY];
+    #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH
+
     // on-chip memory
     DTYPE_ACT input_buffer[Nif][Noy][Nox];
 	#pragma HLS bind_storage variable=input_buffer type=RAM_1P impl=uram

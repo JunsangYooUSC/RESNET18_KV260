@@ -89,6 +89,7 @@ int main(){
 	assert((NIX / STRIDE == NOX) && "IN_WIDTH/STRIDE should be same as OUT_WIDTH");
 #endif
 
+	// host-side data
 	DTYPE_ACT in_act_host[TOTAL_IN_LEN];
 	DTYPE_ACT in_fil_host[TOTAL_FILTER_LEN];
 	DTYPE_ACT out_act_host[TOTAL_OUT_LEN];
@@ -98,6 +99,7 @@ int main(){
 	// generate random input activation and filter value with float
 	gen_rand<DTYPE_ACT, TOTAL_IN_LEN>(in_act_host, -1, 1);
 	gen_rand<DTYPE_ACT, TOTAL_FILTER_LEN>(in_fil_host, -1, 1);
+
 	/////////////////////////////////////////////////////////////////////////////
 	// for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
 	// 	in_act_host[idx] = 0.125;
@@ -119,7 +121,7 @@ int main(){
 	}
 
 	// golden convolution result with fixed point and float
-	convolution_golden<DTYPE_ACT, DTYPE_FILTER, DTYPE_MULT, DTYPE_MAC>(in_act_host, in_fil_host, out_act_host);
+	convolution_golden<DTYPE_ACT, DTYPE_FIL, DTYPE_MUL, DTYPE_MAC>(in_act_host, in_fil_host, out_act_host);
 	convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float);
 
 	// compare with golden result

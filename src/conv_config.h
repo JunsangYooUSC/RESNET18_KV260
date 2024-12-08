@@ -59,12 +59,12 @@
 // Bit widths needed for convolution calculation
 #define W_ACT               16
 #define I_ACT               8
-#define W_FILTER            16
-#define I_FILTER            8
-#define W_MULT              (W_ACT + W_FILTER)
-#define I_MULT              (I_ACT + I_FILTER)
-#define W_MAC               (W_MULT + MAC_EXTRA_BITS)
-#define I_MAC               (I_MULT + MAC_EXTRA_BITS)
+#define W_FIL               16
+#define I_FIL               8
+#define W_MUL               (W_ACT + W_FIL)
+#define I_MUL               (I_ACT + I_FIL)
+#define W_MAC               (W_MUL + MAC_EXTRA_BITS)
+#define I_MAC               (I_MUL + MAC_EXTRA_BITS)
 // Calculation of extra bit widths for MAC is done at compile time
 constexpr unsigned int log2_ceil(unsigned int n) {
     return (n <= 1) ? 0 : 1 + log2_ceil((n + 1) / 2);
@@ -73,12 +73,24 @@ constexpr unsigned int MAC_EXTRA_BITS = log2_ceil(NOF * NIF * NOX * NOY) + 1;
 
 // Data type definition
 typedef ap_fixed<W_ACT, I_ACT> DTYPE_ACT;  // data type used for input / output activation
-typedef ap_fixed<W_FILTER, I_FILTER> DTYPE_FILTER;
-typedef ap_fixed<W_MULT, I_MULT> DTYPE_MULT;
+typedef ap_fixed<W_FIL, I_FIL> DTYPE_FIL;
+typedef ap_fixed<W_MUL, I_MUL> DTYPE_MUL;
 typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
 
 // size of mem blocks
+#define MAX_ACT_SIZE        ((TOTAL_OUT_LEN > TOTAL_IN_LEN) ? TOTAL_OUT_LEN : TOTAL_IN_LEN)
 #define TOTAL_OUT_LEN       NOF*NOX*NOY
 #define TOTAL_IN_LEN        NIF*NIX*NIY
-#define TOTAL_FILTER_LEN    NOF*NKX*NKY
+#define TOTAL_FIL_LEN       NOF*NKX*NKY
+#define INPUT_BUFFER_SIZE   (POX+PAD*2)*(POY+PAD*2)     // without double buffering
+#define FILTER_BUFFER_SIZE  (POF*NKX*NKY)               // without double buffering
+#define OUTPUT_BUFFER_SIZE  (POF*POX*POY)
+#define BUF2PE_REG_SIZE     POF*POY*(POX+1)
+
+constexpr unsigned int ACT_MEM_SIZE = 2*MAX_ACT_SIZE/(64/W_ACT);
+
+// BUF2PE vectors
+typedef hls::vector<DTYPE_ACT,POX> BUF2PEVEC;
+constexpr unsigned int FIFO_ARR_DEPTH = NKX*NKY;
+
 #endif
