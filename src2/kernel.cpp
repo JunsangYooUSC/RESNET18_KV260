@@ -165,6 +165,27 @@ void BUF2PE(
     }
 }
 
+void load_input_buffer(
+    DTYPE_ACT input_buffer[2][POY+PAD*2][POX*PAD*2],
+    DTYPE_MEM act_mem[ACT_MEM_SIZE],
+    unsigned int act_fidx,
+    unsigned int act_yidx,
+    unsigned int act_xidx,
+    unsigned int db_idx     // double buffering index) 
+){
+    unsigned int act_mem_base_idx = act_fidx*NIY*NIX + act_yidx*NIX + act_xidx;
+    for (int idx = 0; idx < POY+PAD*2; idx++) {
+        for (int jdx = 0; jdx < POX+PAD*2; jdx++) {
+            unsigned int act_mem_idx = act_mem_base_idx + idx * NIX + jdx;
+            unsigned int idx1 = act_mem_idx / MEM_PACK;
+            unsigned int idx2 = act_mem_idx % MEM_PACK;
+            DTYPE_MEM block = act_mem[idx1];
+            DTYPE_ACT data;
+            data.range() = block.range(W_ACT*(idx2+1)-1,W_ACT*idx2);
+            input_buffer[db_idx][idx][jdx] = data;
+        }
+    }
+}
 
 // kernel function
 void kernel_func(DTYPE_ACT *in_host,
