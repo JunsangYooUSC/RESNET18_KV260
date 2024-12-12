@@ -76,16 +76,6 @@ void BUF2PE(
         }
     }
 
-    // feed mac unit
-    #pragma HLS unroll
-    for (int y = 0; y < POY; y++) {
-        #pragma HLS unroll
-        for (int x = 0; x < POX; x++) {
-            mac_in_fifo_arr[y][x].write(buf2pe_reg[y][x]);
-        }
-    }
-}
-
     // middle poy
     #pragma HLS unroll
     for (int y = 1; y < POY-1; y++) {
@@ -159,6 +149,17 @@ void BUF2PE(
             buf2pe_reg[0][x] = fifo_arr[0][x].read();
         }
     }
+
+    // feed mac unit
+    #pragma HLS unroll
+    for (int y = 0; y < POY; y++) {
+        #pragma HLS unroll
+        for (int x = 0; x < POX; x++) {
+            mac_in_fifo_arr[y][x].write(buf2pe_reg[y][x]);
+        }
+    }
+}
+
 
 // kernel function
 void kernel_func(DTYPE_ACT *in_host,
