@@ -59,7 +59,7 @@ void BUF2PE(
         for (int x = 0; x < POX; x++) {
             buf2pe_reg[POY-1][x] = buf2pe_reg[POY-1][x+1];
         }
-        buf2pe_reg[POY-1][POX] = input_buffer[db_idx][POY-1+last_y_idx][POX+cnt];
+        buf2pe_reg[POY-1][POX] = input_buffer[db_idx][POY-1+last_y_idx][POX+last_y_idx];
     }
     // reg values are fed from adjacent reg
     else if (cnt % nkx == nkx-1) {
