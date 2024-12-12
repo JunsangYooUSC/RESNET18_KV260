@@ -203,6 +203,19 @@ void kernel_func(DTYPE_ACT *in_host,
         }
         std::cout << std::endl;
     }
+
+    hls::stream<int> test_fifo[3][4];
+    for (int idx = 0; idx < 3; idx++) {
+        for (int jdx = 0; jdx < 4; jdx++) {
+            test_fifo[idx][jdx].write(idx*4+jdx);
+        }
+    }
+    for (int idx = 0; idx < 3; idx++) {
+        for (int jdx = 0; jdx < 4; jdx++) {
+            std::cout << test_fifo[idx][jdx].read() << std::endl;
+        }
+    }
+
 }
 
 #endif
