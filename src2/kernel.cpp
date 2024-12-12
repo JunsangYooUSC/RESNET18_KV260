@@ -33,7 +33,7 @@ void BUF2PE(
     hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
     unsigned int nkx,
     unsigned int nky,
-    unsigned int cnta,       // 
+    unsigned int total_loops,       // 
     unsigned int db_idx     // double buffering index) 
 ) {
     // register R* in fig13 of Optimizing_the_Convolution_Operation_to_Accelerate_Deep_Neural_Networks_on_FPGA
@@ -43,10 +43,11 @@ void BUF2PE(
     hls::stream<DTYPE_ACT> fifo_arr[POY-1][POX];
     #pragma HLS STREAM variable=fifo_arr depth=FIFO_ARR_DEPTH
     
-    for (unsigned int cnt = 0; cnt < nkx*nky; cnt++) {
+    for (unsigned int cnt = 0; cnt < total_loops; cnt++) {
         // last poy
         // copy input buffer content to register
-        unsigned int last_y_idx = cnt / nkx;
+        unsigned int last_y_idx = cnt / nky;
+        unsigned int last_x_idx = cnt % nkx;
         if (cnt % nkx == 0) {
             #pragma HLS unroll
             for (int x = 0; x < POX+1; x++) {
@@ -60,7 +61,7 @@ void BUF2PE(
             for (int x = 0; x < POX; x++) {
                 buf2pe_reg[POY-1][x] = buf2pe_reg[POY-1][x+1];
             }
-            buf2pe_reg[POY-1][POX] = input_buffer[db_idx][POY-1+last_y_idx][POX+last_y_idx];
+            buf2pe_reg[POY-1][POX] = input_buffer[db_idx][POY-1+last_y_idx][POX+last_x_idx];
         }
         // reg values are fed from adjacent reg
         else if (cnt % nkx == nkx-1) {
@@ -194,9 +195,8 @@ void kernel_func(DTYPE_ACT *in_host,
     // dummy function to fill input buffer
     dummy_fill_input_buffer(input_buffer);
 
-    for (int idx = 0; idx < 9; idx++) {
-        BUF2PE(input_buffer, mac_in_fifo_arr, NKX, NKY, idx, 0);
-    }
+    unsigned int total_loops = NKX*NKY;
+    BUF2PE(input_buffer, mac_in_fifo_arr, NKX, NKY, total_loops, 0);
 
     for (int idx = 0; idx < 9; idx++) {
         for (int jdx = 0; jdx < POY; jdx++) {

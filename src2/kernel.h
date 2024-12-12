@@ -16,7 +16,7 @@ void BUF2PE(
     hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
     unsigned int nkx,
     unsigned int nky,
-    unsigned int cnt,       // 
+    unsigned int total_loops,       // 
     unsigned int db_idx     // double buffering index) 
 );
 
