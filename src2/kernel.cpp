@@ -22,6 +22,7 @@
 // Include project headers
 #include "conv_config.h"
 #include "kernel.h"
+#include "dummy_func.h"
 
 // BUF2PE
 void BUF2PE(
