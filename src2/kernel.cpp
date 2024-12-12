@@ -198,7 +198,7 @@ void kernel_func(DTYPE_ACT *in_host,
     for (int idx = 0; idx < 9; idx++) {
         for (int jdx = 0; jdx < 3; jdx++) {
             for (int kdx = 0; kdx < 3; kdx++) {
-                std::cout << std::setw(15) << mac_in_fifo_arr[jdx][kdx].read() << " ";
+                std::cout << std::setw(5) << mac_in_fifo_arr[jdx][kdx].read() << " ";
             }
         }
         std::cout << std::endl;
