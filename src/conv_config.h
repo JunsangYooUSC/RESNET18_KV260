@@ -85,7 +85,7 @@ typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
 #define TOTAL_OUT_LEN       NOF*NOX*NOY
 #define TOTAL_IN_LEN        NIF*NIX*NIY
 #define TOTAL_FIL_LEN       NOF*NKX*NKY
-#define INPUT_BUFFER_SIZE   (POX+PAD*2)*(POY+PAD*2)     // without double buffering
+#define INPUT_BUFFER_SIZE   (POY+PAD*2)*(POX+PAD*2)     // without double buffering
 #define FILTER_BUFFER_SIZE  (POF*NKX*NKY)               // without double buffering
 #define OUTPUT_BUFFER_SIZE  (POF*POX*POY)
 #define BUF2PE_REG_SIZE     POF*POY*(POX+1)

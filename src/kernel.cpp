@@ -24,8 +24,30 @@
 #include "kernel.h"
 
 // BUF2PE
-template<typename DTYPE, unsigned int LEN>
-void BUF2PE(DTYPE_ACT *input_buffer, hls::stream<BUF2PEVEC> fifo_arr[POF][POY-1], hls::stream<BUF2PEVEC> mac_in_fifo_arr[POF][POY]) {
+template<unsigned int POF>
+void BUF2PE(
+    DTYPE_ACT *input_buffer, 
+    hls::stream<BUF2PEVEC> mac_in_fifo_arr[POF][POY], 
+    unsigned int cnt,       // 
+    unsigned int db_idx     // double buffering index) {
+    // register R* in fig13 of Optimizing_the_Convolution_Operation_to_Accelerate_Deep_Neural_Networks_on_FPGA
+    DTYPE_ACT buf2pe_reg[BUF2PE_REG_SIZE];
+    #pragma HLS BIND_STORAGE variable=buf2pe_reg type=register
+    // fifo in fig13 of Optimizing_the_Convolution_Operation_to_Accelerate_Deep_Neural_Networks_on_FPGA
+    hls::stream<BUF2PEVEC> fifo_arr[POY-1];
+    #pragma HLS STREAM variable=fifo_arr depth=FIFO_ARR_DEPTH
+    
+    // for each POY
+    buf2pe_poyloop:
+    for (int poy = 0; poy < POY; poy++){
+
+    }
+    while (cnt < NKX*NKY) {
+        // copy input buffer content to register at first cycle
+        if (cnt == 0){
+            
+        }
+    }
     std::cout << "hello" << std::endl;
 }
 
@@ -37,16 +59,12 @@ void kernel_func(DTYPE_ACT *in_host,
     // on-chip buffers
     DTYPE_ACT input_buffer[2*INPUT_BUFFER_SIZE];
     #pragma HLS BIND_STORAGE variable=input_buffer type=register
-    DTYPE_ACT buf2pe_reg[2*BUF2PE_REG_SIZE];
-    #pragma HLS BIND_STORAGE variable=buf2pe_reg type=register
     DTYPE_FIL filter_buffer[2*FILTER_BUFFER_SIZE];
     #pragma HLS BIND_STORAGE variable=filter_buffer type=register
     DTYPE_ACT output_buffer[2*OUTPUT_BUFFER_SIZE];
     #pragma HLS BIND_STORAGE variable=output_buffer type=register
 
     // fifo
-    hls::stream<BUF2PEVEC> fifo_arr[POF][POY-1];
-    #pragma HLS STREAM variable=fifo_arr depth=FIFO_ARR_DEPTH
     hls::stream<BUF2PEVEC> mac_in_fifo_arr[POF][POY];
     #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH
 
