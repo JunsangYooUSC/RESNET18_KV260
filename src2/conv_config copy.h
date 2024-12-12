@@ -23,21 +23,19 @@
 #include <cmath>
 #include <cassert>
 
-#define STRIDE              2
 // N
+#define NIX                 28
+#define NIY                 28
 #define NKX                 3
 #define NKY                 3
-#define PAD                 ((NKX-1)/2)
 // #define NIF                 64
 #define NIF                 16
 // #define NOX                 56
-#define NOX                 14
+#define NOX                 28
 // #define NOY                 56
-#define NOY                 14
+#define NOY                 28
 // #define NOF                 64
 #define NOF                 4
-#define NIX                 NOX*STRIDE
-#define NIY                 NOY*STRIDE
 // parallel
 #define PKX                 1
 #define PKY                 1
@@ -55,9 +53,11 @@
 #define TOY                 POY
 #define TOF                 POF
 //
+#define PAD                 1
+#define STRIDE              1
 
-#define PIX                 POX*STRIDE
-#define PIY                 POY*STRIDE
+#define PIX                 (POX+PAD*2)
+#define PIY                 (POY+PAD*2)
 
 // Bit widths needed for convolution calculation
 #define W_ACT               16
@@ -85,15 +85,17 @@ typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
 #define TOTAL_OUT_LEN       NOF*NOX*NOY
 #define TOTAL_IN_LEN        NIF*NIX*NIY
 #define TOTAL_FIL_LEN       NIF*NOF*NKX*NKY
-#define INPUT_BUFFER_SIZE   (PIY+PAD*2)*(PIX+PAD*2)     // without double buffering
+#define INPUT_BUFFER_SIZE   (POY+PAD*2)*(POX+PAD*2)     // without double buffering
 #define FILTER_BUFFER_SIZE  (POF*NKX*NKY)               // without double buffering
 #define OUTPUT_BUFFER_SIZE  (POF*POX*POY)
+#define BUF2PE_REG_SIZE     POF*POY*(POX+1)
 
 constexpr unsigned int ACT_MEM_SIZE = 2*MAX_ACT_SIZE/(64/W_ACT);
 #define FIL_MEM_SIZE     POF*NIF*NKX*NKY
 typedef ap_uint<64> DTYPE_MEM;
 
 // BUF2PE vectors
+typedef hls::vector<DTYPE_ACT,POX> BUF2PEVEC;
 constexpr unsigned int FIFO_ARR_DEPTH = NKX*NKY;
 
 #endif
