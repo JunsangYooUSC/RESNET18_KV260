@@ -33,7 +33,7 @@ void BUF2PE(
     hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
     unsigned int nkx,
     unsigned int nky,
-    unsigned int cnt,       // 
+    unsigned int cnta,       // 
     unsigned int db_idx     // double buffering index) 
 ) {
     // register R* in fig13 of Optimizing_the_Convolution_Operation_to_Accelerate_Deep_Neural_Networks_on_FPGA
@@ -43,121 +43,123 @@ void BUF2PE(
     hls::stream<DTYPE_ACT> fifo_arr[POY-1][POX];
     #pragma HLS STREAM variable=fifo_arr depth=FIFO_ARR_DEPTH
     
-    // last poy
-    // copy input buffer content to register
-    unsigned int last_y_idx = cnt / nkx;
-    if (cnt % nkx == 0) {
-        #pragma HLS unroll
-        for (int x = 0; x < POX+1; x++) {
-            // first row of input buffer
-            buf2pe_reg[POY-1][x] = input_buffer[db_idx][POY-1+last_y_idx][x];
+    for (unsigned int cnt = 0; cnt < nkx*nky; cnt++) {
+        // last poy
+        // copy input buffer content to register
+        unsigned int last_y_idx = cnt / nkx;
+        if (cnt % nkx == 0) {
+            #pragma HLS unroll
+            for (int x = 0; x < POX+1; x++) {
+                // first row of input buffer
+                buf2pe_reg[POY-1][x] = input_buffer[db_idx][POY-1+last_y_idx][x];
+            }
         }
-    }
-    // last register gets new val. rest values are fed from adjacent reg
-    else if (cnt % nkx < nkx-1) {
-        #pragma HLS unroll
-        for (int x = 0; x < POX; x++) {
-            buf2pe_reg[POY-1][x] = buf2pe_reg[POY-1][x+1];
+        // last register gets new val. rest values are fed from adjacent reg
+        else if (cnt % nkx < nkx-1) {
+            #pragma HLS unroll
+            for (int x = 0; x < POX; x++) {
+                buf2pe_reg[POY-1][x] = buf2pe_reg[POY-1][x+1];
+            }
+            buf2pe_reg[POY-1][POX] = input_buffer[db_idx][POY-1+last_y_idx][POX+last_y_idx];
         }
-        buf2pe_reg[POY-1][POX] = input_buffer[db_idx][POY-1+last_y_idx][POX+last_y_idx];
-    }
-    // reg values are fed from adjacent reg
-    else if (cnt % nkx == nkx-1) {
-        #pragma HLS unroll
-        for (int x = 0; x < POX; x++) {
-            buf2pe_reg[POY-1][x] = buf2pe_reg[POY-1][x+1];
+        // reg values are fed from adjacent reg
+        else if (cnt % nkx == nkx-1) {
+            #pragma HLS unroll
+            for (int x = 0; x < POX; x++) {
+                buf2pe_reg[POY-1][x] = buf2pe_reg[POY-1][x+1];
+            }
         }
-    }
-    if (cnt < nkx*nky-nkx) {
-        // feed into previous fifo
-        #pragma HLS unroll
-        for (int x = 0; x < POX; x++) {
-            fifo_arr[POY-2][x].write(buf2pe_reg[POY-1][x]);
+        if (cnt < nkx*nky-nkx) {
+            // feed into previous fifo
+            #pragma HLS unroll
+            for (int x = 0; x < POX; x++) {
+                fifo_arr[POY-2][x].write(buf2pe_reg[POY-1][x]);
+            }
         }
-    }
 
-    // middle poy
-    #pragma HLS unroll
-    for (int y = 1; y < POY-1; y++) {
+        // middle poy
+        #pragma HLS unroll
+        for (int y = 1; y < POY-1; y++) {
+            // copy input buffer content to register at first cycle
+            if (cnt == 0) {
+                #pragma HLS unroll
+                for (int x = 0; x < POX+1; x++) {
+                    // first row of input buffer
+                    buf2pe_reg[y][x] = input_buffer[db_idx][y][x];
+                }
+            }
+            // last register gets new val. rest values are fed from adjacent reg
+            else if (cnt < nkx-1) {
+                #pragma HLS unroll
+                for (int x = 0; x < POX; x++) {
+                    buf2pe_reg[y][x] = buf2pe_reg[y][x+1];
+                }
+                buf2pe_reg[y][POX] = input_buffer[db_idx][y][POX+cnt];
+            }
+            // reg values are fed from adjacent reg
+            else if (cnt == nkx-1) {
+                #pragma HLS unroll
+                for (int x = 0; x < POX; x++) {
+                    buf2pe_reg[y][x] = buf2pe_reg[y][x+1];
+                }
+            }
+            // get values from FIFO
+            if (cnt >= nkx) {
+                #pragma HLS unroll
+                for (int x = 0; x < POX; x++) {
+                    buf2pe_reg[y][x] = fifo_arr[y][x].read();
+                    //std::cout << "read x: " << x << ", y: " << y << std::endl;
+                }
+            }
+            // feed into previous fifo
+            if (cnt < nkx*nky-nkx) {
+                #pragma HLS unroll
+                for (int x = 0; x < POX; x++) {
+                    fifo_arr[y-1][x].write(buf2pe_reg[y][x]);
+                    //std::cout << "write x: " << x << ", y: " << y << std::endl;
+                }
+            }
+        }
+
+        // first poy
         // copy input buffer content to register at first cycle
         if (cnt == 0) {
             #pragma HLS unroll
             for (int x = 0; x < POX+1; x++) {
                 // first row of input buffer
-                buf2pe_reg[y][x] = input_buffer[db_idx][y][x];
+                buf2pe_reg[0][x] = input_buffer[db_idx][0][x];
             }
         }
         // last register gets new val. rest values are fed from adjacent reg
         else if (cnt < nkx-1) {
             #pragma HLS unroll
             for (int x = 0; x < POX; x++) {
-                buf2pe_reg[y][x] = buf2pe_reg[y][x+1];
+                buf2pe_reg[0][x] = buf2pe_reg[0][x+1];
             }
-            buf2pe_reg[y][POX] = input_buffer[db_idx][y][POX+cnt];
+            buf2pe_reg[0][POX] = input_buffer[db_idx][0][POX+cnt];
         }
         // reg values are fed from adjacent reg
         else if (cnt == nkx-1) {
             #pragma HLS unroll
             for (int x = 0; x < POX; x++) {
-                buf2pe_reg[y][x] = buf2pe_reg[y][x+1];
+                buf2pe_reg[0][x] = buf2pe_reg[0][x+1];
             }
         }
         // get values from FIFO
         if (cnt >= nkx) {
             #pragma HLS unroll
             for (int x = 0; x < POX; x++) {
-                buf2pe_reg[y][x] = fifo_arr[y][x].read();
-                //std::cout << "read x: " << x << ", y: " << y << std::endl;
+                buf2pe_reg[0][x] = fifo_arr[0][x].read();
             }
         }
-        // feed into previous fifo
-        if (cnt < nkx*nky-nkx) {
+
+        // feed mac unit
+        #pragma HLS unroll
+        for (int y = 0; y < POY; y++) {
             #pragma HLS unroll
             for (int x = 0; x < POX; x++) {
-                fifo_arr[y-1][x].write(buf2pe_reg[y][x]);
-                //std::cout << "write x: " << x << ", y: " << y << std::endl;
+                mac_in_fifo_arr[y][x].write(buf2pe_reg[y][x]);
             }
-        }
-    }
-
-    // first poy
-    // copy input buffer content to register at first cycle
-    if (cnt == 0) {
-        #pragma HLS unroll
-        for (int x = 0; x < POX+1; x++) {
-            // first row of input buffer
-            buf2pe_reg[0][x] = input_buffer[db_idx][0][x];
-        }
-    }
-    // last register gets new val. rest values are fed from adjacent reg
-    else if (cnt < nkx-1) {
-        #pragma HLS unroll
-        for (int x = 0; x < POX; x++) {
-            buf2pe_reg[0][x] = buf2pe_reg[0][x+1];
-        }
-        buf2pe_reg[0][POX] = input_buffer[db_idx][0][POX+cnt];
-    }
-    // reg values are fed from adjacent reg
-    else if (cnt == nkx-1) {
-        #pragma HLS unroll
-        for (int x = 0; x < POX; x++) {
-            buf2pe_reg[0][x] = buf2pe_reg[0][x+1];
-        }
-    }
-    // get values from FIFO
-    if (cnt >= nkx) {
-        #pragma HLS unroll
-        for (int x = 0; x < POX; x++) {
-            buf2pe_reg[0][x] = fifo_arr[0][x].read();
-        }
-    }
-
-    // feed mac unit
-    #pragma HLS unroll
-    for (int y = 0; y < POY; y++) {
-        #pragma HLS unroll
-        for (int x = 0; x < POX; x++) {
-            mac_in_fifo_arr[y][x].write(buf2pe_reg[y][x]);
         }
     }
 }
