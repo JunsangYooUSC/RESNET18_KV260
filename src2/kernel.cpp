@@ -14,6 +14,8 @@
 #ifndef KERNEL_CPP
 #define KERNEL_CPP
 
+#include <iomanip> // For std::setw
+
 // Include Vitis HLS headers
 #include <ap_fixed.h>
 #include <ap_int.h>
@@ -147,7 +149,7 @@ void BUF2PE(
             fifo_arr[POY-2][x].write(buf2pe_reg[POY-1][x]);
         }
     }
-    
+
     // feed mac unit
     #pragma HLS unroll
     for (int y = 0; y < POY; y++) {
@@ -196,7 +198,7 @@ void kernel_func(DTYPE_ACT *in_host,
     for (int idx = 0; idx < 9; idx++) {
         for (int jdx = 0; jdx < 3; jdx++) {
             for (int kdx = 0; kdx < 3; kdx++) {
-                std::cout << mac_in_fifo_arr[jdx][kdx].read() << "     ";
+                std::cout << std::setw(15) << mac_in_fifo_arr[jdx][kdx].read() << " ";
             }
         }
         std::cout << std::endl;
