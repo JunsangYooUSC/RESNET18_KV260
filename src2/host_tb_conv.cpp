@@ -49,6 +49,9 @@ void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act) {
 								in_addr += (ndx + hdx - PAD) * NIX + (mdx + wdx - PAD);
 								// load input
 								in_act_element = in_act[in_addr];
+								if (in_addr >= TOTAL_IN_LEN) {
+									std::cout << "input index out-of-bounds\n";
+								}
 							}
 
 							// filter address calc
@@ -57,6 +60,9 @@ void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act) {
 							filter_addr += hdx * NKX * wdx;
 							// load filter
 							D_FILTER in_fil_element = in_fil[filter_addr];
+							if (filter_addr >= TOTAL_FIL_LEN) {
+								std::cout << "filter index out-of-bounds\n";
+							}
 
 							// mult
 							D_MULT mult_element = in_act_element * in_fil_element;
@@ -64,6 +70,9 @@ void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act) {
 							// output address calc
 							unsigned int out_addr = cdx * NOY * NOX;
 							out_addr += ndx / STRIDE * NOX + mdx / STRIDE;
+							if (out_addr >= TOTAL_OUT_LEN) {
+								std::cout << "output index out-of-bounds\n";
+							}
 							// load output mac
 							out_act_mac[out_addr] += mult_element;
 						}
