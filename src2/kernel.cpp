@@ -68,7 +68,7 @@ void BUF2PE(
     else {
         #pragma HLS unroll
         for (int x = 0; x < POX; x++) {
-            buf2pe_reg[0][x] = fifo_arr[0][x];
+            buf2pe_reg[0][x] = fifo_arr[0][x].read();
         }
     }
 
