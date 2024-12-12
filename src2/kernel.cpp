@@ -107,9 +107,11 @@ void BUF2PE(
             }
         }
         // feed into previous fifo
-        #pragma HLS unroll
-        for (int x = 0; x < POX; x++) {
-            fifo_arr[y-1][x].write(buf2pe_reg[y][x]);
+        if (cnt < nkx*nky-nkx) {
+            #pragma HLS unroll
+            for (int x = 0; x < POX; x++) {
+                fifo_arr[y-1][x].write(buf2pe_reg[y][x]);
+            }
         }
     }
 
@@ -138,12 +140,14 @@ void BUF2PE(
             buf2pe_reg[POY-1][x] = buf2pe_reg[POY-1][x+1];
         }
     }
-    // feed into previous fifo
-    #pragma HLS unroll
-    for (int x = 0; x < POX; x++) {
-        fifo_arr[POY-2][x].write(buf2pe_reg[POY-1][x]);
+    if (cnt < nkx*nky-nkx) {
+        // feed into previous fifo
+        #pragma HLS unroll
+        for (int x = 0; x < POX; x++) {
+            fifo_arr[POY-2][x].write(buf2pe_reg[POY-1][x]);
+        }
     }
-
+    
     // feed mac unit
     #pragma HLS unroll
     for (int y = 0; y < POY; y++) {
