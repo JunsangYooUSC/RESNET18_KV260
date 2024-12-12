@@ -192,13 +192,13 @@ void kernel_func(DTYPE_ACT *in_host,
     // dummy function to fill input buffer
     dummy_fill_input_buffer(input_buffer);
 
-    for (int idx = 0; idx < 4; idx++) {
+    for (int idx = 0; idx < 9; idx++) {
         BUF2PE(input_buffer, mac_in_fifo_arr, NKX, NKY, idx, 0);
     }
 
-    for (int idx = 0; idx < 4; idx++) {
-        for (int jdx = 0; jdx < 3; jdx++) {
-            for (int kdx = 0; kdx < 3; kdx++) {
+    for (int idx = 0; idx < 9; idx++) {
+        for (int jdx = 0; jdx < POY; jdx++) {
+            for (int kdx = 0; kdx < POX; kdx++) {
                 std::cout << std::setw(5) << (mac_in_fifo_arr[jdx][kdx].read() << 8) << " ";
             }
         }
