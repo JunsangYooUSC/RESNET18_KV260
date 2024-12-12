@@ -145,7 +145,7 @@ void BUF2PE(
 
     // feed mac unit
     #pragma HLS unroll
-    for (int y = 0; y < POY) {
+    for (int y = 0; y < POY; y++) {
         #pragma HLS unroll
         for (int x = 0; x < POX; x++) {
             mac_in_fifo_arr[y][x].write(buf2pe_reg[y][x]);
