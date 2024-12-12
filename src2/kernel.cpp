@@ -68,7 +68,7 @@ void BUF2PE(
         }
     }
     // get values from FIFO
-    else {
+    if (cnt >= nkx) {
         #pragma HLS unroll
         for (int x = 0; x < POX; x++) {
             buf2pe_reg[0][x] = fifo_arr[0][x].read();
@@ -102,7 +102,7 @@ void BUF2PE(
             }
         }
         // get values from FIFO
-        else {
+        if (cnt >= nkx) {
             #pragma HLS unroll
             for (int x = 0; x < POX; x++) {
                 buf2pe_reg[y][x] = fifo_arr[y][x].read();
