@@ -61,9 +61,9 @@
 
 // Bit widths needed for convolution calculation
 #define W_ACT               8
-#define I_ACT               2
+#define I_ACT               3
 #define W_FIL               8
-#define I_FIL               2
+#define I_FIL               3
 #define W_MUL               (W_ACT + W_FIL)
 #define I_MUL               (I_ACT + I_FIL)
 #define W_MAC               (W_MUL + MAC_EXTRA_BITS)
