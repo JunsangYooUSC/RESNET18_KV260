@@ -47,7 +47,7 @@ void BUF2PE(
         #pragma HLS unroll
         for (int x = 0; x < POX+1; x++) {
             // first row of input buffer
-            buf2pe_reg[0][x] = input_buffer[0][x];
+            buf2pe_reg[0][x] = input_buffer[db_idx][0][x];
         }
     }
     // last register gets new val. rest values are fed from adjacent reg
@@ -56,7 +56,7 @@ void BUF2PE(
         for (int x = 0; x < POX; x++) {
             buf2pe_reg[0][x] = buf2pe_reg[0][x+1];
         }
-        buf2pe_reg[0][POX] = input_buffer[0][POX+cnt];
+        buf2pe_reg[0][POX] = input_buffer[db_idx][0][POX+cnt];
     }
     // reg values are fed from adjacent reg
     else if (cnt == nkx-1) {
@@ -81,7 +81,7 @@ void BUF2PE(
             #pragma HLS unroll
             for (int x = 0; x < POX+1; x++) {
                 // first row of input buffer
-                buf2pe_reg[y][x] = input_buffer[y][x];
+                buf2pe_reg[y][x] = input_buffer[db_idx][y][x];
             }
         }
         // last register gets new val. rest values are fed from adjacent reg
@@ -90,7 +90,7 @@ void BUF2PE(
             for (int x = 0; x < POX; x++) {
                 buf2pe_reg[y][x] = buf2pe_reg[y][x+1];
             }
-            buf2pe_reg[y][POX] = input_buffer[y][POX+cnt];
+            buf2pe_reg[y][POX] = input_buffer[db_idx][y][POX+cnt];
         }
         // reg values are fed from adjacent reg
         else if (cnt == nkx-1) {
@@ -120,7 +120,7 @@ void BUF2PE(
         #pragma HLS unroll
         for (int x = 0; x < POX+1; x++) {
             // first row of input buffer
-            buf2pe_reg[POY-1][x] = input_buffer[POY-1+last_y_idx][x];
+            buf2pe_reg[POY-1][x] = input_buffer[db_idx][POY-1+last_y_idx][x];
         }
     }
     // last register gets new val. rest values are fed from adjacent reg
@@ -129,7 +129,7 @@ void BUF2PE(
         for (int x = 0; x < POX; x++) {
             buf2pe_reg[POY-1][x] = buf2pe_reg[POY-1][x+1];
         }
-        buf2pe_reg[POY-1][POX] = input_buffer[POY-1+last_y_idx][POX+cnt];
+        buf2pe_reg[POY-1][POX] = input_buffer[db_idx][POY-1+last_y_idx][POX+cnt];
     }
     // reg values are fed from adjacent reg
     else if (cnt % nkx == nkx-1) {
@@ -162,7 +162,7 @@ void kernel_func(DTYPE_ACT *in_host,
                 DTYPE_ACT *out_host
 ) {
     #pragma HLS DATAFLOW
-    
+
     // on-chip buffers
     // DTYPE_ACT input_buffer[2*INPUT_BUFFER_SIZE];
     DTYPE_ACT input_buffer[2][POY+PAD*2][POX+PAD*2];
