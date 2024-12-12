@@ -8,7 +8,6 @@
 #include <hls_stream.h>
 // Include project headers
 #include "conv_config.h"
-#include "dummy_func.h"
 
 // Declare functions
 void BUF2PE(
