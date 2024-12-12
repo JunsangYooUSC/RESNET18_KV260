@@ -57,7 +57,8 @@ void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act) {
 							// filter address calc
 							unsigned int filter_addr = cdx * NIF * NKY * NKX;
 							filter_addr += kdx * NKY * NKX;
-							filter_addr += hdx * NKX * wdx;
+							filter_addr += hdx * NKX;
+							filter_addr += wdx;
 							// load filter
 							D_FILTER in_fil_element = in_fil[filter_addr];
 							if (filter_addr >= TOTAL_FIL_LEN) {
