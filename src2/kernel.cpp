@@ -107,6 +107,7 @@ void BUF2PE(
             #pragma HLS unroll
             for (int x = 0; x < POX; x++) {
                 buf2pe_reg[y][x] = fifo_arr[y][x].read();
+                std::cout << "read x: " << x << ", y: " << y << std::endl;
             }
         }
         // feed into previous fifo
@@ -114,6 +115,7 @@ void BUF2PE(
             #pragma HLS unroll
             for (int x = 0; x < POX; x++) {
                 fifo_arr[y-1][x].write(buf2pe_reg[y][x]);
+                std::cout << "write x: " << x << ", y: " << y << std::endl;
             }
         }
     }
