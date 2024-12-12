@@ -107,7 +107,7 @@ void BUF2PE(
             #pragma HLS unroll
             for (int x = 0; x < POX; x++) {
                 buf2pe_reg[y][x] = fifo_arr[y][x].read();
-                std::cout << "read x: " << x << ", y: " << y << std::endl;
+                //std::cout << "read x: " << x << ", y: " << y << std::endl;
             }
         }
         // feed into previous fifo
@@ -115,7 +115,7 @@ void BUF2PE(
             #pragma HLS unroll
             for (int x = 0; x < POX; x++) {
                 fifo_arr[y-1][x].write(buf2pe_reg[y][x]);
-                std::cout << "write x: " << x << ", y: " << y << std::endl;
+                //std::cout << "write x: " << x << ", y: " << y << std::endl;
             }
         }
     }
@@ -203,18 +203,6 @@ void kernel_func(DTYPE_ACT *in_host,
             }
         }
         std::cout << std::endl;
-    }
-
-    hls::stream<int> test_fifo[3][4];
-    for (int idx = 0; idx < 3; idx++) {
-        for (int jdx = 0; jdx < 4; jdx++) {
-            test_fifo[idx][jdx].write(idx*4+jdx);
-        }
-    }
-    for (int idx = 0; idx < 3; idx++) {
-        for (int jdx = 0; jdx < 4; jdx++) {
-            std::cout << test_fifo[idx][jdx].read() << std::endl;
-        }
     }
 
 }

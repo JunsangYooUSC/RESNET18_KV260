@@ -16,8 +16,13 @@ void dummy_fill_input_buffer(DTYPE_ACT input_buffer[2][POY+PAD*2][POX+PAD*2]){
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < POY+PAD*2; j++) {
             for (int k = 0; k < POX+PAD*2; k++) {
-                input_buffer[i][j][k] = val;
-                val += step;
+                if (i == 0) {
+                    input_buffer[i][j][k] = val;
+                    val += step;
+                }
+                else {
+                    input_buffer[i][j][k] = 0;
+                }
             }
         }
     }
