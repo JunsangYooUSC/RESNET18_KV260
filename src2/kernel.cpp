@@ -226,7 +226,7 @@ void kernel_func(DTYPE_ACT *in_host,
     // load in_host to act_mem1
     DTYPE_MEM block;
     for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
-        block.range(W_ACT*(idx+1)-1, W_ACT*idx) = in_host[idx].range();
+        block.range(W_ACT*(idx%MEM_PACK+1)-1, W_ACT*(idx%MEM_PACK)) = in_host[idx].range();
         if (idx % MEM_PACK == MEM_PACK-1) {
             act_mem1[idx/MEM_PACK] = block;
         }
