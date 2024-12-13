@@ -336,14 +336,16 @@ void load_input_buffer(
 void load_input_buffer_stride(
     DTYPE_ACT input_buffer_stride[2][POY*MAX_STRIDE+PAD*2][POX*MAX_STRIDE+PAD*2],
     DTYPE_MEM act_mem[ACT_MEM_SIZE],
-    unsigned int act_fidx,
-    unsigned int act_yidx,
-    unsigned int act_xidx,
-    unsigned int db_idx     // double buffering index) 
+    unsigned int act_fidx,  // input filter idx
+    unsigned int act_yidx,  // input height starting idx
+    unsigned int act_xidx,  // input width starting idx
+    unsigned int y_size,    // size of input buffer mat height
+    unsigned int x_size,    // size of input buffer mat width
+    unsigned int db_idx     // double buffering index
 ){
     unsigned int act_mem_base_idx = act_fidx*NIY*NIX + act_yidx*NIX + act_xidx;
-    for (int y = 0; y < POY*MAX_STRIDE+PAD*2; y++) {
-        for (int x = 0; x < POX*MAX_STRIDE+PAD*2; x++) {
+    for (int y = 0; y < y_size; y++) {
+        for (int x = 0; x < x_size; x++) {
             if ( (act_yidx + y < PAD) || (act_yidx + y >= NIY + PAD) || (act_xidx + x < PAD) || (act_xidx + x >= NIX + PAD)) {
                 input_buffer_stride[db_idx][y][x] = 0;
             }
@@ -407,18 +409,19 @@ void kernel_func(DTYPE_ACT *in_host,
 
     // load input buffer
     // load_input_buffer(input_buffer, act_mem1, 0, 0, 0, 0);
-    // load_input_buffer_stride(input_buffer_stride, act_mem1, 0, 0, 0, 0);
-    DTYPE_ACT step = 1;
-    step = step >> 8;
-    DTYPE_ACT i = 0;
-    for (int idx = 0; idx < 2; idx++) {
-        for (int jdx = 0; jdx < POY*MAX_STRIDE+PAD*2; jdx++) {
-            for (int kdx = 0; kdx < POX*MAX_STRIDE+PAD*2; kdx++) {
-                input_buffer_stride[idx][jdx][kdx] = i;
-                i += step;
-            }
-        }
-    }
+    load_input_buffer_stride(input_buffer_stride, act_mem1, 0, 0, 0, POY*MAX_STRIDE+PAD*2, POX*MAX_STRIDE+PAD*2, 0);
+    
+    // DTYPE_ACT step = 1;
+    // step = step >> 8;
+    // DTYPE_ACT i = 0;
+    // for (int idx = 0; idx < 2; idx++) {
+    //     for (int jdx = 0; jdx < POY*MAX_STRIDE+PAD*2; jdx++) {
+    //         for (int kdx = 0; kdx < POX*MAX_STRIDE+PAD*2; kdx++) {
+    //             input_buffer_stride[idx][jdx][kdx] = i;
+    //             i += step;
+    //         }
+    //     }
+    // }
 
     unsigned int total_loops = NKX*NKY;
     // BUF2PE(input_buffer, mac_in_fifo_arr, NKX, NKY, total_loops, 0);
