@@ -407,7 +407,18 @@ void kernel_func(DTYPE_ACT *in_host,
 
     // load input buffer
     // load_input_buffer(input_buffer, act_mem1, 0, 0, 0, 0);
-    load_input_buffer_stride(input_buffer_stride, act_mem1, 0, 0, 0, 0);
+    // load_input_buffer_stride(input_buffer_stride, act_mem1, 0, 0, 0, 0);
+    DTYPE_ACT step = 1;
+    step = step >> 8;
+    DTYPE_ACT i = 0;
+    for (int idx = 0; idx < 2) {
+        for (int jdx = 0; jdx < POY*MAX_STRIDE+PAD*2; jdx++) {
+            for (int kdx = 0; kdx < POX*MAX_STRIDE+PAD*2; kdx++) {
+                input_buffer_stride[idx][jdx][kdx] = i;
+                i += step;
+            }
+        }
+    }
 
     unsigned int total_loops = NKX*NKY;
     // BUF2PE(input_buffer, mac_in_fifo_arr, NKX, NKY, total_loops, 0);
