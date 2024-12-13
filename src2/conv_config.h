@@ -32,9 +32,9 @@
 // #define NIF                 64
 #define NIF                 16
 // #define NOX                 56
-#define NOX                 14
+#define NOX                 28
 // #define NOY                 56
-#define NOY                 14
+#define NOY                 28
 // #define NOF                 64
 #define NOF                 4
 #define NIX                 NOX*STRIDE

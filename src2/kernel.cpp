@@ -26,7 +26,7 @@
 #include "kernel.h"
 #include "dummy_func.h"
 
-// BUF2PE
+// BUF2PE with support of stride
 void BUF2PE_stride(
     // DTYPE_ACT *input_buffer, 
     DTYPE_ACT input_buffer_stride[2][POY*MAX_STRIDE+PAD*2][POX*MAX_STRIDE+PAD*2],
@@ -169,7 +169,7 @@ void BUF2PE_stride(
 
 void load_input_buffer_stride(
     DTYPE_ACT input_buffer_stride[2][POY*MAX_STRIDE+PAD*2][POX*MAX_STRIDE+PAD*2],
-    DTYPE_MEM act_mem[ACT_MEM_SIZE],
+    DTYPE_MEM act_mem[2][ACT_MEM_SIZE],
     unsigned int act_fidx,  // input filter idx
     unsigned int act_yidx,  // input height starting idx
     unsigned int act_xidx,  // input width starting idx
@@ -220,10 +220,8 @@ void kernel_func(DTYPE_ACT *in_host,
     #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH
 
     // on-chip memory
-    DTYPE_MEM act_mem1[ACT_MEM_SIZE];
-    #pragma HLS bind_storage variable=act_mem1 impl=uram
-    DTYPE_MEM act_mem2[ACT_MEM_SIZE];
-    #pragma HLS bind_storage variable=act_mem2 impl=uram
+    DTYPE_MEM act_mem[2][ACT_MEM_SIZE];
+    #pragma HLS bind_storage variable=act_mem impl=uram
     DTYPE_MEM fil_mem[FIL_MEM_SIZE];
     #pragma HLS bind_storage variable=fil_mem impl=bram
 
@@ -231,19 +229,19 @@ void kernel_func(DTYPE_ACT *in_host,
     // dummy_fill_input_buffer(input_buffer);
 
     std::cout << "in_host[0]: " << in_host[0] << std::endl;
-    // load in_host to act_mem1
+    // load in_host to act_mem
     DTYPE_MEM block;
     for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
         unsigned int idx2 = idx % MEM_PACK;
         block.range(W_ACT*(idx2+1)-1, W_ACT*(idx2)) = in_host[idx].range();
         if (idx2 == MEM_PACK-1) {
-            act_mem1[idx/MEM_PACK] = block;
+            act_mem[0][idx/MEM_PACK] = block;
         }
     }
 
     // load input buffer
-    // load_input_buffer(input_buffer, act_mem1, 0, 0, 0, 0);
-    load_input_buffer_stride(input_buffer_stride, act_mem1, 0, 0, 0, POY*MAX_STRIDE+PAD*2, POX*MAX_STRIDE+PAD*2, 0);
+    // load_input_buffer(input_buffer, act_mem, 0, 0, 0, 0);
+    load_input_buffer_stride(input_buffer_stride, act_mem, 0, 0, 0, POY*MAX_STRIDE+PAD*2, POX*MAX_STRIDE+PAD*2, 0);
     
     // DTYPE_ACT step = 1;
     // step = step >> 8;
@@ -261,21 +259,31 @@ void kernel_func(DTYPE_ACT *in_host,
     // BUF2PE(input_buffer, mac_in_fifo_arr, NKX, NKY, total_loops, 0);
     BUF2PE_stride(input_buffer_stride, mac_in_fifo_arr, NKX, NKY, total_loops, STRIDE, 0);
 
-    // dummy consumer
-    for (int kdx = 0; kdx < NKX*NKY; kdx++) {
-        for (int y = 0; y < POY; y++) {
-            for (int x = 0; x < POX; x++) {
-
-            }
-        }
-    }
-    for (int idx = 0; idx < 9; idx++) {
+    for (int idx = 0; idx < NKX*NKY; idx++) {
         for (int jdx = 0; jdx < POY; jdx++) {
             for (int kdx = 0; kdx < POX; kdx++) {
                 std::cout << std::setw(5) << (mac_in_fifo_arr[jdx][kdx].read() << 8) << " ";
             }
         }
         std::cout << std::endl;
+    }
+
+    unsigned int db_write = 0;
+    unsigned int db_read = 1;
+    for (int idx = 0; idx < NOY/POY; idx++) {
+        for (int jdx = 0; jdx < NOX/POX; jdx++) {
+            load_input_buffer_stride(input_buffer_stride, act_mem, 0, idx*POY, jdx*POX, POY+PAD*2, POX+PAD*2, db_write);
+            BUF2PE_stride(input_buffer_stride, mac_in_fifo_arr, NKX, NKY, total_loops, STRIDE, db_read);
+        }
+    }
+    for (int idx = 0; idx < NKX*NKY; idx++) {
+        for (int jdx = 0; jdx < POY; jdx++) {
+            for (int kdx = 0; kdx < POX; kdx++) {
+                // std::cout << std::setw(5) << (mac_in_fifo_arr[jdx][kdx].read() << 8) << " ";
+                mac_in_fifo_arr[jdx][kdx].read();
+            }
+        }
+        // std::cout << std::endl;
     }
 
 }
