@@ -183,7 +183,7 @@ void BUF2PE_stride(
     hls::stream<DTYPE_ACT> fifo_arr_stride[POY*MAX_STRIDE-1][POX*MAX_STRIDE];
     #pragma HLS STREAM variable=fifo_arr_stride depth=FIFO_ARR_DEPTH
     
-    for (unsigned int cnt = 0; cnt < total_loops*s*s; cnt++) {
+    for (unsigned int cnt = 0; cnt < total_loops; cnt++) {
         // last poy
         // copy input buffer content to register
         unsigned int last_y_idx = cnt / nky;
@@ -298,7 +298,7 @@ void BUF2PE_stride(
         #pragma HLS unroll
         for (int y = 0; y < POY; y++) {
             #pragma HLS unroll
-            for (int x = 0; x < s; x++) {
+            for (int x = 0; x < POX; x++) {
                 mac_in_fifo_arr[y][x].write(buf2pe_reg_stride[y*s][x*s]);
             }
         }
