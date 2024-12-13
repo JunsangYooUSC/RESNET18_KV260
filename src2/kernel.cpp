@@ -278,10 +278,12 @@ void kernel_func(DTYPE_ACT *in_host,
     }
     for (int idx = 0; idx < NOY/POY; idx++) {
         for (int jdx = 0; jdx < NOX/POX; jdx++) {
-            for (int y = 0; y < POY; y++) {
-                for (int x = 0; x < POX; x++) {
-                    // std::cout << std::setw(5) << (mac_in_fifo_arr[jdx][kdx].read() << 8) << " ";
-                    mac_in_fifo_arr[y][x].read();
+            for (int loop = 0; loop < total_loops; loop++) {
+                for (int y = 0; y < POY; y++) {
+                    for (int x = 0; x < POX; x++) {
+                        // std::cout << std::setw(5) << (mac_in_fifo_arr[jdx][kdx].read() << 8) << " ";
+                        mac_in_fifo_arr[y][x].read();
+                    }
                 }
             }
         // std::cout << std::endl;
