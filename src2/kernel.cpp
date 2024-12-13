@@ -276,13 +276,14 @@ void kernel_func(DTYPE_ACT *in_host,
             BUF2PE_stride(input_buffer_stride, mac_in_fifo_arr, NKX, NKY, total_loops, STRIDE, db_read);
         }
     }
-    for (int idx = 0; idx < NKX*NKY; idx++) {
-        for (int jdx = 0; jdx < POY; jdx++) {
-            for (int kdx = 0; kdx < POX; kdx++) {
-                // std::cout << std::setw(5) << (mac_in_fifo_arr[jdx][kdx].read() << 8) << " ";
-                mac_in_fifo_arr[jdx][kdx].read();
+    for (int idx = 0; idx < NOY/POY; idx++) {
+        for (int jdx = 0; jdx < NOX/POX; jdx++) {
+            for (int y = 0; y < POY; y++) {
+                for (int x = 0; x < POX; x++) {
+                    // std::cout << std::setw(5) << (mac_in_fifo_arr[jdx][kdx].read() << 8) << " ";
+                    mac_in_fifo_arr[y][x].read();
+                }
             }
-        }
         // std::cout << std::endl;
     }
 
