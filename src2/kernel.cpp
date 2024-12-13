@@ -174,13 +174,13 @@ void load_input_buffer(
     unsigned int db_idx     // double buffering index) 
 ){
     unsigned int act_mem_base_idx = act_fidx*NIY*NIX + act_yidx*NIX + act_xidx;
-    for (int idx = 0; idx < POY+PAD*2; idx++) {
-        for (int jdx = 0; jdx < POX+PAD*2; jdx++) {
-            if ( (act_yidx < PAD) || (act_yidx >= NIY + PAD) || (act_xidx < PAD) || (act_xidx >= NIX + PAD)) {
-                input_buffer[db_idx][idx][jdx] = 0;
+    for (int y = 0; y < POY+PAD*2; y++) {
+        for (int x = 0; x < POX+PAD*2; x++) {
+            if ( (act_yidx + y < PAD) || (act_yidx + y >= NIY + PAD) || (act_xidx + x < PAD) || (act_xidx + x >= NIX + PAD)) {
+                input_buffer[db_idx][y][x] = 0;
             }
             else {
-                unsigned int act_mem_idx = act_mem_base_idx + idx * NIX + jdx;
+                unsigned int act_mem_idx = act_mem_base_idx + y * NIX + x;
                 unsigned int idx1 = act_mem_idx / MEM_PACK;
                 unsigned int idx2 = act_mem_idx % MEM_PACK;
                 DTYPE_MEM block = act_mem[idx1];
@@ -233,7 +233,7 @@ void kernel_func(DTYPE_ACT *in_host,
             act_mem1[idx/MEM_PACK] = block;
         }
     }
-    
+
 
     // load input buffer
     load_input_buffer(input_buffer, act_mem1, 0, 0, 0, 0);
