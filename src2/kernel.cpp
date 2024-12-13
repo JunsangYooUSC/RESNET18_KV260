@@ -186,7 +186,7 @@ void load_input_buffer(
                 DTYPE_MEM block = act_mem[idx1];
                 DTYPE_ACT data;
                 data.range() = block.range(W_ACT*(idx2+1)-1,W_ACT*idx2);
-                input_buffer[db_idx][idx][jdx] = data;
+                input_buffer[db_idx][y][x] = data;
             }
         }
     }
