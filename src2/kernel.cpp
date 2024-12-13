@@ -176,13 +176,18 @@ void load_input_buffer(
     unsigned int act_mem_base_idx = act_fidx*NIY*NIX + act_yidx*NIX + act_xidx;
     for (int idx = 0; idx < POY+PAD*2; idx++) {
         for (int jdx = 0; jdx < POX+PAD*2; jdx++) {
-            unsigned int act_mem_idx = act_mem_base_idx + idx * NIX + jdx;
-            unsigned int idx1 = act_mem_idx / MEM_PACK;
-            unsigned int idx2 = act_mem_idx % MEM_PACK;
-            DTYPE_MEM block = act_mem[idx1];
-            DTYPE_ACT data;
-            data.range() = block.range(W_ACT*(idx2+1)-1,W_ACT*idx2);
-            input_buffer[db_idx][idx][jdx] = data;
+            if ( (act_yidx < PAD) || (act_yidx >= NIY + PAD) || (act_xidx < pad) || (act_xidx >= NIX + PAD)) {
+                input_buffer[db_idx][idx][jdx] = 0;
+            }
+            else {
+                unsigned int act_mem_idx = act_mem_base_idx + idx * NIX + jdx;
+                unsigned int idx1 = act_mem_idx / MEM_PACK;
+                unsigned int idx2 = act_mem_idx % MEM_PACK;
+                DTYPE_MEM block = act_mem[idx1];
+                DTYPE_ACT data;
+                data.range() = block.range(W_ACT*(idx2+1)-1,W_ACT*idx2);
+                input_buffer[db_idx][idx][jdx] = data;
+            }
         }
     }
 }
@@ -208,13 +213,27 @@ void kernel_func(DTYPE_ACT *in_host,
     #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH
 
     // on-chip memory
-    DTYPE_MEM act_mem[ACT_MEM_SIZE];
-    #pragma HLS bind_storage variable=act_mem impl=uram
+    DTYPE_MEM act_mem1[ACT_MEM_SIZE];
+    #pragma HLS bind_storage variable=act_mem1 impl=uram
+    DTYPE_MEM act_mem2[ACT_MEM_SIZE];
+    #pragma HLS bind_storage variable=act_mem2 impl=uram
     DTYPE_MEM fil_mem[FIL_MEM_SIZE];
     #pragma HLS bind_storage variable=fil_mem impl=bram
 
     // dummy function to fill input buffer
-    dummy_fill_input_buffer(input_buffer);
+    // dummy_fill_input_buffer(input_buffer);
+
+    // load in_host to act_mem1
+    DTYPE_MEM block;
+    for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
+        block.range(W_ACT*(idx+1)-1, W_ACT*idx) = in_host[idx].range();
+        if (idx % MEM_PACK == MEM_PACK-1) {
+            act_mem1[idx/MEM_PACK] = block;
+        }
+    }
+
+    // load input buffer
+    load_input_buffer(input_buffer, act_mem1, 0, 0, 0, 0);
 
     unsigned int total_loops = NKX*NKY;
     BUF2PE(input_buffer, mac_in_fifo_arr, NKX, NKY, total_loops, 0);
