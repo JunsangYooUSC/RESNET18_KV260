@@ -166,7 +166,7 @@ void BUF2PE(
 }
 
 void load_input_buffer(
-    DTYPE_ACT input_buffer[2][POY+PAD*2][POX*PAD*2],
+    DTYPE_ACT input_buffer[2][POY+PAD*2][POX+PAD*2],
     DTYPE_MEM act_mem[ACT_MEM_SIZE],
     unsigned int act_fidx,
     unsigned int act_yidx,
