@@ -411,7 +411,7 @@ void kernel_func(DTYPE_ACT *in_host,
     DTYPE_ACT step = 1;
     step = step >> 8;
     DTYPE_ACT i = 0;
-    for (int idx = 0; idx < 2) {
+    for (int idx = 0; idx < 2; idx++) {
         for (int jdx = 0; jdx < POY*MAX_STRIDE+PAD*2; jdx++) {
             for (int kdx = 0; kdx < POX*MAX_STRIDE+PAD*2; kdx++) {
                 input_buffer_stride[idx][jdx][kdx] = i;
