@@ -26,6 +26,74 @@
 #include "kernel.h"
 #include "dummy_func.h"
 
+void PE(
+    hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
+    hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF],
+    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX],
+    unsigned int loops
+) {
+    DTYPE_MUL mul_vals[POF][POY][POX];
+    DTYPE_MAC mac_vals[POF][POY][POX];
+    DTYPE_ACT in_vals[POY][POX];
+    DTYPE_FIL fil_vals[POF];
+
+    // initialize mac
+    for (int f = 0; f < POF; f++) {
+        for (int y = 0; y < POY; y++) {
+            for (int x = 0; x < POX; x++) {
+                mac_vals[f][y][x] = 0;
+            }
+        }
+    }
+
+    for (int loop = 0; loop < loops; loop++) {
+        // read input
+        for (int y = 0; y < POY; y++) {
+            for (int x = 0; x < POX; x++) {
+                in_vals[y][x] = mac_in_fifo_arr[y][x].read();
+            }
+        }
+        // read weight
+        for (int f = 0; f < POF; f++) {
+            fil_vals[f] = weight_in_fifo_arr[f].read();
+        }
+        // compute
+        for (int f = 0; f < POF; f++) {
+            for (int y = 0; y < POY; y++) {
+                for (int x = 0; x < POX; x++) {
+                    mul_vals[f][y][x] = in_vals[y][x] * fil_vals[f];
+                    mac_vals[f][y][x] += mul_vals[f][y][x];
+                }
+            }
+        }
+    }
+
+    // 
+    for (int f = 0; f < POF; f++) {
+        for (int y = 0; y < POY; y++) {
+            for (int x = 0; x < POX; x++) {
+                out_fifo_arr[f][y][x].write(mac_vals[f][y][x]);
+            }
+        }
+    }
+}
+
+void feed_weight(
+    DTYPE_FIL filter_buffer[2][POF][NKY][NKX],
+    hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF],
+    unsigned int db_idx
+) {
+    for (int y = 0; y < NKY; y++) {
+        for (int x = 0; x < NKX; x++) {
+            #pragma unroll
+            feed_weight_loop1:
+            for (int f = 0; f < POF; f++) {
+                weight_in_fifo_arr[f].write(filter_buffer[db_idx][y][x]);
+            }
+        }
+    }
+}
+
 // BUF2PE with support of stride
 void BUF2PE_stride(
     // DTYPE_ACT *input_buffer, 
@@ -166,7 +234,6 @@ void BUF2PE_stride(
     }
 }
 
-
 void load_input_buffer_stride(
     DTYPE_ACT input_buffer_stride[2][POY*MAX_STRIDE+PAD*2][POX*MAX_STRIDE+PAD*2],
     DTYPE_MEM act_mem[2][ACT_MEM_SIZE],
@@ -196,7 +263,6 @@ void load_input_buffer_stride(
         }
     }
 }
-
 
 // kernel function
 void kernel_func(DTYPE_ACT *in_host,
