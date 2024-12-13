@@ -175,22 +175,23 @@ void load_input_buffer_stride(
     unsigned int act_xidx,  // input width starting idx
     unsigned int y_size,    // size of input buffer mat height
     unsigned int x_size,    // size of input buffer mat width
-    unsigned int db_idx     // double buffering index
+    unsigned int db_read,   // double buffering index
+    unsigned int db_write   // double bufferingn index
 ){
     unsigned int act_mem_base_idx = act_fidx*NIY*NIX + act_yidx*NIX + act_xidx;
     for (int y = 0; y < y_size; y++) {
         for (int x = 0; x < x_size; x++) {
             if ( (act_yidx + y < PAD) || (act_yidx + y >= NIY + PAD) || (act_xidx + x < PAD) || (act_xidx + x >= NIX + PAD)) {
-                input_buffer_stride[db_idx][y][x] = 0;
+                input_buffer_stride[db_write][y][x] = 0;
             }
             else {
                 unsigned int act_mem_idx = act_mem_base_idx + y * NIX + x;
                 unsigned int idx1 = act_mem_idx / MEM_PACK;
                 unsigned int idx2 = act_mem_idx % MEM_PACK;
-                DTYPE_MEM block = act_mem[idx1];
+                DTYPE_MEM block = act_mem[db_read][idx1];
                 DTYPE_ACT data;
                 data.range() = block.range(W_ACT*(idx2+1)-1,W_ACT*idx2);
-                input_buffer_stride[db_idx][y][x] = data;
+                input_buffer_stride[db_write][y][x] = data;
             }
         }
     }
@@ -241,7 +242,7 @@ void kernel_func(DTYPE_ACT *in_host,
 
     // load input buffer
     // load_input_buffer(input_buffer, act_mem, 0, 0, 0, 0);
-    load_input_buffer_stride(input_buffer_stride, act_mem, 0, 0, 0, POY+PAD*2, POX+PAD*2, 0);
+    load_input_buffer_stride(input_buffer_stride, act_mem, 0, 0, 0, POY+PAD*2, POX+PAD*2, 0, 0);
     
     // DTYPE_ACT step = 1;
     // step = step >> 8;
