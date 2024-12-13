@@ -223,14 +223,17 @@ void kernel_func(DTYPE_ACT *in_host,
     // dummy function to fill input buffer
     // dummy_fill_input_buffer(input_buffer);
 
+    std::cout << "in_host[0]: " << in_host[0] << std::endl;
     // load in_host to act_mem1
     DTYPE_MEM block;
     for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
-        block.range(W_ACT*(idx%MEM_PACK+1)-1, W_ACT*(idx%MEM_PACK)) = in_host[idx].range();
-        if (idx % MEM_PACK == MEM_PACK-1) {
+        unsigned int idx2 = idx % MEM_PACK;
+        block.range(W_ACT*(idx2+1)-1, W_ACT*(idx2)) = in_host[idx].range();
+        if (idx2 == MEM_PACK-1) {
             act_mem1[idx/MEM_PACK] = block;
         }
     }
+    
 
     // load input buffer
     load_input_buffer(input_buffer, act_mem1, 0, 0, 0, 0);
