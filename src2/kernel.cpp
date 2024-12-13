@@ -411,7 +411,7 @@ void kernel_func(DTYPE_ACT *in_host,
 
     unsigned int total_loops = NKX*NKY;
     // BUF2PE(input_buffer, mac_in_fifo_arr, NKX, NKY, total_loops, 0);
-    BUF2PE_stride(input_buffer_stride, mac_in_fifo_arr, NKX, NKY, total_loops);
+    BUF2PE_stride(input_buffer_stride, mac_in_fifo_arr, NKX, NKY, total_loops, STRIDE, 0);
 
     // dummy consumer
     for (int kdx = 0; kdx < NKX*NKY; kdx++) {
