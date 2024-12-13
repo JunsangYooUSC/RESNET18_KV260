@@ -285,6 +285,7 @@ void kernel_func(DTYPE_ACT *in_host,
                 }
             }
         // std::cout << std::endl;
+        }
     }
 
 }
