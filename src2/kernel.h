@@ -20,6 +20,18 @@ void BUF2PE(
     unsigned int db_idx     // double buffering index) 
 );
 
+void BUF2PE_stride(
+    // DTYPE_ACT *input_buffer, 
+    DTYPE_ACT input_buffer_stride[2][POY*STRIDE+PAD*2][POX*STRIDE+PAD*2],
+    hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
+    unsigned int nkx,
+    unsigned int nky,
+    unsigned int total_loops,
+    unsigned int s,
+    unsigned int db_idx     // double buffering index) 
+);
+
+
 void kernel_func(DTYPE_ACT *in_offchip, DTYPE_ACT *filter_offchip, DTYPE_ACT *out_offchip);
 
 #endif
