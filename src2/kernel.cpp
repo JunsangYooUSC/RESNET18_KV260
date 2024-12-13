@@ -176,7 +176,7 @@ void load_input_buffer(
     unsigned int act_mem_base_idx = act_fidx*NIY*NIX + act_yidx*NIX + act_xidx;
     for (int idx = 0; idx < POY+PAD*2; idx++) {
         for (int jdx = 0; jdx < POX+PAD*2; jdx++) {
-            if ( (act_yidx < PAD) || (act_yidx >= NIY + PAD) || (act_xidx < pad) || (act_xidx >= NIX + PAD)) {
+            if ( (act_yidx < PAD) || (act_yidx >= NIY + PAD) || (act_xidx < PAD) || (act_xidx >= NIX + PAD)) {
                 input_buffer[db_idx][idx][jdx] = 0;
             }
             else {
