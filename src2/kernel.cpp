@@ -180,8 +180,8 @@ void BUF2PE_stride(
     DTYPE_ACT buf2pe_reg_stride[POY*MAX_STRIDE][POX*MAX_STRIDE+1];
     // #pragma HLS BIND_STORAGE variable=buf2pe_reg type=register
     // fifo in fig13 of Optimizing_the_Convolution_Operation_to_Accelerate_Deep_Neural_Networks_on_FPGA
-    hls::stream<DTYPE_ACT> fifo_arr[POY*MAX_STRIDE-1][POX*MAX_STRIDE];
-    #pragma HLS STREAM variable=fifo_arr depth=FIFO_ARR_DEPTH
+    hls::stream<DTYPE_ACT> fifo_arr_stride[POY*MAX_STRIDE-1][POX*MAX_STRIDE];
+    #pragma HLS STREAM variable=fifo_arr_stride depth=FIFO_ARR_DEPTH
     
     for (unsigned int cnt = 0; cnt < total_loops*s*s; cnt++) {
         // last poy
@@ -192,7 +192,7 @@ void BUF2PE_stride(
             #pragma HLS unroll
             for (int x = 0; x < POX*s+1; x++) {
                 // first row of input buffer
-                buf2pe_reg_stride[POY*s-1][x] = input_buffer[db_idx][POY*s-1+last_y_idx][x];
+                buf2pe_reg_stride[POY*s-1][x] = input_buffer_stride[db_idx][POY*s-1+last_y_idx][x];
             }
         }
         // last register gets new val. rest values are fed from adjacent reg
@@ -201,7 +201,7 @@ void BUF2PE_stride(
             for (int x = 0; x < POX*s; x++) {
                 buf2pe_reg_stride[POY*s-1][x] = buf2pe_reg_stride[POY*s-1][x+1];
             }
-            buf2pe_reg_stride[POY*s-1][POX*s] = input_buffer[db_idx][POY*s-1+last_y_idx][POX*s+last_x_idx];
+            buf2pe_reg_stride[POY*s-1][POX*s] = input_buffer_stride[db_idx][POY*s-1+last_y_idx][POX*s+last_x_idx];
         }
         // reg values are fed from adjacent reg
         else if (cnt % nkx == nkx-1) {
@@ -214,7 +214,7 @@ void BUF2PE_stride(
             // feed into previous fifo
             #pragma HLS unroll
             for (int x = 0; x < POX*s; x++) {
-                fifo_arr[POY*s-2][x].write(buf2pe_reg_stride[POY*s-1][x]);
+                fifo_arr_stride[POY*s-2][x].write(buf2pe_reg_stride[POY*s-1][x]);
             }
         }
 
@@ -226,7 +226,7 @@ void BUF2PE_stride(
                 #pragma HLS unroll
                 for (int x = 0; x < POX*s+1; x++) {
                     // first row of input buffer
-                    buf2pe_reg_stride[y][x] = input_buffer[db_idx][y][x];
+                    buf2pe_reg_stride[y][x] = input_buffer_stride[db_idx][y][x];
                 }
             }
             // last register gets new val. rest values are fed from adjacent reg
@@ -235,7 +235,7 @@ void BUF2PE_stride(
                 for (int x = 0; x < POX*s; x++) {
                     buf2pe_reg_stride[y][x] = buf2pe_reg_stride[y][x+1];
                 }
-                buf2pe_reg_stride[y][POX*s] = input_buffer[db_idx][y][POX*s+cnt];
+                buf2pe_reg_stride[y][POX*s] = input_buffer_stride[db_idx][y][POX*s+cnt];
             }
             // reg values are fed from adjacent reg
             else if (cnt == nkx-1) {
@@ -248,7 +248,7 @@ void BUF2PE_stride(
             if (cnt >= nkx) {
                 #pragma HLS unroll
                 for (int x = 0; x < POX*s; x++) {
-                    buf2pe_reg_stride[y][x] = fifo_arr[y][x].read();
+                    buf2pe_reg_stride[y][x] = fifo_arr_stride[y][x].read();
                     //std::cout << "read x: " << x << ", y: " << y << std::endl;
                 }
             }
@@ -256,7 +256,7 @@ void BUF2PE_stride(
             if (cnt < nkx*nky-nkx) {
                 #pragma HLS unroll
                 for (int x = 0; x < POX*s; x++) {
-                    fifo_arr[y-1][x].write(buf2pe_reg_stride[y][x]);
+                    fifo_arr_stride[y-1][x].write(buf2pe_reg_stride[y][x]);
                     //std::cout << "write x: " << x << ", y: " << y << std::endl;
                 }
             }
@@ -268,7 +268,7 @@ void BUF2PE_stride(
             #pragma HLS unroll
             for (int x = 0; x < POX*s+1; x++) {
                 // first row of input buffer
-                buf2pe_reg_stride[0][x] = input_buffer[db_idx][0][x];
+                buf2pe_reg_stride[0][x] = input_buffer_stride[db_idx][0][x];
             }
         }
         // last register gets new val. rest values are fed from adjacent reg
@@ -277,7 +277,7 @@ void BUF2PE_stride(
             for (int x = 0; x < POX*s; x++) {
                 buf2pe_reg_stride[0][x] = buf2pe_reg_stride[0][x+1];
             }
-            buf2pe_reg_stride[0][POX*s] = input_buffer[db_idx][0][POX*s+cnt];
+            buf2pe_reg_stride[0][POX*s] = input_buffer_stride[db_idx][0][POX*s+cnt];
         }
         // reg values are fed from adjacent reg
         else if (cnt == nkx-1) {
@@ -290,7 +290,7 @@ void BUF2PE_stride(
         if (cnt >= nkx) {
             #pragma HLS unroll
             for (int x = 0; x < POX*s; x++) {
-                buf2pe_reg_stride[0][x] = fifo_arr[0][x].read();
+                buf2pe_reg_stride[0][x] = fifo_arr_stride[0][x].read();
             }
         }
 
@@ -299,7 +299,7 @@ void BUF2PE_stride(
         for (int y = 0; y < POY; y++) {
             #pragma HLS unroll
             for (int x = 0; x < s; x++) {
-                mac_in_fifo_arr[y][x].write(buf2pe_reg_stride[y*s][x*s]);
+                mac_in_fifo_arr_stride[y][x].write(buf2pe_reg_stride[y*s][x*s]);
             }
         }
     }
