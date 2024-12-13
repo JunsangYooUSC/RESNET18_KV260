@@ -282,7 +282,7 @@ void BUF2PE_stride(
         // reg values are fed from adjacent reg
         else if (cnt == nkx-1) {
             #pragma HLS unroll
-            for (int x = 0; x < POX*scanf; x++) {
+            for (int x = 0; x < POX*s; x++) {
                 buf2pe_reg_stride[0][x] = buf2pe_reg_stride[0][x+1];
             }
         }
