@@ -299,7 +299,7 @@ void BUF2PE_stride(
         for (int y = 0; y < POY; y++) {
             #pragma HLS unroll
             for (int x = 0; x < s; x++) {
-                mac_in_fifo_arr_stride[y][x].write(buf2pe_reg_stride[y*s][x*s]);
+                mac_in_fifo_arr[y][x].write(buf2pe_reg_stride[y*s][x*s]);
             }
         }
     }
@@ -372,6 +372,8 @@ void kernel_func(DTYPE_ACT *in_host,
     // DTYPE_ACT input_buffer[2*INPUT_BUFFER_SIZE];
     DTYPE_ACT input_buffer[2][POY+PAD*2][POX+PAD*2];
     #pragma HLS BIND_STORAGE variable=input_buffer type=register
+    DTYPE_ACT input_buffer_stride[2][POY*MAX_STRIDE+PAD*2][POX*MAX_STRIDE+PAD*2];
+    #pragma HLS BIND_STORAGE variable=input_buffer_stride type=register
     DTYPE_FIL filter_buffer[2*FILTER_BUFFER_SIZE];
     #pragma HLS BIND_STORAGE variable=filter_buffer type=register
     DTYPE_ACT output_buffer[2*OUTPUT_BUFFER_SIZE];
