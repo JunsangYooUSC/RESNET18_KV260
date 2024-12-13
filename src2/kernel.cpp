@@ -273,8 +273,8 @@ void kernel_func(DTYPE_ACT *in_host,
     unsigned int db_read = 1;
     for (int idx = 0; idx < NOY/POY; idx++) {
         for (int jdx = 0; jdx < NOX/POX; jdx++) {
-            load_input_buffer_stride(input_buffer_stride, act_mem, 0, idx*POY, jdx*POX, POY+PAD*2, POX+PAD*2, db_write);
-            BUF2PE_stride(input_buffer_stride, mac_in_fifo_arr, NKX, NKY, total_loops, STRIDE, db_read);
+            load_input_buffer_stride(input_buffer_stride, act_mem, 0, idx*POY, jdx*POX, POY+PAD*2, POX+PAD*2, 0, 0);
+            BUF2PE_stride(input_buffer_stride, mac_in_fifo_arr, NKX, NKY, total_loops, STRIDE, 0);
         }
     }
     for (int idx = 0; idx < NOY/POY; idx++) {
