@@ -241,7 +241,7 @@ void kernel_func(DTYPE_ACT *in_host,
 
     // load input buffer
     // load_input_buffer(input_buffer, act_mem, 0, 0, 0, 0);
-    load_input_buffer_stride(input_buffer_stride, act_mem, 0, 0, 0, POY*MAX_STRIDE+PAD*2, POX*MAX_STRIDE+PAD*2, 0);
+    load_input_buffer_stride(input_buffer_stride, act_mem, 0, 0, 0, POY+PAD*2, POX+PAD*2, 0);
     
     // DTYPE_ACT step = 1;
     // step = step >> 8;
