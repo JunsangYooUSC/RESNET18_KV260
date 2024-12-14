@@ -270,7 +270,7 @@ void load_weight_fifo(
 ) {
     DTYPE_FIL filter_buffer[2][POF][NKY][NKX];  // todo: use double buffer
 
-    for (int f_out = 0; f_out < nof; f_out += POF) {
+    for (int f_out = 0; f_out < nof+1; f_out += POF) {
         for (int f_in = 0; f_in < nif; f_in++){
             // load filter_buffer
             for (int f = 0; f < POF; f++) {
