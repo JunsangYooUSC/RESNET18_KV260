@@ -317,7 +317,7 @@ void store_output_fifo(
                 for (int f = 0; f < POF; f++) {
                     for (int y = 0; y < POY; y++) {
                         for (int x = 0; x < POX; x++) {
-                            output_buffer[0][f][y][x] = out_fifo_arr[f][y][x];
+                            output_buffer[0][f][y][x] = out_fifo_arr[f][y][x].read();
                         }
                     }
                 }
