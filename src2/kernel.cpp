@@ -29,7 +29,7 @@
 
 // kernel function
 void kernel_func(DTYPE_ACT *in_host,
-                DTYPE_FIL *filter_offchip,
+                DTYPE_FIL *filter_host,
                 DTYPE_ACT *out_host
 ) {
     // on-chip buffers
@@ -46,6 +46,7 @@ void kernel_func(DTYPE_ACT *in_host,
     // on-chip memory
     DTYPE_MEM act_mem[2][ACT_MEM_SIZE];
     #pragma HLS bind_storage variable=act_mem impl=uram
+    DTYPE_FIL fil_mem[FIL_MEM_SIZE];
     // DTYPE_MEM fil_mem[2][FIL_MEM_SIZE];
     // #pragma HLS bind_storage variable=fil_mem impl=bram
 
@@ -61,6 +62,7 @@ void kernel_func(DTYPE_ACT *in_host,
     // dummy_fill_input_buffer(input_buffer);
 
     std::cout << "in_host[0]: " << in_host[0] << std::endl;
+
     // load in_host to act_mem
     DTYPE_MEM block;
     for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
@@ -69,6 +71,11 @@ void kernel_func(DTYPE_ACT *in_host,
         if (idx2 == MEM_PACK-1) {
             act_mem[0][idx/MEM_PACK] = block;
         }
+    }
+
+    // load filter_host to fil_mem
+    for (int idx = 0; idx < TOTAL_FIL_LEN; idx++) {
+        fil_mem[idx] = filter_host[idx];
     }
 
     unsigned int nky = NKY;
@@ -83,7 +90,7 @@ void kernel_func(DTYPE_ACT *in_host,
 
     BUF2PE_stride(act_mem, mac_in_fifo_arr,
             nky, nkx, nof, nif, noy, nox, s, pad, 0);
-    load_weight_fifo(filter_offchip, weight_in_fifo_arr,
+    load_weight_fifo(fil_mem, weight_in_fifo_arr,
             nky, nkx, nof, nif, noy, nox);
     // PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
     //         nky, nkx, nof, nif, noy, nox);
