@@ -131,12 +131,21 @@ int main(){
 		in_fil_host_float[idx] = in_fil_host[idx];
 	}
 
+	// input debug
 	for (int idx = 0; idx < POY*STRIDE+PAD*2; idx++) {
 		for (int jdx = 0; jdx < POX*STRIDE+PAD*2; jdx++) {
 			unsigned int act_idx = 0*NIY*NIX+idx*NIX+jdx;
 			std::cout << std::setw(5) << (in_act_host[act_idx] << 8) << " ";
 		}
 		std::cout << std::endl;
+	}
+	// weight debug
+	unsigned int fi = 0;
+	for (int fo = 0; fo < POY; fo++) {
+		unsigned int idx = NKY-1;
+		unsigned int jdx = NKX-1;
+		unsigned int fil_idx = fo*NIF*NKY*NKX + fi*NKY*NKX + idx*NKX + jdx;
+		std::cout << std::setw(5) << (in_fil_host[fil_idx] << 8) << " ";
 	}
 
 	// golden convolution result with fixed point and float
