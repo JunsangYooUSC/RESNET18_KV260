@@ -78,7 +78,7 @@ void kernel_func(DTYPE_ACT *in_host,
     unsigned int nof = NOF;
     unsigned int nif = NIF;
     unsigned int noy = NOY;
-    unsigned int noy = NOX;    
+    unsigned int nox = NOX;    
     unsigned int s = 1;
     unsigned int pad = PAD;
     

@@ -43,6 +43,7 @@ void PE(
 
     for (int i = 0; i < (nof*noy*nox/POF/POY/POX); i++) {
         // initialize mac
+        #pragma HLS unroll
         for (int f = 0; f < POF; f++) {
             for (int y = 0; y < POY; y++) {
                 for (int x = 0; x < POX; x++) {
@@ -117,19 +118,15 @@ void BUF2PE_stride(
                     unsigned int act_mem_base_idx = f_in*noy*s*nox*s + y0*nox*s + x0;
                     for (int y = 0; y < POY*s+pad*2; y++) {
                         for (int x = 0; x < POX*s+pad*2; x++) {
-                            // zero padding
-                            if ( (y0 + y < pad) || (y0 + y >= noy*s + pad) || (x0 + x < pad) || (x0 + x >= nox*s + pad) ) {
-                                input_buffer_stride[0][y][x] = 0;
-                            }
-                            else {
-                                unsigned int mem_idx = act_mem_base_idx + y * nox*s + x;
-                                unsigned int idx1 = mem_idx / MEM_PACK;
-                                unsigned int idx2 = mem_idx % MEM_PACK;
-                                DTYPE_MEM block = act_mem[0][idx1];
-                                DTYPE_ACT data;
-                                data.range() = block.range(W_ACT*(idx2+1)-1,W_ACT*idx2);
-                                input_buffer_stride[0][y][x] = data;
-                            }
+                            // zero padding cond
+                            bool zero_pad_cond = (y0 + y < pad) || (y0 + y >= noy*s + pad) || (x0 + x < pad) || (x0 + x >= nox*s + pad);
+                            unsigned int mem_idx = act_mem_base_idx + y * nox*s + x;
+                            unsigned int idx1 = mem_idx / MEM_PACK;
+                            unsigned int idx2 = mem_idx % MEM_PACK;
+                            DTYPE_MEM block = act_mem[0][idx1];
+                            DTYPE_ACT data;
+                            data.range() = block.range(W_ACT*(idx2+1)-1,W_ACT*idx2);
+                            input_buffer_stride[0][y][x] = (zero_pad_cond) ? 0 : data;
                         }
                     }
                     // intra input tile
@@ -279,7 +276,7 @@ void load_weight_fifo(
             for (int f = 0; f < POF; f++) {
                 for (int y = 0; y < nky; y++) {
                     for (int x = 0; x < nkx; x++) {
-                        unsigned int fil_idx = (f+f_out)*nif*noy*nox + f_in*noy*nox y*nox + x;
+                        unsigned int fil_idx = (f+f_out)*nif*noy*nox + f_in*noy*nox + y*nox + x;
                         filter_buffer[0][f][y][x] = offchip_fil[fil_idx];
                     }
                 }
