@@ -308,7 +308,7 @@ void store_output_fifo(
     unsigned int nox,
     unsigned int db_mem     // double bufferingn index
 ) {
-    DTYPE_ACT output_buffer[2][POF][POY][POX];            
+    DTYPE_ACT output_buffer[2][POF][POY][POX];
     for (int out_f = 0; out_f < nof; out_f+=POF) {
         for (int y0 = 0; y0 < noy; y0+=POY) {
             for (int x0 = 0; x0 < nox; x0+=POX) {
