@@ -97,6 +97,10 @@ void kernel_func(DTYPE_ACT *in_host,
     store_output_fifo(act_mem, out_fifo_arr,
             nky, nkx, nof, nif, noy, nox, 1);
 
+    DTYPE_ACT val;
+    val.range() = act_mem[1][0].range(W_ACT-1,0)
+	std::cout << "kernel output[0] = " << val[0] << std::endl;
+
     // write out_host from act_mem
     for (int idx = 0; idx < TOTAL_OUT_LEN; idx++) {
         unsigned int idx2 = idx % MEM_PACK;
