@@ -52,9 +52,9 @@ void kernel_func(DTYPE_ACT *in_host,
     // fifo
     hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX];
     #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH
-    hls::stream<DTYPE_ACT> weight_in_fifo_arr[POF];
+    hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF];
     #pragma HLS STREAM variable=weight_in_fifo_arr depth=FIFO_ARR_DEPTH
-    hls::stream<DTYPE_ACT> out_fifo_arr[POF][POY][POX];
+    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX];
     #pragma HLS STREAM variable=out_fifo_arr depth=FIFO_ARR_DEPTH
 
     // dummy function to fill input buffer

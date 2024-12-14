@@ -299,7 +299,7 @@ void load_weight_fifo(
 
 void store_output_fifo(
     DTYPE_MEM act_mem[2][ACT_MEM_SIZE],
-    DTYPE_ACT out_fifo_arr[POF][POY][POX],
+    DTYPE_MAC out_fifo_arr[POF][POY][POX],
     unsigned int nky,
     unsigned int nkx,
     unsigned int nof,
