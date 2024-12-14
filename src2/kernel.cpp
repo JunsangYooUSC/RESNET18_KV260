@@ -71,8 +71,6 @@ void kernel_func(DTYPE_ACT *in_host,
         }
     }
 
-    #pragma HLS DATAFLOW
-
     unsigned int nky = NKY;
     unsigned int nkx = NKX;
     unsigned int nof = NOF;
@@ -85,12 +83,12 @@ void kernel_func(DTYPE_ACT *in_host,
 
     BUF2PE_stride(act_mem, mac_in_fifo_arr,
             nky, nkx, nof, nif, noy, nox, s, pad, 0);
-    load_weight_fifo(filter_offchip, weight_in_fifo_arr,
-            nky, nkx, nof, nif, noy, nox);
-    PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
-            nky, nkx, nof, nif, noy, nox);
-    store_output_fifo(act_mem, out_fifo_arr,
-            nky, nkx, nof, nif, noy, nox, 1);
+    // load_weight_fifo(filter_offchip, weight_in_fifo_arr,
+    //         nky, nkx, nof, nif, noy, nox);
+    // PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
+    //         nky, nkx, nof, nif, noy, nox);
+    // store_output_fifo(act_mem, out_fifo_arr,
+    //         nky, nkx, nof, nif, noy, nox, 1);
 
     // write out_host from act_mem
     for (int idx = 0; idx < TOTAL_OUT_LEN; idx++) {
