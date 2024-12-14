@@ -74,7 +74,7 @@ void kernel_func(DTYPE_ACT *in_host,
     #pragma HLS DATAFLOW
 
     unsigned int nky = NKY;
-    unsigned int nix = NKX;
+    unsigned int nkx = NKX;
     unsigned int nof = NOF;
     unsigned int nif = NIF;
     unsigned int noy = NOY;
