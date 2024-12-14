@@ -76,6 +76,14 @@ void PE(
                 }
             }
         }
+        if ( (i == 0) && (loop == 0) ) {
+            for (int idx = 0; idx < POY; idx++) {
+                for (int jdx = 0; jdx < POX; jdx++) {
+                    std::cout << std::setw(5) << (in_vals[idx][jdx]] << 8) << " ";
+                }
+                std::cout << std::endl;
+            }
+        }
 
         // 
         #pragma HLS unroll
