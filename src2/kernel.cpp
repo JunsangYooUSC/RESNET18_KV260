@@ -92,10 +92,10 @@ void kernel_func(DTYPE_ACT *in_host,
             nky, nkx, nof, nif, noy, nox, s, pad, 0);
     load_weight_fifo(fil_mem, weight_in_fifo_arr,
             nky, nkx, nof, nif, noy, nox);
-    // PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
-    //         nky, nkx, nof, nif, noy, nox);
-    // store_output_fifo(act_mem, out_fifo_arr,
-    //         nky, nkx, nof, nif, noy, nox, 1);
+    PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
+            nky, nkx, nof, nif, noy, nox);
+    store_output_fifo(act_mem, out_fifo_arr,
+            nky, nkx, nof, nif, noy, nox, 1);
 
     // write out_host from act_mem
     for (int idx = 0; idx < TOTAL_OUT_LEN; idx++) {
