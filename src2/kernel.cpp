@@ -83,8 +83,8 @@ void kernel_func(DTYPE_ACT *in_host,
 
     BUF2PE_stride(act_mem, mac_in_fifo_arr,
             nky, nkx, nof, nif, noy, nox, s, pad, 0);
-    // load_weight_fifo(filter_offchip, weight_in_fifo_arr,
-    //         nky, nkx, nof, nif, noy, nox);
+    load_weight_fifo(filter_offchip, weight_in_fifo_arr,
+            nky, nkx, nof, nif, noy, nox);
     // PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
     //         nky, nkx, nof, nif, noy, nox);
     // store_output_fifo(act_mem, out_fifo_arr,
