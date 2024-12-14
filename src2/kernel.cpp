@@ -29,7 +29,7 @@
 
 // kernel function
 void kernel_func(DTYPE_ACT *in_host,
-                DTYPE_ACT *filter_offchip,
+                DTYPE_FIL *filter_offchip,
                 DTYPE_ACT *out_host
 ) {
     // on-chip buffers
