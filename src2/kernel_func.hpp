@@ -135,7 +135,7 @@ void BUF2PE_stride(
                         for (int x = 0; x < POX*s+pad*2; x++) {
                             // zero padding cond
                             bool zero_pad_cond = (y0 + y < pad) || (y0 + y >= noy*s + pad) || (x0 + x < pad) || (x0 + x >= nox*s + pad);
-                            unsigned int mem_idx = act_mem_base_idx + y * nox*s + x;
+                            unsigned int mem_idx = act_mem_base_idx + (y-pad) * nox*s + (x-pad);
                             unsigned int idx1 = mem_idx / MEM_PACK;
                             unsigned int idx2 = mem_idx % MEM_PACK;
                             DTYPE_MEM block = act_mem[0][idx1];
