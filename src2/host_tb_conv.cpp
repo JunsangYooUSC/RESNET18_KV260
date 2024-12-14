@@ -131,13 +131,10 @@ int main(){
 		in_fil_host_float[idx] = in_fil_host[idx];
 	}
 
-	// for (int jdx = 0; jdx < POY*STRIDE+PAD*2) {
-	// 	for (int idx = 0; idx < POX*STRIDE+PAD*2) {
-	for (int jdx = 0; jdx < POY+PAD*2) {
-		for (int idx = 0; idx < POX+PAD*2) {
-			std::cout << "here ";
-			// unsigned int act_idx = 0*NIY*NIX+idx*NIY+jdx;
-			// std::cout << std::setw(5) << (in_act_host[act_idx] << 8) << " ";
+	for (int jdx = 0; jdx < POY*STRIDE+PAD*2; jdx++) {
+		for (int idx = 0; idx < POX*STRIDE+PAD*2; idx++) {
+			unsigned int act_idx = 0*NIY*NIX+idx*NIY+jdx;
+			std::cout << std::setw(5) << (in_act_host[act_idx] << 8) << " ";
 		}
 		std::cout << std::endl;
 	}
