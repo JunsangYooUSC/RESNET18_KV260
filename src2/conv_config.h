@@ -91,8 +91,8 @@ typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
 #define OUTPUT_BUFFER_SIZE  (POF*POX*POY)
 
 #define FIL_MEM_SIZE        POF*NIF*NKX*NKY
-#define MEM_PACK            (64/W_ACT)
-typedef ap_uint<64> DTYPE_MEM;
+#define MEM_PACK            7
+typedef ap_uint<MEM_PACK*W_ACT> DTYPE_MEM;
 constexpr unsigned int ACT_MEM_SIZE = MAX_ACT_SIZE/MEM_PACK;
 
 // BUF2PE vectors
