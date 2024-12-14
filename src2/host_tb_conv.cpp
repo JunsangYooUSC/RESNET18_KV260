@@ -131,12 +131,12 @@ int main(){
 		in_fil_host_float[idx] = in_fil_host[idx];
 	}
 
-	for (int idx = 0; idx < POX*STRIDE+PAD*2) {
-		for (int jdx = 0; jdx < POY*STRIDE+PAD*2) {
-			std::cout << std::setw(5) << (in_act_host[0*NIY*NIX+idx*NIY+jdx] << 8) << " ";
-		}
-		std::cout << std::endl;
-	}
+	// for (int idx = 0; idx < POX*STRIDE+PAD*2) {
+	// 	for (int jdx = 0; jdx < POY*STRIDE+PAD*2) {
+	// 		std::cout << std::setw(5) << (in_act_host[0*NIY*NIX+idx*NIY+jdx] << 8) << " ";
+	// 	}
+	// 	std::cout << std::endl;
+	// }
 
 	// golden convolution result with fixed point and float
 	convolution_golden<DTYPE_ACT, DTYPE_FIL, DTYPE_MUL, DTYPE_MAC>(in_act_host, in_fil_host, out_act_host);
