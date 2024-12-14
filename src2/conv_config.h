@@ -46,7 +46,7 @@
 #define POX                 7
 #define POY                 7
 // #define POF                 16
-#define POF                 4
+#define POF                 2
 // tiling
 #define TKX                 NKX
 #define TKY                 NKY
