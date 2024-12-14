@@ -126,7 +126,7 @@ void BUF2PE_stride(
                             DTYPE_MEM block = act_mem[0][idx1];
                             DTYPE_ACT data;
                             data.range() = block.range(W_ACT*(idx2+1)-1,W_ACT*idx2);
-                            input_buffer_stride[0][y][x] = (zero_pad_cond) ? 0 : data;
+                            input_buffer_stride[0][y][x] = (zero_pad_cond) ? (DTYPE_ACT) 0 : data;
                         }
                     }
                     // intra input tile

@@ -93,7 +93,6 @@ void kernel_func(DTYPE_ACT *in_host,
             nky, nkx, nof, nif, noy, nox, 1);
 
     // write out_host from act_mem
-    DTYPE_MEM block;
     for (int idx = 0; idx < TOTAL_OUT_LEN) {
         unsigned int idx2 = idx % MEM_PACK;
         if (idx%MEM_PACK == 0) {
