@@ -36,7 +36,7 @@
 // #define NOY                 56
 #define NOY                 28
 // #define NOF                 64
-#define NOF                 4
+#define NOF                 8
 #define NIX                 NOX*STRIDE
 #define NIY                 NOY*STRIDE
 // parallel
@@ -46,7 +46,7 @@
 #define POX                 7
 #define POY                 7
 // #define POF                 16
-#define POF                 2
+#define POF                 4
 // tiling
 #define TKX                 NKX
 #define TKY                 NKY

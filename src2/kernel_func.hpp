@@ -79,13 +79,15 @@ void PE(
             // for debug
             if ( (i == 0) && (loop == 0) ) {
                 // input debug
+            	std::cout << "input debug\n";
                 for (int idx = 0; idx < POY; idx++) {
                     for (int jdx = 0; jdx < POX; jdx++) {
                         std::cout << std::setw(5) << (in_vals[idx][jdx] << 8) << " ";
                     }
                     std::cout << std::endl;
                 }
-                // output debug
+                // filter debug
+            	std::cout << "filter debug\n";
                 for (int idx = 0; idx < POF; idx++) {
                     std::cout << std::setw(5) << (fil_vals[idx] << 8) << " ";
                 }
