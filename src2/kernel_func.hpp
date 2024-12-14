@@ -54,16 +54,19 @@ void PE(
 
         for (int loop = 0; loop < nky*nkx*nif; loop++) {
             // read input
+            #pragma HLS unroll
             for (int y = 0; y < POY; y++) {
                 for (int x = 0; x < POX; x++) {
                     in_vals[y][x] = mac_in_fifo_arr[y][x].read();
                 }
             }
             // read weight
+            #pragma HLS unroll
             for (int f = 0; f < POF; f++) {
                 fil_vals[f] = weight_in_fifo_arr[f].read();
             }
             // compute
+            #pragma HLS unroll
             for (int f = 0; f < POF; f++) {
                 for (int y = 0; y < POY; y++) {
                     for (int x = 0; x < POX; x++) {
@@ -75,6 +78,7 @@ void PE(
         }
 
         // 
+        #pragma HLS unroll
         for (int f = 0; f < POF; f++) {
             for (int y = 0; y < POY; y++) {
                 for (int x = 0; x < POX; x++) {
