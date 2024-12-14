@@ -36,7 +36,7 @@
 // #define NOY                 56
 #define NOY                 28
 // #define NOF                 64
-#define NOF                 8
+#define NOF                 4
 #define NIX                 NOX*STRIDE
 #define NIY                 NOY*STRIDE
 // parallel
