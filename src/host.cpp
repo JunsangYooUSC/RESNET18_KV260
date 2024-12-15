@@ -24,29 +24,39 @@
 
 // Function: golden convolution
 template<typename D_ACT, typename D_FILTER, typename D_MULT, typename D_MAC>
-void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act) {
+void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act,
+	unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox,
+	unsigned int stride,
+	unsigned int pad
+) {
 	// create output MAC and initialize to 0
-	D_MAC out_act_mac[TOTAL_OUT_LEN];
-	for (int idx = 0; idx < TOTAL_OUT_LEN; idx++) {
+	D_MAC out_act_mac[nof*noy*nox];
+	for (int idx = 0; idx < nof*noy*nox; idx++) {
 		out_act_mac[idx] = 0;
 	}
-	
-	for (int kdx = 0; kdx < NIF; kdx++) {
-		for (int ndx = 0; ndx < NIY; ndx += STRIDE) {
-			for (int mdx = 0; mdx < NIX; mdx += STRIDE) {
-				for (int cdx = 0; cdx < NOF; cdx++) {
-					for (int hdx = 0; hdx < NKY; hdx++) {
-						for (int wdx = 0; wdx < NKX; wdx++) {
+	unsigned int nix = nox*s;
+	unsigned int niy = noy*s;
+	for (int kdx = 0; kdx < nif; kdx++) {
+		for (int ndx = 0; ndx < niy; ndx += stride) {
+			for (int mdx = 0; mdx < nix; mdx += stride) {
+				for (int cdx = 0; cdx < nof; cdx++) {
+					for (int hdx = 0; hdx < nky; hdx++) {
+						for (int wdx = 0; wdx < nkx; wdx++) {
 
 							D_ACT in_act_element;
 							// when accessing zero padded index
-							if ( (ndx + hdx < PAD) || (ndx + hdx >= NIY + PAD) || (mdx + wdx < PAD) || (mdx + wdx >= NIX + PAD) ) {
+							if ( (ndx + hdx < pad) || (ndx + hdx >= niy + pad) || (mdx + wdx < pad) || (mdx + wdx >= nix + pad) ) {
 								in_act_element = 0;
 							}
 							else {
 								// input address calc
-								unsigned int in_addr = kdx * NIY * NIX;
-								in_addr += (ndx + hdx - PAD) * NIX + (mdx + wdx - PAD);
+								unsigned int in_addr = kdx * niy * nix;
+								in_addr += (ndx + hdx - pad) * nix + (mdx + wdx - pad);
 								// load input
 								in_act_element = in_act[in_addr];
 								if (in_addr >= TOTAL_IN_LEN) {
@@ -55,13 +65,13 @@ void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act) {
 							}
 
 							// filter address calc
-							unsigned int filter_addr = cdx * NIF * NKY * NKX;
-							filter_addr += kdx * NKY * NKX;
-							filter_addr += hdx * NKX;
+							unsigned int filter_addr = cdx * nif * nky * nkx;
+							filter_addr += kdx * nky * nkx;
+							filter_addr += hdx * nkx;
 							filter_addr += wdx;
 							// load filter
 							D_FILTER in_fil_element = in_fil[filter_addr];
-							if (filter_addr >= TOTAL_FIL_LEN) {
+							if (filter_addr >= nof*nif*nky*nkx) {
 								std::cout << "filter index out-of-bounds: " << filter_addr << std::endl;
 							}
 
@@ -69,9 +79,9 @@ void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act) {
 							D_MULT mult_element = in_act_element * in_fil_element;
 
 							// output address calc
-							unsigned int out_addr = cdx * NOY * NOX;
-							out_addr += ndx / STRIDE * NOX + mdx / STRIDE;
-							if (out_addr >= TOTAL_OUT_LEN) {
+							unsigned int out_addr = cdx * noy * nox;
+							out_addr += ndx / stride * nox + mdx / stride;
+							if (out_addr >= nof*noy*nox) {
 								std::cout << "fioutputlter index out-of-bounds: " << out_addr << std::endl;
 							}
 							// load output mac
@@ -83,7 +93,7 @@ void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act) {
 		}
 	}
 
-	for (int idx = 0; idx < TOTAL_OUT_LEN; idx++) {
+	for (int idx = 0; idx < nof*noy*nox; idx++) {
 		out_act[idx] = out_act_mac[idx];
 	}
 }
@@ -95,9 +105,6 @@ int main(){
 	print_conv_config();
 	print_data_types();
 	// Assertion to check the configuration
-	assert((NIX % STRIDE == 0) && "Input width should be divisible by stride");
-	assert((NIY / STRIDE == NOY) && "IN_HEIGHT/STRIDE should be same as OUT_HEIGHT");
-	assert((NIX / STRIDE == NOX) && "IN_WIDTH/STRIDE should be same as OUT_WIDTH");
 #endif
 	DTYPE_FIL *weight_mem;		// todo: weight packing
 	float *bn_weight_mem;
