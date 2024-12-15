@@ -110,8 +110,11 @@ int main(){
 	print_data_types();
 	// Assertion to check the configuration
 #endif
-	DTYPE_FIL *weight_mem;		// todo: weight packing
-	float *bn_weight_mem;
+	// DTYPE_FIL *weight_mem;		// todo: weight packing
+	// float *bn_weight_mem;
+
+	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
+	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
 
     char currentDir[255];
     if (getcwd(currentDir, sizeof(currentDir)) != nullptr) {
