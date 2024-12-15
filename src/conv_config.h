@@ -26,6 +26,11 @@
 #include <cmath>
 #include <cassert>
 
+// *****************************************
+// simulation settings vs synthesis settings
+#define SIM_MODE            1
+// *****************************************
+
 // kernel parallel parameters
 #define PKX                 1
 #define PKY                 1
@@ -40,10 +45,17 @@
 #define ACT_PACK            7
 
 // Bit widths
+#if SIM_MODE
+constexpr unsigned W_ACT = 16;
+constexpr unsigned I_ACT = 8;
+constexpr unsigned W_FIL = 16;
+constexpr unsigned I_FIL = 8;
+#else
 constexpr unsigned W_ACT = 8;
 constexpr unsigned I_ACT = 3;
 constexpr unsigned W_FIL = 8;
 constexpr unsigned I_FIL = 1;
+#endif
 constexpr unsigned W_MUL = (W_ACT + W_FIL);
 constexpr unsigned I_MUL = (I_ACT + I_FIL);
 constexpr unsigned W_MAC = 32;
@@ -430,8 +442,11 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB6_CONV2_OUT_MEM       1
 #define BB6_CONV2_SKIP_MEM      3
 // BB6_SKIP 
-// #define BB6_SKIP_C              16
+#if SIM_MODE
+#define BB6_SKIP_C              16
+#else
 #define BB6_SKIP_C              256
+#endif
 #define BB6_SKIP_H              14
 #define BB6_SKIP_W              14
 #define BB6_SKIP_K              0
@@ -449,8 +464,11 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB6_SKIP_SKIP_MEM       2
 
 // BB7_CONV1    
-// #define BB7_CONV1_C             32
+#if SIM_MODE
+#define BB7_CONV1_C             32
+#else
 #define BB7_CONV1_C             512
+#endif
 #define BB7_CONV1_H             7
 #define BB7_CONV1_W             7
 #define BB7_CONV1_K             3
@@ -471,7 +489,11 @@ constexpr unsigned BB7_CONV1_CONV_WEIGHT_SIZE = BB6_SKIP_C * BB7_CONV1_C * BB7_C
 constexpr unsigned BB7_CONV1_BN_WEIGHT_BASE = 0;
 constexpr unsigned BB7_CONV1_BN_WEIGHT_SIZE = 4 * BB7_CONV1_C;
 // BB7_CONV2    
+#if SIM_MODE
+#define BB7_CONV2_C             32
+#else
 #define BB7_CONV2_C             512
+#endif
 #define BB7_CONV2_H             7
 #define BB7_CONV2_W             7
 #define BB7_CONV2_K             3
@@ -492,7 +514,11 @@ constexpr unsigned BB7_CONV2_CONV_WEIGHT_SIZE = BB7_CONV1_C * BB7_CONV2_C * BB7_
 constexpr unsigned BB7_CONV2_BN_WEIGHT_BASE = BB7_CONV1_BN_WEIGHT_BASE + BB7_CONV1_BN_WEIGHT_SIZE;
 constexpr unsigned BB7_CONV2_BN_WEIGHT_SIZE = 4 * BB7_CONV2_C;
 // BB7_SKIP 
+#if SIM_MODE
+#define BB7_SKIP_C              32
+#else
 #define BB7_SKIP_C              512
+#endif
 #define BB7_SKIP_H              7
 #define BB7_SKIP_W              7
 #define BB7_SKIP_K              1
@@ -605,9 +631,9 @@ constexpr unsigned BB7_SKIP_BN_WEIGHT_SIZE = 4 * BB7_CONV2_C;
 constexpr unsigned MEM0_SIZE = CONV1_C  * CONV1_H * CONV1_W / POX;
 constexpr unsigned MEM1_SIZE = MAXPOOL_C  * MAXPOOL_H * MAXPOOL_W / POX;
 constexpr unsigned MEM2_SIZE = BB1_CONV2_C  * BB1_CONV2_H * BB1_CONV2_W / POX;
-// constexpr unsigned WEIGHT_MEM_SIZE = 5000000;  // todo: temporary for now
-constexpr unsigned WEIGHT_MEM_SIZE = BB7_SKIP_WEIGHT_BASE;  // todo: temporary for now
+constexpr unsigned WEIGHT_MEM_SIZE = 500000;  // todo: temporary for now
+// constexpr unsigned WEIGHT_MEM_SIZE = BB7_SKIP_WEIGHT_BASE;  // todo: temporary for now
 
-// constexpr unsigned BN_WEIGHT_MEM_SIZE = 1000000;
-constexpr unsigned BN_WEIGHT_MEM_SIZE = BB7_SKIP_BN_WEIGHT_BASE;
+constexpr unsigned BN_WEIGHT_MEM_SIZE = 500000;
+// constexpr unsigned BN_WEIGHT_MEM_SIZE = BB7_SKIP_BN_WEIGHT_BASE;
 #endif
