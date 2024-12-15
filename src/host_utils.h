@@ -27,22 +27,12 @@
 // print_conv_config: function to print current convolutional layer configuration
 void print_conv_config() {
     // std::cout << std::string(20, '-') << "input layer information" << std::string(20, '-') << std::endl;
-    std::cout << "NKX:        " << NKX << std::endl;
-    std::cout << "NKY:        " << NKY << std::endl;
-    std::cout << "NIF:        " << NIF << std::endl;
-    std::cout << "NOX:        " << NOX << std::endl;
-    std::cout << "NOY:        " << NOY << std::endl;
-    std::cout << "NOF:        " << NOF << std::endl;
-    
     std::cout << "PKX:        " << PKX << std::endl;
     std::cout << "PKY:        " << PKY << std::endl;
     std::cout << "PIF:        " << PIF << std::endl;
     std::cout << "POX:        " << POX << std::endl;
     std::cout << "POY:        " << POY << std::endl;
     std::cout << "POF:        " << POF << std::endl;
-    
-    std::cout << "PAD:        " << PAD << std::endl;
-    std::cout << "STRIDE:     " << STRIDE << std::endl;
 }
 
 // print_data_types: print information about defined data types

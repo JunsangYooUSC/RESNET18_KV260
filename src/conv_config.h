@@ -63,7 +63,7 @@ typedef ap_uint<ACT_PACK*W_ACT> DTYPE_MEM_ACT;
 typedef ap_uint<WEIGHT_PACK*W_FIL> DTYPE_MEM_WEIGHT;
 
 // BUF2PE vectors
-constexpr unsigned int FIFO_ARR_DEPTH = NKX*NKY*2;
+constexpr unsigned int FIFO_ARR_DEPTH = 3*3*2;
 
 // layer sizes
 // input
