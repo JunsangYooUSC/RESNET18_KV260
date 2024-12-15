@@ -164,8 +164,12 @@ void kernel_func(DTYPE_ACT *in_host,
                                         DTYPE_ACT val2 = in_fifo_arr[y][x].read();
                                         if (val1 != val2) {
                                             std::cout << "f_in: " << std::setw(5) << f_in << " ";
-                                            std::cout << "y: " << std::setw(5) << y0+y+i << " ";
-                                            std::cout << "x: " << std::setw(5) << x0+x+j << " ";
+                                            std::cout << "y0: " << std::setw(5) << y0 << " ";
+                                            std::cout << "y: " << std::setw(5) << y << " ";
+                                            std::cout << "i: " << std::setw(5) << i << " ";
+                                            std::cout << "x0: " << std::setw(5) << x0 << " ";
+                                            std::cout << "x: " << std::setw(5) << x << " ";
+                                            std::cout << "j: " << std::setw(5) << j << " ";
                                             std::cout << "val1: " << std::setw(5) << (val1<<8) << " ";
                                             std::cout << "val2: " << std::setw(5) << (val2<<8) << std::endl;
                                         }
