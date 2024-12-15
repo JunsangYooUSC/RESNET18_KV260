@@ -133,10 +133,9 @@ void BUF2PE_stride(
     #pragma HLS STREAM variable=fifo_arr_stride depth=FIFO_ARR_DEPTH
     
     for (int f_out = 0; f_out < nof; f_out += POF) {
-        for (int f_in = 0; f_in < nif; f_in ++) {
-            // inter input tile
-            for (int y0 = 0; y0 < noy; y0 += POY) {
-                for (int x0 = 0; x0 < nox; x0 += POX) {
+        for (int y0 = 0; y0 < noy; y0 += POY) {
+            for (int x0 = 0; x0 < nox; x0 += POX) {
+                for (int f_in = 0; f_in < nif; f_in ++) {
                     // load input buffer
                     unsigned int act_mem_base_idx = f_in*noy*s*nox*s + y0*nox*s + x0;
                     for (int y = 0; y < POY*s+pad*2; y++) {
