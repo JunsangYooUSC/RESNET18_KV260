@@ -285,7 +285,7 @@ void BUF2PE_stride(
 }
 
 void load_weight_fifo(
-    DTYPE_FIL *offchip_fil,
+    DTYPE_FIL fil_mem[idx],
     hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF],
     unsigned int nky,
     unsigned int nkx,
