@@ -147,8 +147,8 @@ void kernel_func(DTYPE_ACT *in_host,
                                             std::cout << "f_in: " << std::setw(5) << f_in << " ";
                                             std::cout << "y: " << std::setw(5) << y0+y+i << " ";
                                             std::cout << "x: " << std::setw(5) << x0+x+j << " ";
-                                            std::cout << "val1: " << std::setw(5) << val1 << " ";
-                                            std::cout << "val2: " << std::setw(5) << val2 << std::endl;
+                                            std::cout << "val1: " << std::setw(5) << (val1<<8) << " ";
+                                            std::cout << "val2: " << std::setw(5) << (val2<<8) << std::endl;
                                         }
                                     }
                                 }
