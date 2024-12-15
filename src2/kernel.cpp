@@ -132,7 +132,7 @@ void kernel_func(DTYPE_ACT *in_host,
         }
 		std::cout << std::endl;
     }
-    int debug_cnt;
+    int debug_cnt = 0;
     hls::stream<DTYPE_ACT> in_fifo_arr[POY][POX];
     BUF2PE_stride(act_mem, in_fifo_arr,
             nky, nkx, nof, nif, noy, nox, s, pad, 0);
@@ -146,7 +146,7 @@ void kernel_func(DTYPE_ACT *in_host,
                             for (int x = 0; x < PIX; x+=STRIDE) {
                                 for (int i = 0; i < NKY; i++) {
                                     for (int j = 0; j < NKX; j++){
-                                        debug_cnt++
+                                        debug_cnt++;
                                         unsigned int yidx = y0 + y + i;
                                         unsigned int xidx = x0 + x + j;
                                         DTYPE_ACT val1;
