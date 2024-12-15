@@ -46,13 +46,12 @@ constexpr unsigned W_FIL = 8;
 constexpr unsigned I_FIL = 1;
 constexpr unsigned W_MUL = (W_ACT + W_FIL);
 constexpr unsigned I_MUL = (I_ACT + I_FIL);
-constexpr unsigned W_MAC = (W_MUL + MAC_EXTRA_BITS);
-constexpr unsigned I_MAC = (I_MUL + MAC_EXTRA_BITS);
-// Calculation of extra bit widths for MAC is done at compile time
-constexpr unsigned log2_ceil(unsigned int n) {
-    return (n <= 1) ? 0 : 1 + log2_ceil((n + 1) / 2);
-}
-constexpr unsigned MAC_EXTRA_BITS = log2_ceil(NOF * NIF * NOX * NOY) + 1;
+constexpr unsigned W_MAC = 32;
+constexpr unsigned I_MAC = 16;
+// constexpr unsigned log2_ceil(unsigned int n) {
+//     return (n <= 1) ? 0 : 1 + log2_ceil((n + 1) / 2);
+// }
+// constexpr unsigned MAC_EXTRA_BITS = log2_ceil(NOF * NIF * NOX * NOY) + 1;
 
 // Data type definition
 typedef ap_fixed<W_ACT, I_ACT> DTYPE_ACT;  // data type used for input / output activation
