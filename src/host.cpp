@@ -125,7 +125,9 @@ int main(){
 	uint8_t *test_mem;
 	// read_bin_fixed<uint8_t>(fname, test_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
-
+	std::cout << "loaded: " << weight_mem[0] << std::endl;
+	std::cout << "loaded: " << weight_mem[1] << std::endl;
+	
 	/*
 	// host-side data
 	DTYPE_ACT in_act_host[TOTAL_IN_LEN];
