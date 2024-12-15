@@ -42,7 +42,7 @@
 // parallel
 #define PKX                 1
 #define PKY                 1
-#define PIF                 1
+#define PIF                 NIF
 #define POX                 7
 #define POY                 7
 // #define POF                 16

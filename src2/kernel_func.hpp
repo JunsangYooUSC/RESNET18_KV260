@@ -296,27 +296,32 @@ void load_weight_fifo(
     unsigned int nox
 
 ) {
-    DTYPE_FIL filter_buffer[2][POF][NKY][NKX];  // todo: use double buffer
-
+    DTYPE_FIL filter_buffer[2][POF][NIF][NKY][NKX];  // todo: use double buffer
     for (int f_out = 0; f_out < nof; f_out += POF) {
-        for (int f_in = 0; f_in < nif; f_in++){
-            // load filter_buffer
-            for (int f = 0; f < POF; f++) {
-                for (int y = 0; y < nky; y++) {
-                    for (int x = 0; x < nkx; x++) {
-                        unsigned int fil_idx = (f+f_out)*nif*noy*nox + f_in*noy*nox + y*nox + x;
-                        filter_buffer[0][f][y][x] = offchip_fil[fil_idx];
+        for (int y0 = 0; y0 < noy; y0+=POY) {
+            for (int x0 = 0; x0 < nox; x0+=POX) {
+                // 
+                if ( (y0 == 0) && (x0 == 0) ) {
+                    for (int f_in = 0; f_in < nif; f_in++){
+                        for (int f = 0; f < POF; f++) {
+                            for (int y = 0; y < nky; y++) {
+                                for (int x = 0; x < nkx; x++) {
+                                    unsigned int fil_idx = (f+f_out)*nif*noy*nox + f_in*noy*nox + y*nox + x;
+                                    filter_buffer[0][f][f_in][y][x] = offchip_fil[fil_idx];
+                                }
+                            }
+                        }
                     }
                 }
-            }
-            // reuse loop times
-            for (int loop = 0; loop < noy*nox/POY/POX; loop++) {
-                for (int y = 0; y < nky; y++) {
-                    for (int x = 0; x < nkx; x++) {
-                        #pragma unroll
-                        load_weight_loop1:
-                        for (int f = 0; f < POF; f++) {
-                            weight_in_fifo_arr[f].write(filter_buffer[0][f][y][x]);
+                // reuse loop times
+                for (int f_in = 0; f_in < nif; f_in++){
+                    for (int y = 0; y < nky; y++) {
+                        for (int x = 0; x < nkx; x++) {
+                            #pragma unroll
+                            load_weight_loop1:
+                            for (int f = 0; f < POF; f++) {
+                                weight_in_fifo_arr[f].write(filter_buffer[0][f][f_in][y][x]);
+                            }
                         }
                     }
                 }
