@@ -110,7 +110,7 @@ int main(){
 	float *bn_weight_mem;
 
 	// load weights
-	read_bin_fixed<DTYPE_FIL>("layer4_0_conv1_weights.bin", weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
+	// read_bin_fixed<DTYPE_FIL>("layer4_0_conv1_weights.bin", weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
 
 	/*
 	// host-side data
