@@ -137,7 +137,7 @@ void BUF2PE_stride(
             for (int x0 = 0; x0 < nox; x0 += POX*s) {
                 for (int f_in = 0; f_in < nif; f_in ++) {
                     // load input buffer
-                    unsigned int act_mem_base_idx = f_in*noy*s*nox*s + y0*nox*s + x0;
+                    // unsigned int act_mem_base_idx = f_in*noy*s*nox*s + y0*nox*s + x0;
                     for (int y = 0; y < POY*s+pad*2; y++) {
                         for (int x = 0; x < POX*s+pad*2; x++) {
                             // zero padding cond
@@ -147,7 +147,7 @@ void BUF2PE_stride(
                                 data = 0;
                             } 
                             else {
-                                unsigned int mem_idx = act_mem_base_idx + (y-pad) * nox*s + (x-pad);
+                                unsigned int mem_idx = f_in*noy*s*nox*s + (y0+y-pad)*nox*s + (x0+x-pad);
                                 unsigned int idx1 = mem_idx / MEM_PACK;
                                 unsigned int idx2 = mem_idx % MEM_PACK;
                                 DTYPE_MEM block = act_mem[0][idx1];
