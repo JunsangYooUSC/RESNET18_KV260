@@ -132,6 +132,7 @@ void kernel_func(DTYPE_ACT *in_host,
         }
 		std::cout << std::endl;
     }
+    int debug_cnt;
     hls::stream<DTYPE_ACT> in_fifo_arr[POY][POX];
     BUF2PE_stride(act_mem, in_fifo_arr,
             nky, nkx, nof, nif, noy, nox, s, pad, 0);
@@ -141,12 +142,15 @@ void kernel_func(DTYPE_ACT *in_host,
                 for (int f_in = 0; f_in < nif; f_in ++) {
                     // parallel
                     //for (int f = 0; f < POF; f++) {
-                        for (int y = 0; y < PIY; y+=STRIDE) {
-                            for (int x = 0; x < PIX; x+=STRIDE) {
-                                for (int i = 0; i < NKY; i++) {
-                                    for (int j = 0; j < NKX; j++){
-                                        unsigned int yidx = y0 + y + i;
-                                        unsigned int xidx = x0 + x + j;
+                        for (int y = 0; y < POY*s+pad*2; y++) {
+                            for (int x = 0; x < POX*s+pad*2; x++) {
+                        // for (int y = 0; y < PIY; y+=STRIDE) {
+                        //     for (int x = 0; x < PIX; x+=STRIDE) {
+                        //         for (int i = 0; i < NKY; i++) {
+                        //             for (int j = 0; j < NKX; j++){
+
+                                        unsigned int yidx = y0 + y;
+                                        unsigned int xidx = x0 + x;
                                         DTYPE_ACT val1;
                                         if ( (yidx < PAD) || (yidx >= NIY+PAD) || (xidx < PAD) || (xidx >= NIX+PAD) ) {
                                             val1 = 0;
@@ -167,10 +171,12 @@ void kernel_func(DTYPE_ACT *in_host,
                                             std::cout << "val1: " << std::setw(5) << (val1<<8) << " ";
                                             std::cout << "val2: " << std::setw(5) << (val2<<8) << std::endl;
                                         }
-                                    }
-                                }
                             }
                         }
+                        //             }
+                        //         }
+                        //     }
+                        // }
                     //}
                 }
             }

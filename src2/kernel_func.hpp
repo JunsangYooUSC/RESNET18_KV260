@@ -131,7 +131,7 @@ void BUF2PE_stride(
     // fifo in fig13 of Optimizing_the_Convolution_Operation_to_Accelerate_Deep_Neural_Networks_on_FPGA
     hls::stream<DTYPE_ACT> fifo_arr_stride[POY*MAX_STRIDE-1][POX*MAX_STRIDE];
     #pragma HLS STREAM variable=fifo_arr_stride depth=FIFO_ARR_DEPTH
-    
+    int debug_cnt = 0;
     for (int f_out = 0; f_out < nof; f_out += POF) {
         for (int y0 = 0; y0 < noy; y0 += POY*s) {
             for (int x0 = 0; x0 < nox; x0 += POX*s) {
@@ -140,6 +140,7 @@ void BUF2PE_stride(
                     // unsigned int act_mem_base_idx = f_in*noy*s*nox*s + y0*nox*s + x0;
                     for (int y = 0; y < POY*s+pad*2; y++) {
                         for (int x = 0; x < POX*s+pad*2; x++) {
+                            debug_cnt++;
                             // zero padding cond
                             bool zero_pad_cond = (y0 + y < pad) || (y0 + y >= noy*s + pad) || (x0 + x < pad) || (x0 + x >= nox*s + pad);
                             DTYPE_ACT data;
@@ -282,6 +283,7 @@ void BUF2PE_stride(
             }
         }
     }
+    std::cout << "kernel in cnt: " << debug_cnt << std::endl;
 }
 
 void load_weight_fifo(
