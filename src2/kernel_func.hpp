@@ -77,7 +77,7 @@ void PE(
             }
 
             // for debug
-            if ( (i == 0) && (loop == 8) ) {
+            if ( (i == (nof*noy*nox/POF/POY/POX)-1) && (loop == nky*nkx*nif-1) ) {
                 // input debug
             	std::cout << "input debug\n";
                 for (int idx = 0; idx < POY; idx++) {

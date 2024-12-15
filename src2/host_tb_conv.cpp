@@ -135,14 +135,15 @@ int main(){
 	std::cout << "input debug host\n";
 	for (int idx = 0; idx < POY*STRIDE; idx+=STRIDE) {
 		for (int jdx = 0; jdx < POX*STRIDE; jdx+=STRIDE) {
-			int y = NKY-1;
-			int x = NKX-1;
+			int f = NIF - 1;
+			int y = NIY - PIY + idx + NKY-1;
+			int x = NIX - PIX + jdx + NKX-1;
 			DTYPE_ACT val;
-			if ( (idx + y< PAD) || (idx + y > NIY + PAD) || (jdx + x < PAD) || (jdx + x > NIX + PAD) ) {
+			if ( (y< PAD) || (y >= NIY + PAD) || (x < PAD) || (x >= NIX + PAD) ) {
 				val = 0;
 			}
 			else {
-				unsigned int act_idx = 0*NIY*NIX+(idx+y-PAD)*NIX+(jdx+x-PAD);
+				unsigned int act_idx = f*NIY*NIX+(y-PAD)*NIX+(x-PAD);
 				val = in_act_host[act_idx];
 			}
 			std::cout << std::setw(5) << (val << 8) << " ";
