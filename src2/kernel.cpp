@@ -113,6 +113,52 @@ void kernel_func(DTYPE_ACT *in_host,
         }
         out_host[idx].range() = block.range(W_ACT*(idx2+1)-1, W_ACT*(idx2));
     }
+
+    // buf2pe test
+    hls::stream<DTYPE_ACT> in_fifo_arr[POY][POX];
+    BUF2PE_stride(act_mem, in_fifo_arr,
+            nky, nkx, nof, nif, noy, nox, s, pad, 0);
+    for (int f_out = 0; f_out < nof; f_out+=POF) {
+        for (int y0 = 0; y0 < noy; y0 += PIY) {
+            for (int x0 = 0; x0 < nox; x0 += PIX) {
+                for (int f_in = 0; f_in < nif; f_in ++) {
+                    // parallel
+                    for (int f = 0; f < POF; f++) {
+                        for (int y = 0; y < PIY; y+=STRIDE) {
+                            for (int x = 0; x < PIX; x+=STRIDE) {
+                                for (int i = 0; i < NKY; i++) {
+                                    for (int j = 0; j < NKX; j++){
+                                        unsigned int yidx = y0 + y + i;
+                                        unsigned int xidx = x0 + x + j;
+                                        DTYPE_ACT val1;
+                                        if ( (yidx < PAD) || (yidx >= NIY+PAD) || (xidx < PAD) || (xidx >= NIX+PAD) ) {
+                                            val1 = 0;
+                                        }
+                                        else {
+                                            int in_mem_idx;
+                                            in_mem_idx = f_in*NIY*NIX + (yidx-PAD)*NIX + (xidx-PAD);
+                                            int idx1 = in_mem_idx / MEM_PACK;
+                                            int idx2 = in_mem_idx % MEM_PACK;
+                                            DTYPE_MEM block = act_mem[0][idx1];
+                                            val1.range() = block.range(W_ACT*(idx2+1)-1, W_ACT*(idx2));
+                                        }
+                                        DTYPE_ACT val2 = in_fifo_arr[y+i][x+i];
+                                        if (val1 != val2) {
+                                            std::cout << "f_in: " << std::setw(5) << f_in << " ";
+                                            std::cout << "y: " << std::setw(5) << y0+y+i << " ";
+                                            std::cout << "x: " << std::setw(5) << x0+x+j << " ";
+                                            std::cout << "val1: " << std::setw(5) << val1 << " ";
+                                            std::cout << "val2: " << std::setw(5) << val2 << std::endl;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 #endif
