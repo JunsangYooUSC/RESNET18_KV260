@@ -232,7 +232,6 @@ void BUF2PE_stride(
                                 for (int x = 0; x < POX*s; x++) {
                                     fifo_arr_stride[y-1][x].write(buf2pe_reg_stride[y][x]);
                                     //std::cout << "write x: " << x << ", y: " << y << std::endl;
-                                    debug_cnt++;
                                 }
                             }
                         }
@@ -275,6 +274,7 @@ void BUF2PE_stride(
                             #pragma HLS unroll
                             for (int x = 0; x < POX; x++) {
                                 mac_in_fifo_arr[y][x].write(buf2pe_reg_stride[y*s][x*s]);
+                                debug_cnt++;
                             }
                         }
                     }
