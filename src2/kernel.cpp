@@ -75,7 +75,7 @@ void kernel_func(DTYPE_ACT *in_host,
 
     // load filter_host to fil_mem
     for (int idx = 0; idx < TOTAL_FIL_LEN; idx++) {
-        fil_mem[idx] = 3;
+        fil_mem[idx] = filter_host[idx];
     }
 
     unsigned int nky = NKY;
@@ -84,7 +84,7 @@ void kernel_func(DTYPE_ACT *in_host,
     unsigned int nif = NIF;
     unsigned int noy = NOY;
     unsigned int nox = NOX;    
-    unsigned int s = 1;
+    unsigned int s = STRIDE;
     unsigned int pad = PAD;
     
 
