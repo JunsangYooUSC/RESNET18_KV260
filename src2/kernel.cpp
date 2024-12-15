@@ -62,7 +62,8 @@ void kernel_func(DTYPE_ACT *in_host,
     // dummy_fill_input_buffer(input_buffer);
 
     std::cout << "in_host[0]: " << in_host[0] << std::endl;
-
+    std::cout << "in_host[" << TOTAL_IN_LEN-1 << "]: " << in_host[TOTAL_IN_LEN-1] << std::endl;
+    
     // load in_host to act_mem
     DTYPE_MEM block;
     for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
