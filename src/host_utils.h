@@ -47,7 +47,6 @@ void print_data_types() {
     std::cout << "mult total bits:                  " << W_MUL << std::endl;
     std::cout << "mult integer bits:                " << I_MUL << std::endl;
     std::cout << std::string(20, '-') << "MAC datatype information" << std::string(20, '-') << std::endl;
-    std::cout << "extra bits needed for MAC:        " << MAC_EXTRA_BITS << std::endl;
     std::cout << "MAC total bits:                   " << W_MAC << std::endl;
     std::cout << "MAC integer bits:                 " << I_MAC << std::endl;
 }

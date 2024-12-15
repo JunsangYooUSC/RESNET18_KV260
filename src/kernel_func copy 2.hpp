@@ -101,7 +101,7 @@ void PE(
 void BUF2PE_stride(
     // DTYPE_ACT *input_buffer, 
     // DTYPE_ACT input_buffer_stride[2][POY*MAX_STRIDE+PAD*2][POX*MAX_STRIDE+PAD*2],
-    DTYPE_MEM_ACT *mem,
+    DTYPE_MEM act_mem[2][ACT_MEM_SIZE],
     hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
     unsigned int nky,
     unsigned int nkx,
@@ -110,10 +110,10 @@ void BUF2PE_stride(
     unsigned int noy,
     unsigned int nox,
     unsigned int s,
-    unsigned int pad
+    unsigned int pad,
+    unsigned int db_idx     // double buffering index) 
 ) {
-    unsigned int db_idx = 0;
-    DTYPE_ACT input_buffer_stride[2][POY*MAX_STRIDE+MAX_PAD*2][POX*MAX_STRIDE+MAX_PAD*2];
+    DTYPE_ACT input_buffer_stride[2][POY*MAX_STRIDE+PAD*2][POX*MAX_STRIDE+PAD*2];
     // register R* in fig13 of Optimizing_the_Convolution_Operation_to_Accelerate_Deep_Neural_Networks_on_FPGA
     DTYPE_ACT buf2pe_reg_stride[POY*MAX_STRIDE][POX*MAX_STRIDE+1];
     // #pragma HLS BIND_STORAGE variable=buf2pe_reg type=register
@@ -138,7 +138,7 @@ void BUF2PE_stride(
                                 unsigned int mem_idx = f_in*noy*s*nox*s + (y0+y-pad)*nox*s + (x0+x-pad);
                                 unsigned int idx1 = mem_idx / MEM_PACK;
                                 unsigned int idx2 = mem_idx % MEM_PACK;
-                                DTYPE_MEM block = mem[idx1];
+                                DTYPE_MEM block = act_mem[0][idx1];
                                 data.range() = block.range(W_ACT*(idx2+1)-1,W_ACT*idx2);
                             }
                             input_buffer_stride[0][y][x] = data;
@@ -273,9 +273,8 @@ void BUF2PE_stride(
 }
 
 void load_weight_fifo(
-    DTYPE_FIL mem_fil[FIL_MEM_SIZE],
+    DTYPE_FIL fil_mem[FIL_MEM_SIZE],
     hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF],
-    unsigned int base_addr,
     unsigned int nky,
     unsigned int nkx,
     unsigned int nof,
@@ -295,8 +294,8 @@ void load_weight_fifo(
                             for (int y = 0; y < nky; y++) {
                                 for (int x = 0; x < nkx; x++) {
 #pragma HLS pipeline
-                                    unsigned int fil_idx = base_addr + (f+f_out)*nif*nky*nkx + f_in*nky*nkx + y*nkx + x;
-                                    filter_buffer[0][f][f_in][y][x] = mem_fil[fil_idx];
+                                    unsigned int fil_idx = (f+f_out)*nif*nky*nkx + f_in*nky*nkx + y*nkx + x;
+                                    filter_buffer[0][f][f_in][y][x] = fil_mem[fil_idx];
                                 }
                             }
                         }
@@ -320,14 +319,15 @@ void load_weight_fifo(
 }
 
 void store_output_fifo(
-    DTYPE_MEM_ACT *mem,
+    DTYPE_MEM act_mem[2][ACT_MEM_SIZE],
     hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX],
     unsigned int nky,
     unsigned int nkx,
     unsigned int nof,
     unsigned int nif,
     unsigned int noy,
-    unsigned int nox
+    unsigned int nox,
+    unsigned int db_mem     // double bufferingn index
 ) {
     DTYPE_ACT output_buffer[2][POF][POY][POX];
     for (int out_f = 0; out_f < nof; out_f+=POF) {
@@ -347,86 +347,17 @@ void store_output_fifo(
                 for (int f = 0; f < POF; f++) {
                     for (int y = 0; y < POY; y++) {
 #pragma HLS pipeline
-                        unsigned int mem_idx = ((out_f+f)*noy*nox + (y0+y)*nox + x0) / MEM_PACK;
+                        unsigned int act_mem_idx = ((out_f+f)*noy*nox + (y0+y)*nox + x0) / MEM_PACK;
                         DTYPE_MEM block;
                         for (int x = 0; x < POX; x++) {
                             block.range(W_ACT*(x+1)-1, W_ACT*x) = output_buffer[0][f][y][x].range();
                         }
-                        mem[mem_idx] = block;
+                        act_mem[db_mem][act_mem_idx] = block;
                     }
                 }
             }
         }
     }
-}
-
-/*
-void conv(
-    DTYPE_MEM_ACT *mem_in,
-    DTYPE_FIL *mem_fil,
-    DTYPE_MEM_ACT *mem_out,
-    unsigned int nky,
-    unsigned int nkx,
-    unsigned int nof,
-    unsigned int nif,
-    unsigned int noy,
-    unsigned int nox,
-    unsigned int stride,
-    unsigned int pad,
-    unsigned int en
-) {
-    if (!en) return;
-
-    // fifo
-    hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX];
-    #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH
-    hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF];
-    #pragma HLS STREAM variable=weight_in_fifo_arr depth=FIFO_ARR_DEPTH
-    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX];
-    #pragma HLS STREAM variable=out_fifo_arr depth=FIFO_ARR_DEPTH
-
-// #pragma HLS DATAFLOW
-    BUF2PE_stride(mem_in, mac_in_fifo_arr,
-            nky, nkx, nof, nif, noy, nox, stride, pad);
-    load_weight_fifo(mem_fil, weight_in_fifo_arr,
-            nky, nkx, nof, nif, noy, nox);
-    PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
-            nky, nkx, nof, nif, noy, nox);
-    store_output_fifo(mem_out, out_fifo_arr,
-            nky, nkx, nof, nif, noy, nox);
-
-}
-*/
-
-void conv(
-    DTYPE_MEM_ACT *mem_in,
-    DTYPE_FIL *mem_fil,
-    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX],
-    unsigned int nky,
-    unsigned int nkx,
-    unsigned int nof,
-    unsigned int nif,
-    unsigned int noy,
-    unsigned int nox,
-    unsigned int stride,
-    unsigned int pad,
-    unsigned int en
-) {
-    if (!en) return;
-
-    // fifo
-    hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX];
-    #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH
-    hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF];
-    #pragma HLS STREAM variable=weight_in_fifo_arr depth=FIFO_ARR_DEPTH
-
-// #pragma HLS DATAFLOW
-    BUF2PE_stride(mem_in, mac_in_fifo_arr,
-            nky, nkx, nof, nif, noy, nox, stride, pad);
-    load_weight_fifo(mem_fil, weight_in_fifo_arr,
-            nky, nkx, nof, nif, noy, nox);
-    PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
-            nky, nkx, nof, nif, noy, nox);
 }
 
 #endif

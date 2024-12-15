@@ -12,7 +12,7 @@
 // Declare functions
 void BUF2PE(
     // DTYPE_ACT *input_buffer, 
-    DTYPE_ACT input_buffer[2][POY+PAD*2][POX+PAD*2],
+    DTYPE_ACT input_buffer[2][POY+MAX_PAD*2][POX+MAX_PAD*2],
     hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
     unsigned int nkx,
     unsigned int nky,
@@ -22,7 +22,7 @@ void BUF2PE(
 
 void BUF2PE_stride(
     // DTYPE_ACT *input_buffer, 
-    DTYPE_ACT input_buffer_stride[2][POY*STRIDE+PAD*2][POX*STRIDE+PAD*2],
+    DTYPE_ACT input_buffer_stride[2][POY*MAX_STRIDE+MAX_PAD*2][POX*MAX_STRIDE+MAX_PAD*2],
     hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
     unsigned int nkx,
     unsigned int nky,

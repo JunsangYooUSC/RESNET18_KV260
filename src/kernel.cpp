@@ -60,14 +60,6 @@ void kernel_func(
     #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0
     #pragma HLS INTERFACE mode=s_axilite port=weight_mem bundle=control
 
-    // fifo
-    hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX];
-    #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH
-    hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF];
-    #pragma HLS STREAM variable=weight_in_fifo_arr depth=FIFO_ARR_DEPTH
-    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX];
-    #pragma HLS STREAM variable=out_fifo_arr depth=FIFO_ARR_DEPTH
-
     // interface
     #pragma HLS INTERFACE mode=m_axi port=in_host offset=slave bundle=gmem0
     #pragma HLS INTERFACE mode=m_axi port=out_host offset=slave bundle=gmem0
@@ -75,120 +67,6 @@ void kernel_func(
     #pragma HLS INTERFACE mode=s_axilite port=out_host bundle=control
     #pragma HLS INTERFACE mode=s_axilite port=return bundle=control
 
-    // load input
-    DTYPE_MEM_ACT pack;
-    for (int idx = 0; idx < BB6_SKIP_C * BB6_SKIP_W * BB6_SKIP_H; idx++) {
-        unsigned int idx2 = idx % ACT_PACK;
-        pack.range(W_ACT*(idx2+1)-1, W_ACT*(idx2)) = in_host[idx].range();
-        if (idx2 == ACT_PACK-1) {
-            mem0[idx/ACT_PACK] = pack;
-        }
-    }
-
-    // load filter_host to fil_mem
-    for (int idx = 0; idx < TOTAL_FIL_LEN; idx++) {
-        fil_mem[idx] = filter_host[idx];
-    }
-
-    unsigned int nky = NKY;
-    unsigned int nkx = NKX;
-    unsigned int nof = NOF;
-    unsigned int nif = NIF;
-    unsigned int noy = NOY;
-    unsigned int nox = NOX;    
-    unsigned int s = STRIDE;
-    unsigned int pad = PAD;
-    
-
-// #pragma HLS DATAFLOW
-    BUF2PE_stride(act_mem, mac_in_fifo_arr,
-            nky, nkx, nof, nif, noy, nox, s, pad, 0);
-    load_weight_fifo(fil_mem, weight_in_fifo_arr,
-            nky, nkx, nof, nif, noy, nox);
-    PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
-            nky, nkx, nof, nif, noy, nox);
-    store_output_fifo(act_mem, out_fifo_arr,
-            nky, nkx, nof, nif, noy, nox, 1);
-
-    // DTYPE_ACT val;
-    // val.range() = act_mem[1][0].range(W_ACT-1,0)
-	// std::cout << "kernel output[0] = " << val[0] << std::endl;
-
-    // write out_host from act_mem
-    for (int idx = 0; idx < TOTAL_OUT_LEN; idx++) {
-        unsigned int idx2 = idx % MEM_PACK;
-        if (idx%MEM_PACK == 0) {
-            block = act_mem[1][idx/MEM_PACK];
-        }
-        out_host[idx].range() = block.range(W_ACT*(idx2+1)-1, W_ACT*(idx2));
-    }
-
-    // // buf2pe test
-    // for (int idx = 0; idx < 9; idx++) {
-    //     for (int jdx = 0; jdx < 9; jdx++) {
-	// 		int f = 0;
-	// 		int y = 0 + idx + 0;
-	// 		int x = 0 + jdx + 0;
-	// 		DTYPE_ACT val;
-	// 		if ( (y < PAD) || (y >= NIY + PAD) || (x < PAD) || (x >= NIX + PAD) ) {
-	// 			val = 0;
-	// 		}
-	// 		else {
-	// 			unsigned int act_idx = f*NIY*NIX+(y-PAD)*NIX+(x-PAD);
-	// 			val = in_host[act_idx];
-	// 		}
-	// 		std::cout << std::setw(5) << (val << 8) << " ";
-    //     }
-	// 	std::cout << std::endl;
-    // }
-    // hls::stream<DTYPE_ACT> in_fifo_arr[POY][POX];
-    // BUF2PE_stride(act_mem, in_fifo_arr,
-    //         nky, nkx, nof, nif, noy, nox, s, pad, 0);
-    // for (int f_out = 0; f_out < nof; f_out+=POF) {
-    //     for (int y0 = 0; y0 < noy*s; y0 += PIY) {
-    //         for (int x0 = 0; x0 < nox*s; x0 += PIX) {
-    //             for (int f_in = 0; f_in < nif; f_in ++) {
-    //                 // parallel
-    //                 //for (int f = 0; f < POF; f++) {
-    //                     for (int y = 0; y < PIY; y+=STRIDE) {
-    //                         for (int x = 0; x < PIX; x+=STRIDE) {
-    //                             for (int i = 0; i < NKY; i++) {
-    //                                 for (int j = 0; j < NKX; j++){
-    //                                     unsigned int yidx = y0 + y + i;
-    //                                     unsigned int xidx = x0 + x + j;
-    //                                     DTYPE_ACT val1;
-    //                                     if ( (yidx < PAD) || (yidx >= NIY+PAD) || (xidx < PAD) || (xidx >= NIX+PAD) ) {
-    //                                         val1 = 0;
-    //                                     }
-    //                                     else {
-    //                                         int in_mem_idx;
-    //                                         in_mem_idx = f_in*NIY*NIX + (yidx-PAD)*NIX + (xidx-PAD);
-    //                                         int idx1 = in_mem_idx / MEM_PACK;
-    //                                         int idx2 = in_mem_idx % MEM_PACK;
-    //                                         DTYPE_MEM block = act_mem[0][idx1];
-    //                                         val1.range() = block.range(W_ACT*(idx2+1)-1, W_ACT*(idx2));
-    //                                     }
-    //                                     DTYPE_ACT val2 = in_fifo_arr[y/STRIDE][x/STRIDE].read();
-    //                                     if (val1 != val2) {
-    //                                         std::cout << "f_in: " << std::setw(5) << f_in << " ";
-    //                                         std::cout << "y0: " << std::setw(5) << y0 << " ";
-    //                                         std::cout << "y/STRIDE: " << std::setw(5) << y/STRIDE << " ";
-    //                                         std::cout << "i: " << std::setw(5) << i << " ";
-    //                                         std::cout << "x0: " << std::setw(5) << x0 << " ";
-    //                                         std::cout << "x/STRIDE: " << std::setw(5) << x/STRIDE << " ";
-    //                                         std::cout << "j: " << std::setw(5) << j << " ";
-    //                                         std::cout << "val1: " << std::setw(5) << (val1<<8) << " ";
-    //                                         std::cout << "val2: " << std::setw(5) << (val2<<8) << std::endl;
-    //                                     }
-    //                                 }
-    //                             }
-    //                         }
-    //                     }
-    //                 //}
-    //             }
-    //         }
-    //     }
-    // }
 }
 
 #endif
