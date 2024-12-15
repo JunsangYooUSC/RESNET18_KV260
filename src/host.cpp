@@ -11,6 +11,9 @@
  *     - golden convolution function
  ******************************************************************************/
 
+#include <iostream>
+#include <unistd.h>
+#include <limits.h>
 // Include Vitis HLS headers
 #include "ap_fixed.h"
 // Include C++ headers
@@ -108,6 +111,13 @@ int main(){
 #endif
 	DTYPE_FIL *weight_mem;		// todo: weight packing
 	float *bn_weight_mem;
+
+    char currentDir[255];
+    if (getcwd(currentDir, sizeof(currentDir)) != nullptr) {
+        std::cout << "Current Directory: " << currentDir << std::endl;
+    } else {
+        perror("getcwd() error");
+    }
 
 	// load weights
 	// read_bin_fixed<DTYPE_FIL>("layer4_0_conv1_weights.bin", weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
