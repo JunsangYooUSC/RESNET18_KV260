@@ -114,7 +114,7 @@ int main(){
 	// float *bn_weight_mem;
 
 	// DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
-	// float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
+	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
 
 	// load weights
 	// const std::string fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/layer4_0_conv1_weights.bin";
