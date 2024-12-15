@@ -152,8 +152,8 @@ int main(){
 	}
 	// weight debug
 	std::cout << "filter debug host\n";
-	unsigned int fi = 0;
 	for (int fo = 0; fo < POF; fo++) {
+		unsigned int fi = NIF-1;
 		unsigned int idx = NKY-1;
 		unsigned int jdx = NKX-1;
 		unsigned int fil_idx = fo*NIF*NKY*NKX + fi*NKY*NKX + idx*NKX + jdx;
