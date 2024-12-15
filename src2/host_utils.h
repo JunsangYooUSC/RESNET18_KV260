@@ -41,8 +41,8 @@ void print_conv_config() {
     std::cout << "POY:        " << POY << std::endl;
     std::cout << "POF:        " << POF << std::endl;
     
-    std::cout << "PAD:        " << POF << std::endl;
-    std::cout << "STRIDE:     " << POF << std::endl;
+    std::cout << "PAD:        " << PAD << std::endl;
+    std::cout << "STRIDE:     " << STRIDE << std::endl;
 }
 
 // print_data_types: print information about defined data types
