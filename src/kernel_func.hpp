@@ -306,7 +306,7 @@ void load_weight_fifo(
                         for (int x = 0; x < nkx; x++) {
                             load_weight_loop1:
                             for (int f = 0; f < POF; f++) {
-#pragma unroll
+#pragma HLS unroll
                                 weight_in_fifo_arr[f].write(filter_buffer[0][f][f_in][y][x]);
                             }
                         }
