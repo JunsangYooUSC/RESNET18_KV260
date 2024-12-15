@@ -132,7 +132,7 @@ int main(){
 	}
 
 	// input debug
-	std::cout << "input debug\n";
+	std::cout << "input debug host\n";
 	for (int idx = 0; idx < POY*STRIDE; idx+=STRIDE) {
 		for (int jdx = 0; jdx < POX*STRIDE; jdx+=STRIDE) {
 			DTYPE_ACT val;
@@ -148,13 +148,28 @@ int main(){
 		std::cout << std::endl;
 	}
 	// weight debug
-	std::cout << "filter debug\n";
+	std::cout << "filter debug host\n";
 	unsigned int fi = 0;
 	for (int fo = 0; fo < POF; fo++) {
 		unsigned int idx = NKY-1;
 		unsigned int jdx = NKX-1;
 		unsigned int fil_idx = fo*NIF*NKY*NKX + fi*NKY*NKX + idx*NKX + jdx;
 		std::cout << std::setw(5) << (in_fil_host[fil_idx] << 8) << " ";
+	}
+	std::cout << std::endl;
+	std::cout << "filter debug host all\n";
+	unsigned int fi = 0;
+	for (int fo = 0; fo < POF; fo++) {
+		for (int idx = 0; idx < NKY; idx++) {
+			for (int jdx = 0; jdx < NKX; jdx++) {
+				unsigned int idx = NKY-1;
+				unsigned int jdx = NKX-1;
+				unsigned int fil_idx = fo*NIF*NKY*NKX + fi*NKY*NKX + idx*NKX + jdx;
+				std::cout << std::setw(5) << (in_fil_host[fil_idx] << 8) << " ";
+			}
+			std::cout << std::endl;
+		}
+		std::cout << std::endl;
 	}
 	std::cout << std::endl;
 
