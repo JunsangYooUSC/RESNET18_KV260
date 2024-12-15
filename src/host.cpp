@@ -14,6 +14,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <limits.h>
+#include <string>
 // Include Vitis HLS headers
 #include "ap_fixed.h"
 // Include C++ headers
