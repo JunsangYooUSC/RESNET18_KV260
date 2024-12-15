@@ -121,12 +121,12 @@ int main(){
 	// uint8_t *test_mem;
 	// read_bin_fixed<uint8_t>(fname, test_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
 	// read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
-	// gen_rand<DTYPE_FIL, BB7_CONV1_CONV_WEIGHT_SIZE>(weight_mem+BB7_CONV1_WEIGHT_BASE, -1, 1);
-	// gen_rand<DTYPE_FIL, BB7_CONV2_CONV_WEIGHT_SIZE>(weight_mem+BB7_CONV2_WEIGHT_BASE, -1, 1);
-	// gen_rand<DTYPE_FIL, BB7_SKIP_CONV_WEIGHT_SIZE>(weight_mem+BB7_SKIP_WEIGHT_BASE, -1, 1);
-	// gen_rand<float, BB7_CONV1_BN_WEIGHT_SIZE>(bn_weight_mem+BB7_CONV1_BN_WEIGHT_BASE, -0.5,0.5);
-	// gen_rand<float, BB7_CONV2_BN_WEIGHT_SIZE>(bn_weight_mem+BB7_CONV2_BN_WEIGHT_BASE, -0.5,0.5);
-	// gen_rand<float, BB7_SKIP_BN_WEIGHT_SIZE>(bn_weight_mem+BB7_SKIP_BN_WEIGHT_BASE, -0.5,0.5);
+	gen_rand<DTYPE_FIL, BB7_CONV1_CONV_WEIGHT_SIZE>(weight_mem+BB7_CONV1_WEIGHT_BASE, -1, 1);
+	gen_rand<DTYPE_FIL, BB7_CONV2_CONV_WEIGHT_SIZE>(weight_mem+BB7_CONV2_WEIGHT_BASE, -1, 1);
+	gen_rand<DTYPE_FIL, BB7_SKIP_CONV_WEIGHT_SIZE>(weight_mem+BB7_SKIP_WEIGHT_BASE, -1, 1);
+	gen_rand<float, BB7_CONV1_BN_WEIGHT_SIZE>(bn_weight_mem+BB7_CONV1_BN_WEIGHT_BASE, -0.5,0.5);
+	gen_rand<float, BB7_CONV2_BN_WEIGHT_SIZE>(bn_weight_mem+BB7_CONV2_BN_WEIGHT_BASE, -0.5,0.5);
+	gen_rand<float, BB7_SKIP_BN_WEIGHT_SIZE>(bn_weight_mem+BB7_SKIP_BN_WEIGHT_BASE, -0.5,0.5);
 	if (BB7_SKIP_WEIGHT_BASE + BB7_SKIP_CONV_WEIGHT_SIZE <= WEIGHT_MEM_SIZE) {
 		std::cout << "it is OK\n";
 	}
