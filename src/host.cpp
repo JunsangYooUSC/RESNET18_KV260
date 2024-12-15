@@ -120,7 +120,8 @@ int main(){
     }
 
 	// load weights
-	read_bin_fixed<DTYPE_FIL>("data/layer4_0_conv1_weights.bin", weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
+	const string fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/layer4_0_conv1_weights.bin";
+	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
 
 	/*
 	// host-side data
