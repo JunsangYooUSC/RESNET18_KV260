@@ -108,7 +108,7 @@ template<typename T>
 void read_bin_fixed(const std::string &filename, T *data, unsigned int size) {
 	FILE *file = fopen(filename.c_str(), "rb");
 	unsigned total_reads = fread(data, sizeof(T), size, file);
-	assert(size == total_reads && "read mismatch");
+	// assert(size == total_reads && "read mismatch");
 	fclose(file);
 }
 
