@@ -283,7 +283,7 @@ void load_weight_fifo(
     unsigned int nox
 
 ) {
-    DTYPE_FIL filter_buffer[2][POF][NIF][NKY][NKX];  // todo: use double buffer
+    DTYPE_FIL filter_buffer[2][POF][nif][nky][nkx];  // todo: use double buffer
     for (int f_out = 0; f_out < nof; f_out += POF) {
         for (int y0 = 0; y0 < noy; y0+=POY) {
             for (int x0 = 0; x0 < nox; x0+=POX) {
