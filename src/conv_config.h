@@ -40,14 +40,14 @@
 #define ACT_PACK            7
 
 // Bit widths
-constexpr unsigned W_ACT               8
-constexpr unsigned I_ACT               3
-constexpr unsigned W_FIL               8
-constexpr unsigned I_FIL               1
-constexpr unsigned W_MUL               (W_ACT + W_FIL)
-constexpr unsigned I_MUL               (I_ACT + I_FIL)
-constexpr unsigned W_MAC               (W_MUL + MAC_EXTRA_BITS)
-constexpr unsigned I_MAC               (I_MUL + MAC_EXTRA_BITS)
+constexpr unsigned W_ACT = 8;
+constexpr unsigned I_ACT = 3;
+constexpr unsigned W_FIL = 8;
+constexpr unsigned I_FIL = 1;
+constexpr unsigned W_MUL = (W_ACT + W_FIL);
+constexpr unsigned I_MUL = (I_ACT + I_FIL);
+constexpr unsigned W_MAC = (W_MUL + MAC_EXTRA_BITS);
+constexpr unsigned I_MAC = (I_MUL + MAC_EXTRA_BITS);
 // Calculation of extra bit widths for MAC is done at compile time
 constexpr unsigned log2_ceil(unsigned int n) {
     return (n <= 1) ? 0 : 1 + log2_ceil((n + 1) / 2);
@@ -560,9 +560,9 @@ constexpr unsigned BB7_SKIP_BN_WEIGHT_SIZE = 4 * BB7_CONV2_C;
 #define BB8_SKIP_MAX_POOL       0
 #define BB8_SKIP_AVG_POOL       0
 #define BB8_SKIP_LIN            0
-#define BB8_CONV2_IN_MEM        0
-#define BB8_CONV2_OUT_MEM       2
-#define BB8_CONV2_SKIP_MEM      1
+#define BB8_SKIP_IN_MEM         0
+#define BB8_SKIP_OUT_MEM        2
+#define BB8_SKIP_SKIP_MEM       1
 
 // AVG_POOL 
 #define AVG_POOL_C              512
@@ -596,9 +596,9 @@ constexpr unsigned BB7_SKIP_BN_WEIGHT_SIZE = 4 * BB7_CONV2_C;
 #define LIN_MAX_POOL            0
 #define LIN_AVG_POOL            0
 #define LIN_LIN                 1
-#define lin_IN_MEM              0
-#define lin_OUT_MEM             1
-#define lin_SKIP_MEM            3
+#define LIN_IN_MEM              0
+#define LIN_OUT_MEM             1
+#define LIN_SKIP_MEM            3
 
 // size of mem blocks
 constexpr unsigned MEM0_SIZE = CONV1_C  * CONV1_H * CONV1_W / POX;
