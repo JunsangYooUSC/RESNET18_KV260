@@ -24,7 +24,6 @@
 #include <hls_stream.h>
 // Include project headers
 #include "conv_config.h"
-#include "dummy_func.h"
 
 void PE(
     hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
