@@ -307,6 +307,9 @@ void load_weight_fifo(
                                 for (int x = 0; x < nkx; x++) {
                                     unsigned int fil_idx = (f+f_out)*nif*noy*nox + f_in*noy*nox + y*nox + x;
                                     filter_buffer[0][f][f_in][y][x] = fil_mem[fil_idx];
+                                    if (fil_idx >= FIL_MEM_SIZE) {
+                                        std::cout << "fil idx wrong. fil_idx: " << fil_idx << std::endl;
+                                    }
                                 }
                             }
                         }
