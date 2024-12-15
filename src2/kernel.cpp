@@ -62,6 +62,9 @@ void kernel_func(DTYPE_ACT *in_host,
     // dummy_fill_input_buffer(input_buffer);
 
     std::cout << "in_host[0]: " << (in_host[0] << (W_ACT-I_ACT)) << std::endl;
+    std::cout << "in_host[" << TOTAL_IN_LEN-4 << "]: " << (in_host[TOTAL_IN_LEN-4] << (W_ACT-I_ACT)) << std::endl;
+    std::cout << "in_host[" << TOTAL_IN_LEN-3 << "]: " << (in_host[TOTAL_IN_LEN-3] << (W_ACT-I_ACT)) << std::endl;
+    std::cout << "in_host[" << TOTAL_IN_LEN-2 << "]: " << (in_host[TOTAL_IN_LEN-2] << (W_ACT-I_ACT)) << std::endl;
     std::cout << "in_host[" << TOTAL_IN_LEN-1 << "]: " << (in_host[TOTAL_IN_LEN-1] << (W_ACT-I_ACT)) << std::endl;
     
     // load in_host to act_mem
