@@ -294,6 +294,7 @@ void load_weight_fifo(
                         for (int f = 0; f < POF; f++) {
                             for (int y = 0; y < nky; y++) {
                                 for (int x = 0; x < nkx; x++) {
+#pragma HLS pipeline
                                     unsigned int fil_idx = (f+f_out)*nif*nky*nkx + f_in*nky*nkx + y*nkx + x;
                                     filter_buffer[0][f][f_in][y][x] = fil_mem[fil_idx];
                                 }
@@ -346,6 +347,7 @@ void store_output_fifo(
                 }
                 for (int f = 0; f < POF; f++) {
                     for (int y = 0; y < POY; y++) {
+#pragma HLS pipeline
                         unsigned int act_mem_idx = ((out_f+f)*noy*nox + (y0+y)*nox + x0) / MEM_PACK;
                         DTYPE_MEM block;
                         for (int x = 0; x < POX; x++) {
