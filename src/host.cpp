@@ -134,92 +134,28 @@ int main(){
 		std::cout << "it is OK\n";
 	}
 
-	/*
 	// host-side data
-	DTYPE_ACT in_act_host[TOTAL_IN_LEN];
-	DTYPE_FIL in_fil_host[TOTAL_FIL_LEN];
-	DTYPE_ACT out_act_host[TOTAL_OUT_LEN];
-	float in_act_host_float[TOTAL_IN_LEN];
-	float in_fil_host_float[TOTAL_FIL_LEN];
-	float out_act_host_float[TOTAL_OUT_LEN];
+	DTYPE_ACT in_act_host[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
+	// DTYPE_FIL in_fil_host[TOTAL_FIL_LEN];
+	DTYPE_ACT out_act_host[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
+	float in_act_host_float[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
+	// float in_fil_host_float[TOTAL_FIL_LEN];
+	float out_act_host_float[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
 	// generate random input activation and filter value with float
 	gen_rand<DTYPE_ACT, TOTAL_IN_LEN>(in_act_host, -1, 1);
 	gen_rand<DTYPE_FIL, TOTAL_FIL_LEN>(in_fil_host, -1, 1);
 
-	/////////////////////////////////////////////////////////////////////////////
-	// for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
-	// 	in_act_host[idx] = 0.125;
-	// }
-	// std::cout << "in_act_host[0]: " << in_act_host[0] << std::endl;
-	// for (int idx = 0; idx < TOTAL_FILTER_LEN; idx++) {
-	// 	in_fil_host[idx] = idx%(FILTER_HEIGHT * FILTER_WIDTH);
-	// }
-	// std::cout << "in_fil_host[0]: " << in_fil_host[0] << std::endl;
-	// std::cout << "in_fil_host[1]: " << in_fil_host[1] << std::endl;
-	/////////////////////////////////////////////////////////////////////////////
-
-	// copy input and filter from fixed point arrays to float arrays
-	for (int idx = 0; idx < TOTAL_IN_LEN; idx++) {
-		in_act_host_float[idx] = in_act_host[idx];
-	}
-	for (int idx = 0; idx < TOTAL_FIL_LEN; idx++) {
-		in_fil_host_float[idx] = in_fil_host[idx];
-	}
-
-	// input debug
-	std::cout << "input debug host\n";
-	for (int idx = 0; idx < POY*STRIDE; idx+=STRIDE) {
-		for (int jdx = 0; jdx < POX*STRIDE; jdx+=STRIDE) {
-			int f = NIF - 1;
-			int y = NIY - PIY + idx + NKY-1;
-			int x = NIX - PIX + jdx + NKX-1;
-			DTYPE_ACT val;
-			if ( (y < PAD) || (y >= NIY + PAD) || (x < PAD) || (x >= NIX + PAD) ) {
-				val = 0;
-			}
-			else {
-				unsigned int act_idx = f*NIY*NIX+(y-PAD)*NIX+(x-PAD);
-				val = in_act_host[act_idx];
-			}
-			std::cout << std::setw(5) << (val << 8) << " ";
-		}
-		std::cout << std::endl;
-	}
-	// weight debug
-	std::cout << "filter debug host\n";
-	for (int fo = 0; fo < POF; fo++) {
-		unsigned int fi = NIF-1;
-		unsigned int idx = NKY-1;
-		unsigned int jdx = NKX-1;
-		unsigned int fil_idx = (fo+NOF-POF)*NIF*NKY*NKX + fi*NKY*NKX + idx*NKX + jdx;
-		std::cout << std::setw(5) << (in_fil_host[fil_idx] << 8) << " ";
-	}
-	std::cout << std::endl;
-	// std::cout << "filter debug host all\n";
-	// for (int fo = 0; fo < POF; fo++) {
-	// 	for (int idx = 0; idx < NKY; idx++) {
-	// 		for (int jdx = 0; jdx < NKX; jdx++) {
-	// 			unsigned int fi = NIF-1;
-	// 			unsigned int fil_idx = (fo+NOF-POF)*NIF*NKY*NKX + fi*NKY*NKX + idx*NKX + jdx;
-	// 			std::cout << std::setw(5) << (in_fil_host[fil_idx] << 8) << " ";
-	// 		}
-	// 		std::cout << std::endl;
-	// 	}
-	// 	std::cout << std::endl;
-	// }
-	// std::cout << std::endl;
-
 	// golden convolution result with fixed point and float
-	convolution_golden<DTYPE_ACT, DTYPE_FIL, DTYPE_MUL, DTYPE_MAC>(in_act_host, in_fil_host, out_act_host);
-	convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float);
+	convolution_golden<DTYPE_ACT, DTYPE_FIL, DTYPE_MUL, DTYPE_MAC>(in_act_host, weight_mem, out_act_host);
+	//convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float);
 
-	std::cout << "out_act_host[0] = " << out_act_host[0] << std::endl;
+	//std::cout << "out_act_host[0] = " << out_act_host[0] << std::endl;
 
 	// compare with golden result
-	compare_result<DTYPE_ACT, float, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
+	//compare_result<DTYPE_ACT, float, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
 
-	kernel_func(in_act_host, in_fil_host, out_act_host);
-	compare_result<DTYPE_ACT, float, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
+	//kernel_func(in_act_host, in_fil_host, out_act_host);
+	//compare_result<DTYPE_ACT, float, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
 
 	// print some results
 	// std::cout << "in_act_host[0]:" << in_act_host[0] << std::endl;
@@ -230,5 +166,5 @@ int main(){
 	// std::cout << "out_act_host_float[0]:" << out_act_host_float[0] << std::endl;
 	// std::cout << "out_act_host[1]:" << out_act_host[1] << std::endl;
 	// std::cout << "out_act_host_float[1]:" << out_act_host_float[1] << std::endl;
-	*/
+	
 }
