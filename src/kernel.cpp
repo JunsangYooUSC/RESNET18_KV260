@@ -29,7 +29,9 @@
 // kernel function
 void kernel_func(
     DTYPE_ACT *in_host,
-    DTYPE_MEM_WEIGHT *weight_mem,
+    DTYPE_FIL *weight_mem,
+    float *bn_weight_mem,
+    // DTYPE_MEM_WEIGHT *weight_mem,
     DTYPE_ACT *out_host
 ) {
     // on-chip buffers
