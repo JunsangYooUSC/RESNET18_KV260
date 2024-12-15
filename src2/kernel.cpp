@@ -137,8 +137,8 @@ void kernel_func(DTYPE_ACT *in_host,
     BUF2PE_stride(act_mem, in_fifo_arr,
             nky, nkx, nof, nif, noy, nox, s, pad, 0);
     for (int f_out = 0; f_out < nof; f_out+=POF) {
-        for (int y0 = 0; y0 < noy; y0 += PIY) {
-            for (int x0 = 0; x0 < nox; x0 += PIX) {
+        for (int y0 = 0; y0 < noy*s; y0 += PIY) {
+            for (int x0 = 0; x0 < nox*s; x0 += PIX) {
                 for (int f_in = 0; f_in < nif; f_in ++) {
                     // parallel
                     //for (int f = 0; f < POF; f++) {
