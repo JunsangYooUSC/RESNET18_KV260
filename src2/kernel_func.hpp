@@ -314,11 +314,11 @@ void load_weight_fifo(
                 }
                 // reuse loop times
                 for (int f_in = 0; f_in < nif; f_in++){
-                    for (int y = 0; y < nky; y++) {
-                        for (int x = 0; x < nkx; x++) {
-                            #pragma unroll
-                            load_weight_loop1:
-                            for (int f = 0; f < POF; f++) {
+                    #pragma unroll
+                    load_weight_loop1:
+                    for (int f = 0; f < POF; f++) {
+                        for (int y = 0; y < nky; y++) {
+                            for (int x = 0; x < nkx; x++) {
                                 weight_in_fifo_arr[f].write(filter_buffer[0][f][f_in][y][x]);
                             }
                         }
