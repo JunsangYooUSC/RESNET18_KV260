@@ -132,21 +132,21 @@ int main(){
 	}
 
 	// input debug
-	std::cout << "input debug\n";
-	for (int idx = 0; idx < POY*STRIDE; idx+=STRIDE) {
-		for (int jdx = 0; jdx < POX*STRIDE; idx+=STRIDE) {
-			DTYPE_ACT val;
-			if ( (idx < PAD) || (idx > NIY + PAD) || (jdx < PAD) || (jdx > NIX + PAD) ) {
-				val = 0;
-			}
-			else {
-				unsigned int act_idx = 0*NIY*NIX+(idx-PAD)*NIX+(jdx-PAD);
-				val = in_act_host[act_idx];
-			}
-			std::cout << std::setw(5) << (val << 8) << " ";
-		}
-		std::cout << std::endl;
-	}
+	// std::cout << "input debug\n";
+	// for (int idx = 0; idx < POY*STRIDE; idx+=STRIDE) {
+	// 	for (int jdx = 0; jdx < POX*STRIDE; idx+=STRIDE) {
+	// 		DTYPE_ACT val;
+	// 		if ( (idx < PAD) || (idx > NIY + PAD) || (jdx < PAD) || (jdx > NIX + PAD) ) {
+	// 			val = 0;
+	// 		}
+	// 		else {
+	// 			unsigned int act_idx = 0*NIY*NIX+(idx-PAD)*NIX+(jdx-PAD);
+	// 			val = in_act_host[act_idx];
+	// 		}
+	// 		std::cout << std::setw(5) << (val << 8) << " ";
+	// 	}
+	// 	std::cout << std::endl;
+	// }
 	// weight debug
 	std::cout << "filter debug\n";
 	unsigned int fi = 0;
