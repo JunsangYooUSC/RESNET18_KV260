@@ -113,7 +113,7 @@ int main(){
 	// DTYPE_FIL *weight_mem;		// todo: weight packing
 	// float *bn_weight_mem;
 
-	// DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
+	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
 	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
 
 	// load weights
