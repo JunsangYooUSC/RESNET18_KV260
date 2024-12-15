@@ -401,6 +401,7 @@ void conv(
     DTYPE_MEM_ACT *mem_in,
     DTYPE_FIL *mem_fil,
     hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX],
+    unsigned int weight_base_addr,
     unsigned int nky,
     unsigned int nkx,
     unsigned int nof,
@@ -423,7 +424,7 @@ void conv(
     BUF2PE_stride(mem_in, mac_in_fifo_arr,
             nky, nkx, nof, nif, noy, nox, stride, pad);
     load_weight_fifo(mem_fil, weight_in_fifo_arr,
-            nky, nkx, nof, nif, noy, nox);
+            weight_base_addr, nky, nkx, nof, nif, noy, nox);
     PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
             nky, nkx, nof, nif, noy, nox);
 }
