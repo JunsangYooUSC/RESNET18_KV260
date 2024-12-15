@@ -24,7 +24,6 @@
 // Include project headers
 #include "conv_config.h"
 #include "kernel.h"
-#include "dummy_func.h"
 #include "kernel_func.hpp"
 
 // kernel function
