@@ -39,8 +39,8 @@ void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act,
 	for (int idx = 0; idx < nof*noy*nox; idx++) {
 		out_act_mac[idx] = 0;
 	}
-	unsigned int nix = nox*s;
-	unsigned int niy = noy*s;
+	unsigned int nix = nox*stride;
+	unsigned int niy = noy*stride;
 	for (int kdx = 0; kdx < nif; kdx++) {
 		for (int ndx = 0; ndx < niy; ndx += stride) {
 			for (int mdx = 0; mdx < nix; mdx += stride) {
@@ -59,7 +59,7 @@ void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act,
 								in_addr += (ndx + hdx - pad) * nix + (mdx + wdx - pad);
 								// load input
 								in_act_element = in_act[in_addr];
-								if (in_addr >= TOTAL_IN_LEN) {
+								if (in_addr >= nif*niy*nix) {
 									std::cout << "input index out-of-bounds: " << in_addr << std::endl;
 								}
 							}
