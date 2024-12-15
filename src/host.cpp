@@ -117,9 +117,11 @@ int main(){
 	float *bn_weight_mem = new float[BN_WEIGHT_MEM_SIZE];
 
 	// load weights
-	// const std::string fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/layer4_0_conv1_weights.bin";
-	// uint8_t *test_mem;
-	// read_bin_fixed<uint8_t>(fname, test_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
+	const std::string fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/layer4_0_conv1_weights.bin";
+	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
+	std::cout << "weight_mem[0]: " << weight_mem[0] << std::endl;
+	std::cout << "weight_mem[1]: " << weight_mem[1] << std::endl;
+	
 	// read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
 	gen_rand<DTYPE_FIL, BB7_CONV1_CONV_WEIGHT_SIZE>(weight_mem+BB7_CONV1_WEIGHT_BASE, -1, 1);
 	gen_rand<DTYPE_FIL, BB7_CONV2_CONV_WEIGHT_SIZE>(weight_mem+BB7_CONV2_WEIGHT_BASE, -1, 1);
