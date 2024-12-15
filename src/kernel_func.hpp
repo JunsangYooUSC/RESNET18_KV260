@@ -135,9 +135,9 @@ void BUF2PE_stride(
                             } 
                             else {
                                 unsigned int mem_idx = f_in*noy*s*nox*s + (y0+y-pad)*nox*s + (x0+x-pad);
-                                unsigned int idx1 = mem_idx / MEM_PACK;
-                                unsigned int idx2 = mem_idx % MEM_PACK;
-                                DTYPE_MEM block = mem[idx1];
+                                unsigned int idx1 = mem_idx / ACT_PACK;
+                                unsigned int idx2 = mem_idx % ACT_PACK;
+                                DTYPE_MEM_ACT block = mem[idx1];
                                 data.range() = block.range(W_ACT*(idx2+1)-1,W_ACT*idx2);
                             }
                             input_buffer_stride[0][y][x] = data;
@@ -272,7 +272,7 @@ void BUF2PE_stride(
 }
 
 void load_weight_fifo(
-    DTYPE_FIL mem_fil[FIL_MEM_SIZE],
+    DTYPE_FIL *mem_fil,
     hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF],
     unsigned int base_addr,
     unsigned int nky,
@@ -346,8 +346,8 @@ void store_output_fifo(
                 for (int f = 0; f < POF; f++) {
                     for (int y = 0; y < POY; y++) {
 #pragma HLS pipeline
-                        unsigned int mem_idx = ((out_f+f)*noy*nox + (y0+y)*nox + x0) / MEM_PACK;
-                        DTYPE_MEM block;
+                        unsigned int mem_idx = ((out_f+f)*noy*nox + (y0+y)*nox + x0) / ACT_PACK;
+                        DTYPE_MEM_ACT block;
                         for (int x = 0; x < POX; x++) {
                             block.range(W_ACT*(x+1)-1, W_ACT*x) = output_buffer[0][f][y][x].range();
                         }
