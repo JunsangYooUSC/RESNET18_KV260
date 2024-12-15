@@ -604,5 +604,5 @@ constexpr unsigned MEM0_SIZE = CONV1_C  * CONV1_H * CONV1_W / POX;
 constexpr unsigned MEM1_SIZE = MAXPOOL_C  * MAXPOOL_H * MAXPOOL_W / POX;
 constexpr unsigned MEM2_SIZE = BB1_CONV2_C  * BB1_CONV2_H * BB1_CONV2_W / POX;
 constexpr unsigned WEIGHT_MEM_SIZE = 5000000;  // todo: temporary for now
-constexpr unsigned BN_WEIGHT_MEM_SIZE = 5000000;
+constexpr unsigned BN_WEIGHT_MEM_SIZE = 1000000;
 #endif
