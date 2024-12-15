@@ -32,7 +32,6 @@ void kernel_func(DTYPE_ACT *in_host,
                 DTYPE_FIL *filter_host,
                 DTYPE_ACT *out_host
 ) {
-#pragma HLS DATAFLOW
     // on-chip buffers
     // DTYPE_ACT input_buffer[2*INPUT_BUFFER_SIZE];
     // DTYPE_ACT input_buffer[2][POY+PAD*2][POX+PAD*2];
@@ -87,6 +86,7 @@ void kernel_func(DTYPE_ACT *in_host,
     unsigned int pad = PAD;
     
 
+#pragma HLS DATAFLOW
     BUF2PE_stride(act_mem, mac_in_fifo_arr,
             nky, nkx, nof, nif, noy, nox, s, pad, 0);
     load_weight_fifo(fil_mem, weight_in_fifo_arr,
