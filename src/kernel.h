@@ -10,8 +10,27 @@
 #include "conv_config.h"
 
 // Declare functions
-template<typename DTYPE, unsigned int LEN>
-void BUF2PE(DTYPE_ACT *input_buffer, hls::stream<BUF2PEVEC> fifo_arr[POF][POY-1], hls::stream<BUF2PEVEC> mac_in_fifo_arr[POF][POY]);
+void BUF2PE(
+    // DTYPE_ACT *input_buffer, 
+    DTYPE_ACT input_buffer[2][POY+PAD*2][POX+PAD*2],
+    hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
+    unsigned int nkx,
+    unsigned int nky,
+    unsigned int total_loops,       // 
+    unsigned int db_idx     // double buffering index) 
+);
+
+void BUF2PE_stride(
+    // DTYPE_ACT *input_buffer, 
+    DTYPE_ACT input_buffer_stride[2][POY*STRIDE+PAD*2][POX*STRIDE+PAD*2],
+    hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
+    unsigned int nkx,
+    unsigned int nky,
+    unsigned int total_loops,
+    unsigned int s,
+    unsigned int db_idx     // double buffering index) 
+);
+
 
 void kernel_func(DTYPE_ACT *in_offchip, DTYPE_ACT *filter_offchip, DTYPE_ACT *out_offchip);
 

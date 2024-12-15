@@ -76,6 +76,25 @@ void PE(
                     }
                 }
             }
+
+            // for debug
+            if ( (i == (nof*noy*nox/POF/POY/POX)-1) && (loop == nky*nkx*nif-1) ) {
+                // input debug
+            	std::cout << "input debug\n";
+                for (int idx = 0; idx < POY; idx++) {
+                    for (int jdx = 0; jdx < POX; jdx++) {
+                        std::cout << std::setw(5) << (in_vals[idx][jdx] << 8) << " ";
+                    }
+                    std::cout << std::endl;
+                }
+                // filter debug
+            	std::cout << "filter debug\n";
+                for (int idx = 0; idx < POF; idx++) {
+                    std::cout << std::setw(5) << (fil_vals[idx] << 8) << " ";
+                }
+                std::cout << std::endl;
+            }
+
         }
 
         // 
@@ -113,6 +132,7 @@ void BUF2PE_stride(
     // fifo in fig13 of Optimizing_the_Convolution_Operation_to_Accelerate_Deep_Neural_Networks_on_FPGA
     hls::stream<DTYPE_ACT> fifo_arr_stride[POY*MAX_STRIDE-1][POX*MAX_STRIDE];
     #pragma HLS STREAM variable=fifo_arr_stride depth=FIFO_ARR_DEPTH
+    int debug_cnt = 0;
     for (int f_out = 0; f_out < nof; f_out += POF) {
         for (int y0 = 0; y0 < noy*s; y0 += POY*s) {
             for (int x0 = 0; x0 < nox*s; x0 += POX*s) {
@@ -255,6 +275,7 @@ void BUF2PE_stride(
                             #pragma HLS unroll
                             for (int x = 0; x < POX; x++) {
                                 mac_in_fifo_arr[y][x].write(buf2pe_reg_stride[y*s][x*s]);
+                                debug_cnt++;
                             }
                         }
                     }
@@ -263,6 +284,7 @@ void BUF2PE_stride(
             }
         }
     }
+    std::cout << "kernel in cnt: " << debug_cnt << std::endl;
 }
 
 void load_weight_fifo(
@@ -288,6 +310,9 @@ void load_weight_fifo(
                                 for (int x = 0; x < nkx; x++) {
                                     unsigned int fil_idx = (f+f_out)*nif*nky*nkx + f_in*nky*nkx + y*nkx + x;
                                     filter_buffer[0][f][f_in][y][x] = fil_mem[fil_idx];
+                                    if (fil_idx >= FIL_MEM_SIZE) {
+                                        std::cout << "fil idx wrong. fil_idx: " << fil_idx << std::endl;
+                                    }
                                 }
                             }
                         }

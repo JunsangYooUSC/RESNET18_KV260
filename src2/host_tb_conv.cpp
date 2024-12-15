@@ -139,7 +139,7 @@ int main(){
 			int y = NIY - PIY + idx + NKY-1;
 			int x = NIX - PIX + jdx + NKX-1;
 			DTYPE_ACT val;
-			if ( (y< PAD) || (y >= NIY + PAD) || (x < PAD) || (x >= NIX + PAD) ) {
+			if ( (y < PAD) || (y >= NIY + PAD) || (x < PAD) || (x >= NIX + PAD) ) {
 				val = 0;
 			}
 			else {

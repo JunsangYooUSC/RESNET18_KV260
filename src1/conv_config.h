@@ -14,9 +14,6 @@
 #ifndef CONV_CONFIG_H
 #define CONV_CONFIG_H
 
-#include <iostream>
-#include <iomanip> // For std::setw
-
 // Include Vitis HLS headers
 #include <ap_fixed.h>
 #include <ap_int.h>
@@ -26,30 +23,27 @@
 #include <cmath>
 #include <cassert>
 
-#define STRIDE              2
-#define MAX_STRIDE          2
 // N
+#define NIX                 28
+#define NIY                 28
 #define NKX                 3
 #define NKY                 3
-#define PAD                 ((NKX-1)/2)
 // #define NIF                 64
-#define NIF                 2
+#define NIF                 16
 // #define NOX                 56
-#define NOX                 14
+#define NOX                 28
 // #define NOY                 56
-#define NOY                 14
+#define NOY                 28
 // #define NOF                 64
-#define NOF                 8
-#define NIX                 NOX*STRIDE
-#define NIY                 NOY*STRIDE
+#define NOF                 30
 // parallel
 #define PKX                 1
 #define PKY                 1
-#define PIF                 NIF
+#define PIF                 1
 #define POX                 7
 #define POY                 7
 // #define POF                 16
-#define POF                 4
+#define POF                 2
 // tiling
 #define TKX                 NKX
 #define TKY                 NKY
@@ -59,15 +53,17 @@
 #define TOY                 POY
 #define TOF                 POF
 //
+#define PAD                 1
+#define STRIDE              1
 
-#define PIX                 POX*STRIDE
-#define PIY                 POY*STRIDE
+#define PIX                 (POX+PAD*2)
+#define PIY                 (POY+PAD*2)
 
 // Bit widths needed for convolution calculation
-#define W_ACT               16
-#define I_ACT               8
-#define W_FIL               16
-#define I_FIL               8
+#define W_ACT               8
+#define I_ACT               2
+#define W_FIL               8
+#define I_FIL               2
 #define W_MUL               (W_ACT + W_FIL)
 #define I_MUL               (I_ACT + I_FIL)
 #define W_MAC               (W_MUL + MAC_EXTRA_BITS)
@@ -88,17 +84,18 @@ typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
 #define MAX_ACT_SIZE        ((TOTAL_OUT_LEN > TOTAL_IN_LEN) ? TOTAL_OUT_LEN : TOTAL_IN_LEN)
 #define TOTAL_OUT_LEN       NOF*NOX*NOY
 #define TOTAL_IN_LEN        NIF*NIX*NIY
-#define TOTAL_FIL_LEN       NIF*NOF*NKX*NKY
-#define INPUT_BUFFER_SIZE   (PIY+PAD*2)*(PIX+PAD*2)     // without double buffering
+#define TOTAL_FIL_LEN       NOF*NKX*NKY
+#define INPUT_BUFFER_SIZE   (POY+PAD*2)*(POX+PAD*2)     // without double buffering
 #define FILTER_BUFFER_SIZE  (POF*NKX*NKY)               // without double buffering
 #define OUTPUT_BUFFER_SIZE  (POF*POX*POY)
+#define BUF2PE_REG_SIZE     POF*POY*(POX+1)
 
-#define FIL_MEM_SIZE        NOF*NIF*NKX*NKY
-#define MEM_PACK            7
-typedef ap_uint<MEM_PACK*W_ACT> DTYPE_MEM;
-constexpr unsigned int ACT_MEM_SIZE = MAX_ACT_SIZE/MEM_PACK;
+constexpr unsigned int ACT_MEM_SIZE = 2*MAX_ACT_SIZE/(64/W_ACT);
+#define FIL_MEM_SIZE     POF*NIF*NKX*NKY
+typedef ap_uint<64> DTYPE_MEM;
 
 // BUF2PE vectors
+typedef hls::vector<DTYPE_ACT,POX> BUF2PEVEC;
 constexpr unsigned int FIFO_ARR_DEPTH = NKX*NKY;
 
 #endif
