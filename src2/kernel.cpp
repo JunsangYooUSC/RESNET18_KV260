@@ -161,7 +161,7 @@ void kernel_func(DTYPE_ACT *in_host,
                                             DTYPE_MEM block = act_mem[0][idx1];
                                             val1.range() = block.range(W_ACT*(idx2+1)-1, W_ACT*(idx2));
                                         }
-                                        DTYPE_ACT val2 = in_fifo_arr[i][j].read();
+                                        DTYPE_ACT val2 = in_fifo_arr[y][x].read();
                                         if (val1 != val2) {
                                             std::cout << "f_in: " << std::setw(5) << f_in << " ";
                                             std::cout << "y: " << std::setw(5) << y0+y+i << " ";
