@@ -30,11 +30,11 @@
 #define NKY                 3
 #define PAD                 ((NKX-1)/2)
 // #define NIF                 64
-#define NIF                 16
+#define NIF                 2
 // #define NOX                 56
-#define NOX                 28
+#define NOX                 14
 // #define NOY                 56
-#define NOY                 28
+#define NOY                 14
 // #define NOF                 64
 #define NOF                 4
 #define NIX                 NOX*STRIDE
