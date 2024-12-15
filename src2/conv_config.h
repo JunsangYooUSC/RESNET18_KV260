@@ -14,6 +14,9 @@
 #ifndef CONV_CONFIG_H
 #define CONV_CONFIG_H
 
+#include <iostream>
+#include <iomanip> // For std::setw
+
 // Include Vitis HLS headers
 #include <ap_fixed.h>
 #include <ap_int.h>

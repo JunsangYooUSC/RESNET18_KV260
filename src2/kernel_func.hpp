@@ -14,6 +14,7 @@
 #ifndef KERNEL_FUNC_HPP
 #define KERNEL_FUNC_HPP
 
+#include <iostream>
 #include <iomanip> // For std::setw
 
 // Include Vitis HLS headers
