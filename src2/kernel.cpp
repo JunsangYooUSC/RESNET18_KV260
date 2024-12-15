@@ -115,6 +115,23 @@ void kernel_func(DTYPE_ACT *in_host,
     }
 
     // buf2pe test
+    for (int idx = 0; idx < 9; idx++) {
+        for (int jdx = 0; jdx < 9; jdx++) {
+			int f = 0;
+			int y = 0 + idx + 0;
+			int x = 0 + jdx + 0;
+			DTYPE_ACT val;
+			if ( (y < PAD) || (y >= NIY + PAD) || (x < PAD) || (x >= NIX + PAD) ) {
+				val = 0;
+			}
+			else {
+				unsigned int act_idx = f*NIY*NIX+(y-PAD)*NIX+(x-PAD);
+				val = in_host[act_idx];
+			}
+			std::cout << std::setw(5) << (val << 8) << " ";
+        }
+		std::cout << std::endl;
+    }
     hls::stream<DTYPE_ACT> in_fifo_arr[POY][POX];
     BUF2PE_stride(act_mem, in_fifo_arr,
             nky, nkx, nof, nif, noy, nox, s, pad, 0);
