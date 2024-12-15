@@ -138,12 +138,12 @@ int main(){
 	DTYPE_ACT in_act_host[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
 	// DTYPE_FIL in_fil_host[TOTAL_FIL_LEN];
 	DTYPE_ACT out_act_host[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
-	float in_act_host_float[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
+	// float in_act_host_float[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
 	// float in_fil_host_float[TOTAL_FIL_LEN];
-	float out_act_host_float[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
+	// float out_act_host_float[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
 	// generate random input activation and filter value with float
-	gen_rand<DTYPE_ACT, TOTAL_IN_LEN>(in_act_host, -1, 1);
-	gen_rand<DTYPE_FIL, TOTAL_FIL_LEN>(in_fil_host, -1, 1);
+	gen_rand<DTYPE_ACT, BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W>(in_act_host, -1, 1);
+	// gen_rand<DTYPE_FIL, TOTAL_FIL_LEN>(in_fil_host, -1, 1);
 
 	// golden convolution result with fixed point and float
 	convolution_golden<DTYPE_ACT, DTYPE_FIL, DTYPE_MUL, DTYPE_MAC>(in_act_host, weight_mem, out_act_host);
