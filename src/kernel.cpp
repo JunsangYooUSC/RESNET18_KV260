@@ -46,6 +46,7 @@ void kernel_func(DTYPE_ACT *in_host,
     // on-chip memory
     DTYPE_MEM act_mem[2][ACT_MEM_SIZE];
     #pragma HLS bind_storage variable=act_mem impl=uram
+    #pragma HLS ARRAY_PARTITION variable=act_mem dim=1 complete
     DTYPE_FIL fil_mem[FIL_MEM_SIZE];
     // DTYPE_MEM fil_mem[2][FIL_MEM_SIZE];
     // #pragma HLS bind_storage variable=fil_mem impl=bram
