@@ -140,7 +140,7 @@ void kernel_func(DTYPE_ACT *in_host,
             for (int x0 = 0; x0 < nox; x0 += PIX) {
                 for (int f_in = 0; f_in < nif; f_in ++) {
                     // parallel
-                    for (int f = 0; f < POF; f++) {
+                    //for (int f = 0; f < POF; f++) {
                         for (int y = 0; y < PIY; y+=STRIDE) {
                             for (int x = 0; x < PIX; x+=STRIDE) {
                                 for (int i = 0; i < NKY; i++) {
@@ -171,7 +171,7 @@ void kernel_func(DTYPE_ACT *in_host,
                                 }
                             }
                         }
-                    }
+                    //}
                 }
             }
         }
