@@ -44,10 +44,12 @@ void PE(
 
     for (int i = 0; i < (nof*noy*nox/POF/POY/POX); i++) {
         // initialize mac
-        #pragma HLS unroll
         for (int f = 0; f < POF; f++) {
+#pragma HLS unroll
             for (int y = 0; y < POY; y++) {
+#pragma HLS unroll
                 for (int x = 0; x < POX; x++) {
+#pragma HLS unroll
                     mac_vals[f][y][x] = 0;
                 }
             }
@@ -55,22 +57,25 @@ void PE(
 
         for (int loop = 0; loop < nky*nkx*nif; loop++) {
             // read input
-            #pragma HLS unroll
             for (int y = 0; y < POY; y++) {
+#pragma HLS unroll
                 for (int x = 0; x < POX; x++) {
+#pragma HLS unroll
                     in_vals[y][x] = mac_in_fifo_arr[y][x].read();
                 }
             }
             // read weight
-            #pragma HLS unroll
             for (int f = 0; f < POF; f++) {
+#pragma HLS unroll
                 fil_vals[f] = weight_in_fifo_arr[f].read();
             }
             // compute
-            #pragma HLS unroll
             for (int f = 0; f < POF; f++) {
+#pragma HLS unroll
                 for (int y = 0; y < POY; y++) {
+#pragma HLS unroll
                     for (int x = 0; x < POX; x++) {
+#pragma HLS unroll
                         mul_vals[f][y][x] = in_vals[y][x] * fil_vals[f];
                         mac_vals[f][y][x] += mul_vals[f][y][x];
                     }
@@ -79,10 +84,12 @@ void PE(
         }
 
         // 
-        #pragma HLS unroll
         for (int f = 0; f < POF; f++) {
+#pragma HLS unroll
             for (int y = 0; y < POY; y++) {
+#pragma HLS unroll
                 for (int x = 0; x < POX; x++) {
+#pragma HLS unroll
                     out_fifo_arr[f][y][x].write(mac_vals[f][y][x]);
                 }
             }
@@ -144,31 +151,31 @@ void BUF2PE_stride(
                         unsigned int last_y_idx = cnt / nky;
                         unsigned int last_x_idx = cnt % nkx;
                         if (cnt % nkx == 0) {
-                            #pragma HLS unroll
                             for (int x = 0; x < POX*s+1; x++) {
+#pragma HLS unroll
                                 // first row of input buffer
                                 buf2pe_reg_stride[POY*s-1][x] = input_buffer_stride[db_idx][POY*s-1+last_y_idx][x];
                             }
                         }
                         // last register gets new val. rest values are fed from adjacent reg
                         else if (cnt % nkx < nkx-1) {
-                            #pragma HLS unroll
                             for (int x = 0; x < POX*s; x++) {
+#pragma HLS unroll
                                 buf2pe_reg_stride[POY*s-1][x] = buf2pe_reg_stride[POY*s-1][x+1];
                             }
                             buf2pe_reg_stride[POY*s-1][POX*s] = input_buffer_stride[db_idx][POY*s-1+last_y_idx][POX*s+last_x_idx];
                         }
                         // reg values are fed from adjacent reg
                         else if (cnt % nkx == nkx-1) {
-                            #pragma HLS unroll
                             for (int x = 0; x < POX*s; x++) {
+#pragma HLS unroll
                                 buf2pe_reg_stride[POY*s-1][x] = buf2pe_reg_stride[POY*s-1][x+1];
                             }
                         }
                         if (cnt < nkx*nky-nkx) {
                             // feed into previous fifo
-                            #pragma HLS unroll
                             for (int x = 0; x < POX*s; x++) {
+#pragma HLS unroll
                                 fifo_arr_stride[POY*s-2][x].write(buf2pe_reg_stride[POY*s-1][x]);
                             }
                         }
@@ -178,39 +185,39 @@ void BUF2PE_stride(
                         for (int y = 1; y < POY*s-1; y++) {
                             // copy input buffer content to register at first cycle
                             if (cnt == 0) {
-                                #pragma HLS unroll
                                 for (int x = 0; x < POX*s+1; x++) {
+#pragma HLS unroll
                                     // first row of input buffer
                                     buf2pe_reg_stride[y][x] = input_buffer_stride[db_idx][y][x];
                                 }
                             }
                             // last register gets new val. rest values are fed from adjacent reg
                             else if (cnt < nkx-1) {
-                                #pragma HLS unroll
                                 for (int x = 0; x < POX*s; x++) {
+#pragma HLS unroll
                                     buf2pe_reg_stride[y][x] = buf2pe_reg_stride[y][x+1];
                                 }
                                 buf2pe_reg_stride[y][POX*s] = input_buffer_stride[db_idx][y][POX*s+cnt];
                             }
                             // reg values are fed from adjacent reg
                             else if (cnt == nkx-1) {
-                                #pragma HLS unroll
                                 for (int x = 0; x < POX*s; x++) {
+#pragma HLS unroll
                                     buf2pe_reg_stride[y][x] = buf2pe_reg_stride[y][x+1];
                                 }
                             }
                             // get values from FIFO
                             if (cnt >= nkx) {
-                                #pragma HLS unroll
                                 for (int x = 0; x < POX*s; x++) {
+#pragma HLS unroll
                                     buf2pe_reg_stride[y][x] = fifo_arr_stride[y][x].read();
                                     //std::cout << "read x: " << x << ", y: " << y << std::endl;
                                 }
                             }
                             // feed into previous fifo
                             if (cnt < nkx*nky-nkx) {
-                                #pragma HLS unroll
                                 for (int x = 0; x < POX*s; x++) {
+#pragma HLS unroll
                                     fifo_arr_stride[y-1][x].write(buf2pe_reg_stride[y][x]);
                                     //std::cout << "write x: " << x << ", y: " << y << std::endl;
                                 }
@@ -220,40 +227,40 @@ void BUF2PE_stride(
                         // first poy
                         // copy input buffer content to register at first cycle
                         if (cnt == 0) {
-                            #pragma HLS unroll
                             for (int x = 0; x < POX*s+1; x++) {
+#pragma HLS unroll
                                 // first row of input buffer
                                 buf2pe_reg_stride[0][x] = input_buffer_stride[db_idx][0][x];
                             }
                         }
                         // last register gets new val. rest values are fed from adjacent reg
                         else if (cnt < nkx-1) {
-                            #pragma HLS unroll
                             for (int x = 0; x < POX*s; x++) {
+#pragma HLS unroll
                                 buf2pe_reg_stride[0][x] = buf2pe_reg_stride[0][x+1];
                             }
                             buf2pe_reg_stride[0][POX*s] = input_buffer_stride[db_idx][0][POX*s+cnt];
                         }
                         // reg values are fed from adjacent reg
                         else if (cnt == nkx-1) {
-                            #pragma HLS unroll
                             for (int x = 0; x < POX*s; x++) {
+#pragma HLS unroll
                                 buf2pe_reg_stride[0][x] = buf2pe_reg_stride[0][x+1];
                             }
                         }
                         // get values from FIFO
                         if (cnt >= nkx) {
-                            #pragma HLS unroll
                             for (int x = 0; x < POX*s; x++) {
+#pragma HLS unroll
                                 buf2pe_reg_stride[0][x] = fifo_arr_stride[0][x].read();
                             }
                         }
 
                         // feed mac unit
-                        #pragma HLS unroll
                         for (int y = 0; y < POY; y++) {
-                            #pragma HLS unroll
+#pragma HLS unroll
                             for (int x = 0; x < POX; x++) {
+#pragma HLS unroll
                                 mac_in_fifo_arr[y][x].write(buf2pe_reg_stride[y*s][x*s]);
                             }
                         }
@@ -297,9 +304,9 @@ void load_weight_fifo(
                 for (int f_in = 0; f_in < nif; f_in++){
                     for (int y = 0; y < nky; y++) {
                         for (int x = 0; x < nkx; x++) {
-                            #pragma unroll
                             load_weight_loop1:
                             for (int f = 0; f < POF; f++) {
+#pragma unroll
                                 weight_in_fifo_arr[f].write(filter_buffer[0][f][f_in][y][x]);
                             }
                         }
@@ -326,10 +333,12 @@ void store_output_fifo(
         for (int y0 = 0; y0 < noy; y0+=POY) {
             for (int x0 = 0; x0 < nox; x0+=POX) {
                 // parallel
-                #pragma HLS unroll
                 for (int f = 0; f < POF; f++) {
+#pragma HLS unroll
                     for (int y = 0; y < POY; y++) {
+#pragma HLS unroll
                         for (int x = 0; x < POX; x++) {
+#pragma HLS unroll
                             output_buffer[0][f][y][x] = out_fifo_arr[f][y][x].read();
                         }
                     }
