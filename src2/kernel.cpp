@@ -92,14 +92,14 @@ void kernel_func(DTYPE_ACT *in_host,
     unsigned int pad = PAD;
     
 
-    BUF2PE_stride(act_mem, mac_in_fifo_arr,
-            nky, nkx, nof, nif, noy, nox, s, pad, 0);
-    load_weight_fifo(fil_mem, weight_in_fifo_arr,
-            nky, nkx, nof, nif, noy, nox);
-    PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
-            nky, nkx, nof, nif, noy, nox);
-    store_output_fifo(act_mem, out_fifo_arr,
-            nky, nkx, nof, nif, noy, nox, 1);
+    // BUF2PE_stride(act_mem, mac_in_fifo_arr,
+    //         nky, nkx, nof, nif, noy, nox, s, pad, 0);
+    // load_weight_fifo(fil_mem, weight_in_fifo_arr,
+    //         nky, nkx, nof, nif, noy, nox);
+    // PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
+    //         nky, nkx, nof, nif, noy, nox);
+    // store_output_fifo(act_mem, out_fifo_arr,
+    //         nky, nkx, nof, nif, noy, nox, 1);
 
     // DTYPE_ACT val;
     // val.range() = act_mem[1][0].range(W_ACT-1,0)
