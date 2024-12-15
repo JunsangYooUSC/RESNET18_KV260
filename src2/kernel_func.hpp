@@ -140,7 +140,6 @@ void BUF2PE_stride(
                     // unsigned int act_mem_base_idx = f_in*noy*s*nox*s + y0*nox*s + x0;
                     for (int y = 0; y < POY*s+pad*2; y++) {
                         for (int x = 0; x < POX*s+pad*2; x++) {
-                            debug_cnt++;
                             // zero padding cond
                             bool zero_pad_cond = (y0 + y < pad) || (y0 + y >= noy*s + pad) || (x0 + x < pad) || (x0 + x >= nox*s + pad);
                             DTYPE_ACT data;
@@ -233,6 +232,7 @@ void BUF2PE_stride(
                                 for (int x = 0; x < POX*s; x++) {
                                     fifo_arr_stride[y-1][x].write(buf2pe_reg_stride[y][x]);
                                     //std::cout << "write x: " << x << ", y: " << y << std::endl;
+                                    debug_cnt++;
                                 }
                             }
                         }
