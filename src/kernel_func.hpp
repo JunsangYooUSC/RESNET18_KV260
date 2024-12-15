@@ -37,6 +37,7 @@ void PE(
     unsigned int noy,
     unsigned int nox
 ) {
+#pragma HLS DATAFLOW
     DTYPE_MUL mul_vals[POF][POY][POX];
     DTYPE_MAC mac_vals[POF][POY][POX];
     DTYPE_ACT in_vals[POY][POX];

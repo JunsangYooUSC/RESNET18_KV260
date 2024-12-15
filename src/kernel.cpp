@@ -32,6 +32,7 @@ void kernel_func(DTYPE_ACT *in_host,
                 DTYPE_FIL *filter_host,
                 DTYPE_ACT *out_host
 ) {
+#pragma HLS DATAFLOW
     // on-chip buffers
     // DTYPE_ACT input_buffer[2*INPUT_BUFFER_SIZE];
     // DTYPE_ACT input_buffer[2][POY+PAD*2][POX+PAD*2];
