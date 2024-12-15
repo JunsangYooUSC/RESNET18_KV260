@@ -77,7 +77,7 @@ void PE(
             }
 
             // for debug
-            if ( (i == 0) && (loop == 0) ) {
+            if ( (i == 0) && (loop == 8) ) {
                 // input debug
             	std::cout << "input debug\n";
                 for (int idx = 0; idx < POY; idx++) {
