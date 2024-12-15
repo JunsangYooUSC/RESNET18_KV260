@@ -108,39 +108,19 @@ void compare_result(DTYPE1 *mat1, DTYPE2 *mat2, float tolerance = 0.2) {
 	}
 }
 
-/*
-// compare_result: compare fixed-point and floating-point outputs
-template<typename DTYPE, unsigned int LEN>
-void compare_result(DTYPE *mat_fixed, float *mat_float, float tolerance = 0.2) {
-    bool mismatch_flag = false;
-    bool diff_flag;
-    int cnt = 0;
-    for (int idx = 0; idx < LEN; idx++) {
-        float val_fixed = static_cast<float>(mat_fixed[idx]);
-        float val_float = mat_float[idx];
-        float diff = std::abs(val_fixed - val_float);
-        float max_val = (std::abs(val_fixed) > std::abs(val_float)) ? std::abs(val_fixed) : std::abs(val_float);
-		if (max_val < 1) {
-			if (diff < tolerance) diff_flag = false;
-			else diff_flag = true;
-		} else {
-			if (diff < tolerance * max_val) diff_flag = false;
-			else diff_flag = true;
-		}
-		if (diff_flag) {
-			mismatch_flag = true;
-			if (cnt < 500) {
-				std::cout << "idx: " << idx << ", float: " << mat_float[idx] << ", fixed: " << mat_fixed[idx] << std::endl;
-				cnt++;
-			}
-		}
-	}
-	if (mismatch_flag == 1) {
-		std::cout << "float and fixed result mismatch" << std::endl;
-	} else {
-		std::cout << "float and fixed result match" << std::endl;
-	}
+void read_bin_float(const std::string &filename, float *data, unsigned int size) {
+	FILE *file = fopen(filename.c_str(), "rb");
+	unsigned total_reads = fread(data, sizeof(float), size, file);
+	assert(size == total_reads && "read mismatch");
+	fclose(file);
 }
-*/
+
+template<typename T>
+void read_bin_fixed(const std::string &filename, T *data, unsigned int size) {
+	FILE *file = fopen(filename.c_str(), "rb");
+	unsigned total_reads = fread(data, sizeof(T), size, file);
+	assert(size == total_reads && "read mismatch");
+	fclose(file);
+}
 
 #endif
