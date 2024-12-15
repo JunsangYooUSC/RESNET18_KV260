@@ -23,7 +23,7 @@
 #include <cmath>
 #include <cassert>
 
-#define STRIDE              1
+#define STRIDE              2
 #define MAX_STRIDE          2
 // N
 #define NKX                 3
