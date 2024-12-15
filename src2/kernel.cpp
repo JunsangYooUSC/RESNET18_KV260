@@ -161,14 +161,14 @@ void kernel_func(DTYPE_ACT *in_host,
                                             DTYPE_MEM block = act_mem[0][idx1];
                                             val1.range() = block.range(W_ACT*(idx2+1)-1, W_ACT*(idx2));
                                         }
-                                        DTYPE_ACT val2 = in_fifo_arr[y][x].read();
+                                        DTYPE_ACT val2 = in_fifo_arr[y/STRIDE][x/STRIDE].read();
                                         if (val1 != val2) {
                                             std::cout << "f_in: " << std::setw(5) << f_in << " ";
                                             std::cout << "y0: " << std::setw(5) << y0 << " ";
-                                            std::cout << "y: " << std::setw(5) << y << " ";
+                                            std::cout << "y/STRIDE: " << std::setw(5) << y/STRIDE << " ";
                                             std::cout << "i: " << std::setw(5) << i << " ";
                                             std::cout << "x0: " << std::setw(5) << x0 << " ";
-                                            std::cout << "x: " << std::setw(5) << x << " ";
+                                            std::cout << "x/STRIDE: " << std::setw(5) << x/STRIDE << " ";
                                             std::cout << "j: " << std::setw(5) << j << " ";
                                             std::cout << "val1: " << std::setw(5) << (val1<<8) << " ";
                                             std::cout << "val2: " << std::setw(5) << (val2<<8) << std::endl;
