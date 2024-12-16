@@ -504,8 +504,11 @@ void batch_norm(
             for (int x0 = 0; x0 < nox; x0+=POX) {
                 // parallel
                 for (int f = 0; f < POF; f++) {
+#pragma unroll
                     for (int y = 0; y < POY; y++) {
+#pragma unroll                        
                         for (int x = 0; x < POX; x++) {
+#pragma unroll
                             float val;
                             val = in_fifo_arr[f][y][x].read();
                             // batch norm when enabled
@@ -517,6 +520,46 @@ void batch_norm(
                     }
                 }
 
+            }
+        }
+    }
+}
+
+void skip_conn(
+    DTYPE_MEM_ACT *mem_add,
+    hls::stream<float> in_fifo_arr[POF][POY][POX],
+    hls::stream<float> out_fifo_arr[POF][POY][POX],
+    unsigned int nof,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int bb_en,
+    unsigned int skip_en,
+    unsigned int relu_en
+) {
+    if (!bb_en) return;
+
+    for (int f_out = 0; f_out < nof; f_out+=POF) {
+        for (int y0 = 0; y0 < noy; y0+=POY) {
+            for (int x0 = 0; x0 < nox; x0+=POX) {
+                for (int f = 0; f < POF; f++) {
+#pragma unroll
+                    for (int y = 0; y < POY; y++) {
+#pragma unroll 
+                        for (int x = 0; x < POX; x++) {
+#pragma unroll
+                            float val = in_fifo_arr[f][u][x].read();
+                            if (skip_en) {
+                                unsigned add_addr = ((f_out+f)*noy*nox + (y0+y)*nox + x0) / POX;
+                                DTYPE_ACT add_val;
+                                add_val.range() = mem_add[add_addr].range(W_ACT*(x+1)-1, W_ACT*(x));
+                                val = val + (float)add_val;
+                            }
+                            if (relu_en) {
+                                val = (val > 0) ? val : 0;
+                            }
+                        }
+                    }
+                }
             }
         }
     }

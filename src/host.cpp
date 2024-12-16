@@ -24,6 +24,7 @@
 #include "kernel.h"
 #include "kernel_test.hpp"
 #include "kernel_test2.hpp"
+#include "kernel_test3.hpp"
 
 // Print the configuration information
 #define CHECK_CONFIG		1
