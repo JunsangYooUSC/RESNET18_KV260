@@ -182,7 +182,7 @@ void convolution_bn_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act, floa
 		for (int y = 0; y < noy; y++) {
 			for (int x = 0; x < nox; x++) {
 				int idx = f*noy*nox + y*nox + x;
-				float val = (float) out_act_mac;
+				float val = (float) out_act_mac[idx];
 				val = (val-mean)*var_mult*gamma+beta;
 				out_act[idx] = val;
 			}
