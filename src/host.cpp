@@ -104,7 +104,7 @@ void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act,
 }
 
 template<typename D_ACT, typename D_FILTER, typename D_MULT, typename D_MAC>
-void convolution_bn_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act, float bn_weight_mem,
+void convolution_bn_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act, float *bn_weight_mem,
 	unsigned int nky,
     unsigned int nkx,
     unsigned int nof,
