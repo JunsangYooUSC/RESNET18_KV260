@@ -11,8 +11,8 @@
  * - store_output: store output from on-chip memory to off-chip memory
  ******************************************************************************/
 
-#ifndef KERNEL_TEST_CPP
-#define KERNEL_TEST_CPP
+#ifndef KERNEL_TEST2_CPP
+#define KERNEL_TEST2_CPP
 
 #include <iomanip> // For std::setw
 
