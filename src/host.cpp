@@ -383,7 +383,7 @@ int main(){
 	}
 	convolution_bn_golden<float, float, float, float>(host_mem0, weight_mem0, host_mem1, bn_weight_mem0,
 			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
-	for (int idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W; i++) {
+	for (int idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W; idx++) {
 		host_mem1[idx] = (host_mem1[idx] > 0) ? host_mem1[idx] : 0;
 	}
 	convolution_bn_golden<float, float, float, float>(host_mem1, weight_mem1, host_mem2, bn_weight_mem1,
