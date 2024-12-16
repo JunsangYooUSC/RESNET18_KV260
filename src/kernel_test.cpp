@@ -11,8 +11,8 @@
  * - store_output: store output from on-chip memory to off-chip memory
  ******************************************************************************/
 
-#ifndef KERNEL_CPP
-#define KERNEL_CPP
+#ifndef KERNEL_TEST_CPP
+#define KERNEL_TEST_CPP
 
 #include <iomanip> // For std::setw
 
@@ -25,6 +25,7 @@
 #include "conv_config.h"
 #include "kernel.h"
 #include "kernel_func.hpp"
+#include "utils.h"
 
 // kernel function
 void kernel_func(
@@ -88,74 +89,79 @@ void kernel_func(
     bool max_pool_en;
     bool avg_pool_en;
     bool lin_en;
+    nif             = BB6_SKIP_C;
+    nof             = BB7_CONV1_C;
+    noy             = BB7_CONV1_H;
+    nox             = BB7_CONV1_W;
+    nkx             = BB7_CONV1_K;
+    nky             = BB7_CONV1_K;
+    stride          = BB7_CONV1_S;
+    pad             = BB7_CONV1_PAD;
+    bb_en           = BB7_CONV1_BB_EN;
+    conv_en         = BB7_CONV1_CONV_EN;
+    bn_en           = BB7_CONV1_BN_EN;
+    skip_en         = BB7_CONV1_SKIP_EN;
+    relu_en         = BB7_CONV1_RELU_EN;
+    max_pool_en     = BB7_CONV1_MAX_POOL;
+    avg_pool_en     = BB7_CONV1_AVG_POOL;
+    lin_en          = BB7_CONV1_LIN_EN;
+    mem_in          = mem0;
+    mem_out         = mem1;
+    unsigned niy = noy*stride;
+    unsigned nix = nox*stride;
+    
 
-
-    for (int opcnt = 0; opcnt < 3; opcnt++) {
-        if (opcnt == 0) {
-            nif             = BB6_SKIP_C;
-            nof             = BB7_CONV1_C;
-            noy             = BB7_CONV1_H;
-            nox             = BB7_CONV1_W;
-            nkx             = BB7_CONV1_K;
-            nky             = BB7_CONV1_K;
-            stride          = BB7_CONV1_S;
-            pad             = BB7_CONV1_PAD;
-            bb_en           = BB7_CONV1_BB_EN;
-            conv_en         = BB7_CONV1_CONV_EN;
-            bn_en           = BB7_CONV1_BN_EN;
-            skip_en         = BB7_CONV1_SKIP_EN;
-            relu_en         = BB7_CONV1_RELU_EN;
-            max_pool_en     = BB7_CONV1_MAX_POOL;
-            avg_pool_en     = BB7_CONV1_AVG_POOL;
-            lin_en          = BB7_CONV1_LIN_EN;
-            mem_in          = mem0;
-            mem_out         = mem1;
-        } 
-        else if (opcnt == 1) {
-            nif             = BB7_CONV1_C;
-            nof             = BB7_CONV2_C;
-            noy             = BB7_CONV2_H;
-            nox             = BB7_CONV2_W;
-            nkx             = BB7_CONV2_K;
-            nky             = BB7_CONV2_K;
-            stride          = BB7_CONV2_S;
-            pad             = BB7_CONV2_PAD;
-            bb_en           = BB7_CONV2_BB_EN;
-            conv_en         = BB7_CONV2_CONV_EN;
-            bn_en           = BB7_CONV2_BN_EN;
-            skip_en         = BB7_CONV2_SKIP_EN;
-            relu_en         = BB7_CONV2_RELU_EN;
-            max_pool_en     = BB7_CONV2_MAX_POOL;
-            avg_pool_en     = BB7_CONV2_AVG_POOL;
-            lin_en          = BB7_CONV2_LIN;
-            mem_in          = mem1;
-            mem_out         = mem2;
+    // load mem0, mem1, mem2 for testing
+    for (idx = 0; idx < nif*niy*nix/POX; idx++) {
+        DTYPE_MEM_ACT block;
+        for (x = 0; x < POX; x++) {
+            DTYPE_ACT val;
+            block.range(W_ACT*(x+1)-1, W_ACT*(x)) = in_host[idx*POX+x].range();
         }
-        else if (opcnt == 2) {
-            nif             = BB7_CONV2_C;
-            nof             = BB7_SKIP_C;
-            noy             = BB7_SKIP_H;
-            nox             = BB7_SKIP_W;
-            nkx             = BB7_SKIP_K;
-            nky             = BB7_SKIP_K;
-            stride          = BB7_SKIP_S;
-            pad             = BB7_SKIP_PAD;
-            bb_en           = BB7_SKIP_BB_EN;
-            conv_en         = BB7_SKIP_CONV_EN;
-            bn_en           = BB7_SKIP_BN_EN;
-            skip_en         = BB7_SKIP_SKIP_EN;
-            relu_en         = BB7_SKIP_RELU_EN;
-            max_pool_en     = BB7_SKIP_MAX_POOL;
-            avg_pool_en     = BB7_SKIP_AVG_POOL;
-            lin_en          = BB7_SKIP_LIN;
-            mem_in          = mem2;
-            mem_out         = mem1;
-            mem_add         = mem0;
-        }
-
-        // conv
-        
+        mem0[idx] = block;
     }
-}
+
+    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX];
+    #pragma HLS STREAM variable=out_fifo_arr depth=FIFO_ARR_DEPTH
+    // conv pass test
+    bb_en = 1;
+    conv_en = 0;
+    conv(mem0, weight_mem, out_fifo_arr,
+            0, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
+    
+    // consume
+    for (int out_f = 0; out_f < nof; out_f+=POF) {
+        for (int y0 = 0; y0 < noy; y0+=POY) {
+            for (int x0 = 0; x0 < nox; x0+=POX) {
+                for (int f = 0; f < POF; f++) {
+                    for (int y = 0; y < POY; y++) {
+                        for (int x = 0; x < POX; x++) {
+                            out_fifo_arr[f][y][x].read();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // conv test
+    bb_en = 1;
+    conv_en = 1;
+    conv(mem0, weight_mem, out_fifo_arr,
+            0, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
+    // consume
+    for (int out_f = 0; out_f < nof; out_f+=POF) {
+        for (int y0 = 0; y0 < noy; y0+=POY) {
+            for (int x0 = 0; x0 < nox; x0+=POX) {
+                for (int f = 0; f < POF; f++) {
+                    for (int y = 0; y < POY; y++) {
+                        for (int x = 0; x < POX; x++) {
+                            out_fifo_arr[f][y][x].read();
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 #endif

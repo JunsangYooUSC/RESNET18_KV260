@@ -397,6 +397,43 @@ void conv(
 }
 */
 
+
+void conv_pass(
+    DTYPE_MEM_ACT *mem_in,
+    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX],
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int stride,
+    unsigned int pad
+) {
+    for (int out_f = 0; out_f < nof; out_f+=POF) {
+        for (int y0 = 0; y0 < noy; y0+=POY) {
+            for (int x0 = 0; x0 < nox; x0+=POX) {
+                for (int f = 0; f < POF; f++) {
+#pragma HLS unroll
+                    for (int y = 0; y < POY; y++) {
+#pragma HLS unroll
+                        DTYPE_MEM_ACT block;
+                        unsigned mem_idx = (out_f+f)*noy*nox + (y0+y)*nox + x0;
+                        block = mem_in[mem_idx];
+                        for (int x = 0; x < POX; x++) {
+// #pragma HLS unroll
+                            DTYPE_ACT val;
+                            val.range() = block.range(W_ACT*(x+1)-1, W_ACT*x);
+                            out_fifo_arr[f][y][x].write(val);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
 void conv(
     DTYPE_MEM_ACT *mem_in,
     DTYPE_FIL *mem_fil,
@@ -410,23 +447,32 @@ void conv(
     unsigned int nox,
     unsigned int stride,
     unsigned int pad,
-    unsigned int en
+    unsigned int bb_en,
+    unsigned int conv_en
 ) {
-    if (!en) return;
+    if (!bb_en) return;
 
-    // fifo
-    hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX];
-    #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH
-    hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF];
-    #pragma HLS STREAM variable=weight_in_fifo_arr depth=FIFO_ARR_DEPTH
+    // pass convolution
+    if (!conv_en) {
+        conv_pass(mem_in, out_fifo_arr,
+                nky, nkx, nof, nif, noy, nox, stride, pad);
+    }
+    // convolution
+    else {
+        // fifo
+        hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX];
+        #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH
+        hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF];
+        #pragma HLS STREAM variable=weight_in_fifo_arr depth=FIFO_ARR_DEPTH
 
 // #pragma HLS DATAFLOW
-    BUF2PE_stride(mem_in, mac_in_fifo_arr,
-            nky, nkx, nof, nif, noy, nox, stride, pad);
-    load_weight_fifo(mem_fil, weight_in_fifo_arr,
-            weight_base_addr, nky, nkx, nof, nif, noy, nox);
-    PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
-            nky, nkx, nof, nif, noy, nox);
+        BUF2PE_stride(mem_in, mac_in_fifo_arr,
+                nky, nkx, nof, nif, noy, nox, stride, pad);
+        load_weight_fifo(mem_fil, weight_in_fifo_arr, weight_base_addr,
+                nky, nkx, nof, nif, noy, nox);
+        PE(mac_in_fifo_arr, weight_in_fifo_arr, out_fifo_arr,
+                nky, nkx, nof, nif, noy, nox);
+    }
 }
 
 #endif
