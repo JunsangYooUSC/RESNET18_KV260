@@ -281,7 +281,7 @@ void convolution_bn_skip_relu_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out
 			for (int x = 0; x < nox; x++) {
 				int idx = f*noy*nox + y*nox + x;
 				out_vals[idx] += add_act[idx];
-				out_act[idx] = (out_vals[idx] > 0) out_vals[idx] : (D_ACT) 0;
+				out_act[idx] = (out_vals[idx] > 0) ? out_vals[idx] : (D_ACT) 0;
 			}
 		}
 	}
