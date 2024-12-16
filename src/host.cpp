@@ -169,9 +169,9 @@ int main(){
 	compare_result<DTYPE_ACT, float, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
 
 	// kernel_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
-	//compare_result<DTYPE_ACT, float, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
 
 	kernel_test_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
+	compare_result<DTYPE_ACT, float, TOTAL_OUT_LEN>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
 
 	// print some results
 	// std::cout << "in_act_host[0]:" << in_act_host[0] << std::endl;

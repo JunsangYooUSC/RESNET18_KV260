@@ -111,7 +111,7 @@ void kernel_test_func(
     unsigned nix = nox*stride;
     
 
-    // load mem0, mem1, mem2 for testing
+    // load mem0 for testing
     for (int idx = 0; idx < nif*niy*nix/POX; idx++) {
         DTYPE_MEM_ACT block;
         for (int x = 0; x < POX; x++) {
@@ -150,17 +150,16 @@ void kernel_test_func(
     conv(mem0, weight_mem, out_fifo_arr,
             0, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
     // consume
-    for (int out_f = 0; out_f < nof; out_f+=POF) {
-        for (int y0 = 0; y0 < noy; y0+=POY) {
-            for (int x0 = 0; x0 < nox; x0+=POX) {
-                for (int f = 0; f < POF; f++) {
-                    for (int y = 0; y < POY; y++) {
-                        for (int x = 0; x < POX; x++) {
-                            out_fifo_arr[f][y][x].read();
-                        }
-                    }
-                }
-            }
+    store_output_fifo(mem1, out_fifo_arr,
+            nky, nkx, nof, nif, noy, nox);
+    
+    // store mem1
+    for (int idx = 0; idx < nof*noy*nox/POX; idx++) {
+        DTYPE_MEM_ACT block;
+        block = mem1[idx];
+        for (int x = 0; x < POX; x++) {
+            DTYPE_ACT val;
+            out_host[idx*POX+x].range() = block.range(W_ACT*(x+1)-1, W_ACT*(x));
         }
     }
 }
