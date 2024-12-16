@@ -114,7 +114,7 @@ void kernel_test_func(
     // load mem0, mem1, mem2 for testing
     for (int idx = 0; idx < nif*niy*nix/POX; idx++) {
         DTYPE_MEM_ACT block;
-        for (x = 0; x < POX; x++) {
+        for (int x = 0; x < POX; x++) {
             DTYPE_ACT val;
             block.range(W_ACT*(x+1)-1, W_ACT*(x)) = in_host[idx*POX+x].range();
         }
