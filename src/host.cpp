@@ -330,15 +330,15 @@ int main(){
 	gen_rand<DTYPE_ACT, BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W>(in_act_host, -1, 1);
 	gen_rand<DTYPE_ACT, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(in_add_host, -1, 1);
 	// gen_rand<DTYPE_FIL, TOTAL_FIL_LEN>(in_fil_host, -1, 1);
-	for (int idx = 0; idx < BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W; idx++) {
-		in_act_host_float[idx] = in_act_host[idx];
-	}
-	for (int idx = 0; idx < BB6_SKIP_C * BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W; idx++) {
-		in_fil_host_float[idx] = weight_mem[idx];
-	}
-	for (int idx = 0; idx < BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W; idx++) {
-		in_add_host_float[idx] = in_add_host[idx];
-	}
+	// for (int idx = 0; idx < BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W; idx++) {
+	// 	in_act_host_float[idx] = in_act_host[idx];
+	// }
+	// for (int idx = 0; idx < BB6_SKIP_C * BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W; idx++) {
+	// 	in_fil_host_float[idx] = weight_mem[idx];
+	// }
+	// for (int idx = 0; idx < BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W; idx++) {
+	// 	in_add_host_float[idx] = in_add_host[idx];
+	// }
 
 	// golden convolution result with fixed point and float
 // 	convolution_golden<DTYPE_ACT, DTYPE_FIL, DTYPE_MUL, DTYPE_MAC>(in_act_host, weight_mem, out_act_host,
