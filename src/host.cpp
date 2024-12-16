@@ -309,23 +309,23 @@ int main(){
 	// std::cout << "weight_mem[BB7_CONV2_WEIGHT_BASE]: " << weight_mem[BB7_CONV2_WEIGHT_BASE] << std::endl;
 	// std::cout << "weight_mem[BB7_CONV2_WEIGHT_BASE+1]: " << weight_mem[BB7_CONV2_WEIGHT_BASE+1] << std::endl;
 	
-//	// read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
-//	gen_rand<DTYPE_FIL, BB7_CONV1_CONV_WEIGHT_SIZE>(weight_mem+BB7_CONV1_WEIGHT_BASE, -1, 1);
-//	gen_rand<DTYPE_FIL, BB7_CONV2_CONV_WEIGHT_SIZE>(weight_mem+BB7_CONV2_WEIGHT_BASE, -1, 1);
-//	gen_rand<DTYPE_FIL, BB7_SKIP_CONV_WEIGHT_SIZE>(weight_mem+BB7_SKIP_WEIGHT_BASE, -1, 1);
-//	gen_rand<float, BB7_CONV1_BN_WEIGHT_SIZE>(bn_weight_mem+BB7_CONV1_BN_WEIGHT_BASE, -0.5,0.5);
-//	gen_rand<float, BB7_CONV2_BN_WEIGHT_SIZE>(bn_weight_mem+BB7_CONV2_BN_WEIGHT_BASE, -0.5,0.5);
-//	gen_rand<float, BB7_SKIP_BN_WEIGHT_SIZE>(bn_weight_mem+BB7_SKIP_BN_WEIGHT_BASE, -0.5,0.5);
-//
-//	// host-side data
-//	DTYPE_ACT in_act_host[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
-//	// DTYPE_FIL in_fil_host[TOTAL_FIL_LEN];
-//	DTYPE_ACT out_act_host[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
-//	DTYPE_ACT in_add_host[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
-//	float in_act_host_float[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
-//	float in_fil_host_float[BB6_SKIP_C * BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
-//	float out_act_host_float[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
-//	float in_add_host_float[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
+	// read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
+	gen_rand<DTYPE_FIL, BB7_CONV1_CONV_WEIGHT_SIZE>(weight_mem+BB7_CONV1_WEIGHT_BASE, -1, 1);
+	gen_rand<DTYPE_FIL, BB7_CONV2_CONV_WEIGHT_SIZE>(weight_mem+BB7_CONV2_WEIGHT_BASE, -1, 1);
+	gen_rand<DTYPE_FIL, BB7_SKIP_CONV_WEIGHT_SIZE>(weight_mem+BB7_SKIP_WEIGHT_BASE, -1, 1);
+	gen_rand<float, BB7_CONV1_BN_WEIGHT_SIZE>(bn_weight_mem+BB7_CONV1_BN_WEIGHT_BASE, -0.5,0.5);
+	gen_rand<float, BB7_CONV2_BN_WEIGHT_SIZE>(bn_weight_mem+BB7_CONV2_BN_WEIGHT_BASE, -0.5,0.5);
+	gen_rand<float, BB7_SKIP_BN_WEIGHT_SIZE>(bn_weight_mem+BB7_SKIP_BN_WEIGHT_BASE, -0.5,0.5);
+
+	// host-side data
+	DTYPE_ACT in_act_host[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
+	// DTYPE_FIL in_fil_host[TOTAL_FIL_LEN];
+	DTYPE_ACT out_act_host[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
+	DTYPE_ACT in_add_host[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
+	float in_act_host_float[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
+	float in_fil_host_float[BB6_SKIP_C * BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
+	float out_act_host_float[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
+	float in_add_host_float[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
 //	// generate random input activation and filter value with float
 //	gen_rand<DTYPE_ACT, BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W>(in_act_host, -1, 1);
 //	gen_rand<DTYPE_ACT, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(in_add_host, -1, 1);
