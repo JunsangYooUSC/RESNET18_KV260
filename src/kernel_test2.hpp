@@ -135,7 +135,7 @@ void kernel_test2_func(
     batch_norm(bn_weight_mem, fifo1, fifo2,
             0, nof, noy, nox, bb_en, bn_en);
     // consume
-    store_output_fifo(mem1, out_fifo_arr,
+    store_output_fifo(mem1, fifo2,
             nky, nkx, nof, nif, noy, nox);
     
     // store mem1
