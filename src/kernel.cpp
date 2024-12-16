@@ -493,19 +493,19 @@ void batch_norm(
     float var_mult[POF];
     float gamma[POF];
     float beta[POF];
-    for (f_out = 0; f_out < nof; f_out+=POF) {
+    for (int f_out = 0; f_out < nof; f_out+=POF) {
         for (int f = 0; f < POF; f++) {
             mean[f] = bn_weight_mem[f_out+f];
             var_mult[f] = bn_weight_mem[f_out+f+nof];
             gamma[f] = bn_weight_mem[f_out+f+nof*2];
             beta[f] = bn_weight_mem[f_out+f+nof*3];
         }
-        for (y0 = 0; y0 < noy; y0+=POY) {
-            for (x0 = 0; x0 < nox; x0+=POX) {
+        for (int y0 = 0; y0 < noy; y0+=POY) {
+            for (int x0 = 0; x0 < nox; x0+=POX) {
                 // parallel
-                for (f = 0; f < POF; f++) {
-                    for (y = 0; y < POY; y++) {
-                        for (x = 0; x < POX; x++) {
+                for (int f = 0; f < POF; f++) {
+                    for (int y = 0; y < POY; y++) {
+                        for (int x = 0; x < POX; x++) {
                             float val;
                             val = in_fifo_arr[f][y][x].read();
                             // batch norm when enabled
