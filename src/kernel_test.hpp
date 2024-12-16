@@ -121,7 +121,7 @@ void kernel_test_func(
         mem0[idx] = block;
     }
 
-    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX];
+    hls::stream<float> out_fifo_arr[POF][POY][POX];
     #pragma HLS STREAM variable=out_fifo_arr depth=FIFO_ARR_DEPTH
     // conv pass test
     bb_en = 1;
