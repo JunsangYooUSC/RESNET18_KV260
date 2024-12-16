@@ -367,5 +367,6 @@ int main(){
 			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
 	kernel_test3_func(in_act_host, in_add_host, weight_mem, bn_weight_mem, out_act_host);
 
+	
 	kernel_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
 }

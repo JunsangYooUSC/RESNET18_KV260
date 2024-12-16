@@ -740,6 +740,8 @@ void kernel_func(
                 bn_weight_base, nof, noy, nox, bb_en, bn_en);
         skip_conn(mem_add, fifo2, fifo3,
                 nof, noy, nox, bb_en, skip_en, relu_en);
+        store_output_fifo(mem_out, fifo3,
+                nky, nkx, nof, nif, noy, nox);
         
         // output back to host
         if (opcnt == 2) {
