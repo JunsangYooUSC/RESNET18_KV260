@@ -112,7 +112,7 @@ void kernel_test_func(
     
 
     // load mem0, mem1, mem2 for testing
-    for (idx = 0; idx < nif*niy*nix/POX; idx++) {
+    for (int idx = 0; idx < nif*niy*nix/POX; idx++) {
         DTYPE_MEM_ACT block;
         for (x = 0; x < POX; x++) {
             DTYPE_ACT val;
