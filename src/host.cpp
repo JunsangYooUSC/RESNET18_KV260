@@ -23,7 +23,7 @@
 #include "host_utils.h"
 #include "kernel.h"
 #include "kernel_test.hpp"
-#include "kernel_tes2.hpp"
+#include "kernel_test2.hpp"
 
 // Print the configuration information
 #define CHECK_CONFIG		1
@@ -256,8 +256,8 @@ int main(){
 
 	// kernel_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
 
-	//kernel_test_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
-	//compare_result<DTYPE_ACT, float, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
+	kernel_test_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
+	compare_result<DTYPE_ACT, float, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
 
 	// conv with bn
 	convolution_bn_golden<DTYPE_ACT, DTYPE_FIL, DTYPE_MUL, DTYPE_MAC>(in_act_host, weight_mem, out_act_host, bn_weight_mem,
