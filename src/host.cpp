@@ -191,6 +191,102 @@ void convolution_bn_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act, floa
 	}
 }
 
+template<typename D_ACT, typename D_FILTER, typename D_MULT, typename D_MAC>
+void convolution_bn_skip_relu_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act, float *bn_weight_mem, D_ACT *add_act,
+	unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox,
+	unsigned int stride,
+	unsigned int pad
+) {
+	// create output MAC and initialize to 0
+	D_MAC out_act_mac[nof*noy*nox];
+	float out_vals[nof*noy*nox];
+	for (int idx = 0; idx < nof*noy*nox; idx++) {
+		out_act_mac[idx] = 0;
+	}
+	unsigned int nix = nox*stride;
+	unsigned int niy = noy*stride;
+	for (int kdx = 0; kdx < nif; kdx++) {
+		for (int ndx = 0; ndx < niy; ndx += stride) {
+			for (int mdx = 0; mdx < nix; mdx += stride) {
+				for (int cdx = 0; cdx < nof; cdx++) {
+					for (int hdx = 0; hdx < nky; hdx++) {
+						for (int wdx = 0; wdx < nkx; wdx++) {
+
+							D_ACT in_act_element;
+							// when accessing zero padded index
+							if ( (ndx + hdx < pad) || (ndx + hdx >= niy + pad) || (mdx + wdx < pad) || (mdx + wdx >= nix + pad) ) {
+								in_act_element = 0;
+							}
+							else {
+								// input address calc
+								unsigned int in_addr = kdx * niy * nix;
+								in_addr += (ndx + hdx - pad) * nix + (mdx + wdx - pad);
+								// load input
+								in_act_element = in_act[in_addr];
+								if (in_addr >= nif*niy*nix) {
+									std::cout << "input index out-of-bounds: " << in_addr << std::endl;
+								}
+							}
+
+							// filter address calc
+							unsigned int filter_addr = cdx * nif * nky * nkx;
+							filter_addr += kdx * nky * nkx;
+							filter_addr += hdx * nkx;
+							filter_addr += wdx;
+							// load filter
+							D_FILTER in_fil_element = in_fil[filter_addr];
+							if (filter_addr >= nof*nif*nky*nkx) {
+								std::cout << "filter index out-of-bounds: " << filter_addr << std::endl;
+							}
+
+							// mult
+							D_MULT mult_element = in_act_element * in_fil_element;
+
+							// output address calc
+							unsigned int out_addr = cdx * noy * nox;
+							out_addr += ndx / stride * nox + mdx / stride;
+							if (out_addr >= nof*noy*nox) {
+								std::cout << "fioutputlter index out-of-bounds: " << out_addr << std::endl;
+							}
+							// load output mac
+							out_act_mac[out_addr] += mult_element;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for (int f = 0; f < nof; f++) {
+		float mean = bn_weight_mem[f];
+		float var_mult = bn_weight_mem[f+nof];
+		float gamma = bn_weight_mem[f+2*nof];
+		float beta = bn_weight_mem[f+3*nof];
+		for (int y = 0; y < noy; y++) {
+			for (int x = 0; x < nox; x++) {
+				int idx = f*noy*nox + y*nox + x;
+				float val = (float) out_act_mac[idx];
+				val = (val-mean)*var_mult*gamma+beta;
+				out_vals[idx] = val;
+			}
+		}
+	}
+	for (int f = 0; f < nof; f++) {
+		for (int y = 0; y < noy; y++) {
+			for (int x = 0; x < nox; x++) {
+				int idx = f*noy*nox + y*nox + x;
+				out_vals[idx] += add_act[idx];
+				out_act[idx] = (out_vals[idx] > 0) out_vals[idx] : (D_ACT) 0;
+			}
+		}
+	}
+}
+
 int main(){
 	// Print configuration information
 #if CHECK_CONFIG
@@ -231,17 +327,23 @@ int main(){
 	DTYPE_ACT in_act_host[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
 	// DTYPE_FIL in_fil_host[TOTAL_FIL_LEN];
 	DTYPE_ACT out_act_host[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
+	DTYPE_ACT in_add_host[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
 	float in_act_host_float[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
 	float in_fil_host_float[BB6_SKIP_C * BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
 	float out_act_host_float[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
+	float in_add_host_float[BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W];
 	// generate random input activation and filter value with float
 	gen_rand<DTYPE_ACT, BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W>(in_act_host, -1, 1);
+	gen_rand<DTYPE_ACT, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(in_add_host, -1, 1);
 	// gen_rand<DTYPE_FIL, TOTAL_FIL_LEN>(in_fil_host, -1, 1);
 	for (int idx = 0; idx < BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W; idx++) {
 		in_act_host_float[idx] = in_act_host[idx];
 	}
 	for (int idx = 0; idx < BB6_SKIP_C * BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W; idx++) {
 		in_fil_host_float[idx] = weight_mem[idx];
+	}
+	for (int idx = 0; idx < BB6_SKIP_C * BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W; idx++) {
+		in_add_host_float[idx] = in_add_host[idx];
 	}
 
 	// golden convolution result with fixed point and float
@@ -266,6 +368,10 @@ int main(){
 	kernel_test2_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
 	compare_result<DTYPE_ACT, float, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
 
+	// conv, bn, skip conn, relu
+	convolution_bn_skip_relu_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_mem, in_add_host_float,
+			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
+	kernel_test3_func(in_act_host, in_add_host, weight_mem, bn_weight_mem, out_act_host);
 	// print some results
 	// std::cout << "in_act_host[0]:" << in_act_host[0] << std::endl;
 	// std::cout << "in_act_host_float[0]:" << in_act_host_float[0] << std::endl;

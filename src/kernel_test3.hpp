@@ -28,8 +28,9 @@
 #include "utils.h"
 
 // kernel function
-void kernel_test2_func(
+void kernel_test3_func(
     DTYPE_ACT *in_host,
+    DTYPE_ACT *add_host,
     DTYPE_FIL *weight_mem,
     float *bn_weight_mem,
     // DTYPE_MEM_WEIGHT *weight_mem,
@@ -124,18 +125,22 @@ void kernel_test2_func(
     #pragma HLS STREAM variable=fifo1 depth=FIFO_ARR_DEPTH
     hls::stream<float> fifo2[POF][POY][POX];
     #pragma HLS STREAM variable=fifo2 depth=FIFO_ARR_DEPTH
+    hls::stream<DTYPE_ACT> fifo3[POF][POY][POX];
+    #pragma HLS STREAM variable=fifo3 depth=FIFO_ARR_DEPTH
 
     // conv and bn test
     bb_en = 1;
     conv_en = 1;
     bn_en = 1;
+    skip_en = 1;
     relu_en = 1;
     conv(mem0, weight_mem, fifo1,
             0, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
     batch_norm(bn_weight_mem, fifo1, fifo2,
             0, nof, noy, nox, bb_en, bn_en);
-    // consume
-    store_output_fifo(mem1, fifo2,
+    skip_conn(mem_add, fifo2, fifo3,
+            nof, noy, nox, bb_en, skip_en, relu_en);
+    store_output_fifo(mem1, fifo3,
             nky, nkx, nof, nif, noy, nox);
     
     // store mem1
