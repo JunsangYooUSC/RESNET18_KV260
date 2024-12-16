@@ -476,9 +476,9 @@ void conv(
     }
 }
 
-void batch_norm(
-    DTYPE_
-)
+// void batch_norm(
+//     DTYPE_
+// )
 
 // kernel function
 void kernel_func(
