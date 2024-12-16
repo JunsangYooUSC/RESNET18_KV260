@@ -125,7 +125,7 @@ void kernel_test3_func(
     #pragma HLS STREAM variable=fifo1 depth=FIFO_ARR_DEPTH
     hls::stream<float> fifo2[POF][POY][POX];
     #pragma HLS STREAM variable=fifo2 depth=FIFO_ARR_DEPTH
-    hls::stream<DTYPE_ACT> fifo3[POF][POY][POX];
+    hls::stream<float> fifo3[POF][POY][POX];
     #pragma HLS STREAM variable=fifo3 depth=FIFO_ARR_DEPTH
 
     // conv and bn test
