@@ -377,11 +377,11 @@ int main(){
 	convolution_bn_golden<float, float, float, float>(host_mem0, weight_mem+BB7_CONV2_WEIGHT_BASE, host_mem1, bn_weight_mem+BB7_CONV2_BN_WEIGHT_BASE,
 			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
 	for (int idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W) {
-		host_mem1[idx] = (host_mem1[idx] > 0) host_mem1[idx] : 0;
+		host_mem1[idx] = (host_mem1[idx] > 0) ? host_mem1[idx] : 0;
 	}
 	convolution_bn_golden<float, float, float, float>(host_mem1, weight_mem, host_mem2, bn_weight_mem,
 			BB7_CONV2_K, BB7_CONV2_K, BB7_CONV2_C, BB7_CONV1_C, BB7_CONV2_H, BB7_CONV2_W, BB7_CONV2_S, BB7_CONV2_PAD);
-	convolution_bn_skip_relu_golden<float, float, float, float>(host_mem2, weight_mem+BB7_SKIP_WEIGHT_BASE, host_mem1, bn_weight_mem+BB7_SKIP_BN_WEIGHT_BASE, host_mem0,
+	convolution_bn_skip_relu_golden<float, float, float, float>(host_mem0, weight_mem+BB7_SKIP_WEIGHT_BASE, host_mem1, bn_weight_mem+BB7_SKIP_BN_WEIGHT_BASE, host_mem2,
 			BB7_SKIP_K, BB7_SKIP_K, BB7_SKIP_C, BB7_CONV2_C, BB7_SKIP_H, BB7_SKIP_W, BB7_SKIP_S, BB7_SKIP_PAD);
 	
 	kernel_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
