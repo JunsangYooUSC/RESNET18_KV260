@@ -363,9 +363,9 @@ int main(){
 	compare_result<DTYPE_ACT, float, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
 
 	// conv, bn, skip conn, relu
-	// convolution_bn_skip_relu_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_mem, in_add_host_float,
-	// 		BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
-	// kernel_test3_func(in_act_host, in_add_host, weight_mem, bn_weight_mem, out_act_host);
+	convolution_bn_skip_relu_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_mem, in_add_host_float,
+			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
+	kernel_test3_func(in_act_host, in_add_host, weight_mem, bn_weight_mem, out_act_host);
 	// print some results
 	// std::cout << "in_act_host[0]:" << in_act_host[0] << std::endl;
 	// std::cout << "in_act_host_float[0]:" << in_act_host_float[0] << std::endl;
