@@ -14,7 +14,7 @@ void kernel_func(DTYPE_ACT *in_host, DTYPE_FIL *weight_mem, float *bn_weight_mem
 void PE(
     hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
     hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF],
-    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX],
+    hls::stream<float> out_fifo_arr[POF][POY][POX],
     unsigned int nky,
     unsigned int nkx,
     unsigned int nof,
@@ -50,7 +50,7 @@ void load_weight_fifo(
 
 void store_output_fifo(
     DTYPE_MEM_ACT *mem,
-    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX],
+    hls::stream<float> out_fifo_arr[POF][POY][POX],
     unsigned int nky,
     unsigned int nkx,
     unsigned int nof,
@@ -61,7 +61,7 @@ void store_output_fifo(
 
 void conv_pass(
     DTYPE_MEM_ACT *mem_in,
-    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX],
+    hls::stream<float> out_fifo_arr[POF][POY][POX],
     unsigned int nky,
     unsigned int nkx,
     unsigned int nof,
@@ -75,7 +75,7 @@ void conv_pass(
 void conv(
     DTYPE_MEM_ACT *mem_in,
     DTYPE_FIL *mem_fil,
-    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX],
+    hls::stream<float> out_fifo_arr[POF][POY][POX],
     unsigned int weight_base_addr,
     unsigned int nky,
     unsigned int nkx,
