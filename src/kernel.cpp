@@ -547,7 +547,7 @@ void skip_conn(
 #pragma unroll 
                         for (int x = 0; x < POX; x++) {
 #pragma unroll
-                            float val = in_fifo_arr[f][u][x].read();
+                            float val = in_fifo_arr[f][y][x].read();
                             if (skip_en) {
                                 unsigned add_addr = ((f_out+f)*noy*nox + (y0+y)*nox + x0) / POX;
                                 DTYPE_ACT add_val;
