@@ -28,7 +28,7 @@
 #include "utils.h"
 
 // kernel function
-void kernel_func(
+void kernel_test_func(
     DTYPE_ACT *in_host,
     DTYPE_FIL *weight_mem,
     float *bn_weight_mem,
@@ -163,5 +163,5 @@ void kernel_func(
             }
         }
     }
-
+}
 #endif
