@@ -112,7 +112,7 @@ void kernel_test3_func(
     unsigned nix = nox*stride;
     
 
-    // load mem0 for testing
+    // load mem0 and mem2 for testing
     for (int idx = 0; idx < nif*niy*nix/POX; idx++) {
         DTYPE_MEM_ACT block;
         for (int x = 0; x < POX; x++) {
@@ -120,6 +120,14 @@ void kernel_test3_func(
             block.range(W_ACT*(x+1)-1, W_ACT*(x)) = in_host[idx*POX+x].range();
         }
         mem0[idx] = block;
+    }
+    for (int idx = 0; idx < nof*noy*nox/POX; idx++) {
+        DTYPE_MEM_ACT block;
+        for (int x = 0; x < POX; x++) {
+            DTYPE_ACT val;
+            block.range(W_ACT*(x+1)-1, W_ACT*(x)) = add_host[idx*POX+x].range();
+        }
+        mem2[idx] = block;
     }
     hls::stream<float> fifo1[POF][POY][POX];
     #pragma HLS STREAM variable=fifo1 depth=FIFO_ARR_DEPTH
@@ -138,7 +146,7 @@ void kernel_test3_func(
             0, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
     batch_norm(bn_weight_mem, fifo1, fifo2,
             0, nof, noy, nox, bb_en, bn_en);
-    skip_conn(mem_add, fifo2, fifo3,
+    skip_conn(mem2, fifo2, fifo3,
             nof, noy, nox, bb_en, skip_en, relu_en);
     store_output_fifo(mem1, fifo3,
             nky, nkx, nof, nif, noy, nox);
