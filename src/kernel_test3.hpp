@@ -142,23 +142,23 @@ void kernel_test3_func(
     bn_en = 1;
     skip_en = 1;
     relu_en = 1;
-    //conv(mem0, weight_mem, fifo1,
-    //        0, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
-    //batch_norm(bn_weight_mem, fifo1, fifo2,
-    //        0, nof, noy, nox, bb_en, bn_en);
-    //skip_conn(mem2, fifo2, fifo3,
-    //        nof, noy, nox, bb_en, skip_en, relu_en);
-    //store_output_fifo(mem1, fifo3,
-    //        nky, nkx, nof, nif, noy, nox);
-    //
-    //// store mem1
-    //for (int idx = 0; idx < nof*noy*nox/POX; idx++) {
-    //    DTYPE_MEM_ACT block;
-    //    block = mem1[idx];
-    //    for (int x = 0; x < POX; x++) {
-    //        DTYPE_ACT val;
-    //        out_host[idx*POX+x].range() = block.range(W_ACT*(x+1)-1, W_ACT*(x));
-    //    }
-    //}
+    conv(mem0, weight_mem, fifo1,
+            0, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
+    batch_norm(bn_weight_mem, fifo1, fifo2,
+            0, nof, noy, nox, bb_en, bn_en);
+    skip_conn(mem2, fifo2, fifo3,
+            nof, noy, nox, bb_en, skip_en, relu_en);
+    store_output_fifo(mem1, fifo3,
+            nky, nkx, nof, nif, noy, nox);
+    
+    // store mem1
+    for (int idx = 0; idx < nof*noy*nox/POX; idx++) {
+        DTYPE_MEM_ACT block;
+        block = mem1[idx];
+        for (int x = 0; x < POX; x++) {
+            DTYPE_ACT val;
+            out_host[idx*POX+x].range() = block.range(W_ACT*(x+1)-1, W_ACT*(x));
+        }
+    }
 }
 #endif

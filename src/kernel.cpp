@@ -595,7 +595,7 @@ void kernel_func(
     DTYPE_MEM_ACT mem2[MEM2_SIZE];
     #pragma HLS bind_storage variable=mem2 impl=uram
     #pragma HLS ARRAY_PARTITION variable=mem2 dim=1 complete
-
+    DTYPE_MEM_ACT mem3[16];
     // off-chip memory
     // DTYPE_MEM_WEIGHT weight_mem[WEIGHT_MEM_SIZE];
     #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0
@@ -628,7 +628,18 @@ void kernel_func(
     bool max_pool_en;
     bool avg_pool_en;
     bool lin_en;
+    unsigned weight_base;
+    unsigned weight_size;
+    unsigned bn_weight_base;
+    unsigned bn_weight_size;
 
+    // global pipes
+    hls::stream<float> fifo1[POF][POY][POX];
+    #pragma HLS STREAM variable=fifo1 depth=FIFO_ARR_DEPTH
+    hls::stream<float> fifo2[POF][POY][POX];
+    #pragma HLS STREAM variable=fifo2 depth=FIFO_ARR_DEPTH
+    hls::stream<float> fifo3[POF][POY][POX];
+    #pragma HLS STREAM variable=fifo3 depth=FIFO_ARR_DEPTH
 
     for (int opcnt = 0; opcnt < 3; opcnt++) {
         if (opcnt == 0) {
@@ -650,6 +661,11 @@ void kernel_func(
             lin_en          = BB7_CONV1_LIN_EN;
             mem_in          = mem0;
             mem_out         = mem1;
+            mem_add         = mem3;
+            weight_base     = BB7_CONV1_WEIGHT_BASE;
+            weight_size     = BB7_CONV1_CONV_WEIGHT_SIZE;
+            bn_weight_base  = BB7_CONV1_BN_WEIGHT_BASE;
+            bn_weight_size  = BB7_CONV1_BN_WEIGHT_SIZE;
         } 
         else if (opcnt == 1) {
             nif             = BB7_CONV1_C;
@@ -670,6 +686,11 @@ void kernel_func(
             lin_en          = BB7_CONV2_LIN;
             mem_in          = mem1;
             mem_out         = mem2;
+            mem_add         = mem3;
+            weight_base     = BB7_CONV2_WEIGHT_BASE;
+            weight_size     = BB7_CONV2_CONV_WEIGHT_SIZE;
+            bn_weight_base  = BB7_CONV2_BN_WEIGHT_BASE;
+            bn_weight_size  = BB7_CONV2_BN_WEIGHT_SIZE;
         }
         else if (opcnt == 2) {
             nif             = BB7_CONV2_C;
@@ -688,13 +709,40 @@ void kernel_func(
             max_pool_en     = BB7_SKIP_MAX_POOL;
             avg_pool_en     = BB7_SKIP_AVG_POOL;
             lin_en          = BB7_SKIP_LIN;
-            mem_in          = mem2;
+            mem_in          = mem0;
             mem_out         = mem1;
-            mem_add         = mem0;
+            mem_add         = mem2;
+            weight_base     = BB7_SKIP_WEIGHT_BASE;
+            weight_size     = BB7_SKIP_CONV_WEIGHT_SIZE;
+            bn_weight_base  = BB7_SKIP_BN_WEIGHT_BASE;
+            bn_weight_size  = BB7_SKIP_BN_WEIGHT_SIZE;
         }
 
-        // conv
-
+//        // initial input
+//        if (opcnt == 0) {
+//            int niy = noy*stride;
+//            int nix = nox*stride;
+//            // load mem_in with input
+//            for (int idx = 0; idx < nif*niy*nix/POX; idx++) {
+//                DTYPE_MEM_ACT block;
+//                for (int x = 0; x < POX; x++) {
+//                    DTYPE_ACT val;
+//                    block.range(W_ACT*(x+1)-1, W_ACT*(x)) = in_host[idx*POX+x].range();
+//                }
+//                mem_in[idx] = block;
+//            }
+//        }
+//
+//        // conv
+//        conv(mem_in, weight_mem, fifo1,
+//                weight_base, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
+//        batch_norm(bn_weight_mem, fifo1, fifo2,
+//                bn_weight_base, nof, noy, nox, bb_en, bn_en);
+//        skip_conn(mem_add, fifo2, fifo3,
+//                nof, noy, nox, bb_en, skip_en, relu_en);
+//        
+//        // output back to host
+//        
     }
 }
 

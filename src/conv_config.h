@@ -534,9 +534,9 @@ constexpr unsigned BB7_CONV2_BN_WEIGHT_SIZE = 4 * BB7_CONV2_C;
 #define BB7_SKIP_MAX_POOL       0
 #define BB7_SKIP_AVG_POOL       0
 #define BB7_SKIP_LIN            0
-#define BB7_SKIP_IN_MEM         2
+#define BB7_SKIP_IN_MEM         0
 #define BB7_SKIP_OUT_MEM        1
-#define BB7_SKIP_SKIP_MEM       0
+#define BB7_SKIP_SKIP_MEM       2
 constexpr unsigned BB7_SKIP_WEIGHT_BASE = BB7_CONV2_WEIGHT_BASE + BB7_CONV2_CONV_WEIGHT_SIZE;
 constexpr unsigned BB7_SKIP_CONV_WEIGHT_SIZE = BB7_CONV2_C * BB7_SKIP_C * BB7_SKIP_K * BB7_SKIP_K / WEIGHT_PACK;
 constexpr unsigned BB7_SKIP_BN_WEIGHT_BASE = BB7_CONV2_BN_WEIGHT_BASE + BB7_CONV2_BN_WEIGHT_SIZE;
