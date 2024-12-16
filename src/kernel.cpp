@@ -718,31 +718,40 @@ void kernel_func(
             bn_weight_size  = BB7_SKIP_BN_WEIGHT_SIZE;
         }
 
-//        // initial input
-//        if (opcnt == 0) {
-//            int niy = noy*stride;
-//            int nix = nox*stride;
-//            // load mem_in with input
-//            for (int idx = 0; idx < nif*niy*nix/POX; idx++) {
-//                DTYPE_MEM_ACT block;
-//                for (int x = 0; x < POX; x++) {
-//                    DTYPE_ACT val;
-//                    block.range(W_ACT*(x+1)-1, W_ACT*(x)) = in_host[idx*POX+x].range();
-//                }
-//                mem_in[idx] = block;
-//            }
-//        }
-//
-//        // conv
-//        conv(mem_in, weight_mem, fifo1,
-//                weight_base, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
-//        batch_norm(bn_weight_mem, fifo1, fifo2,
-//                bn_weight_base, nof, noy, nox, bb_en, bn_en);
-//        skip_conn(mem_add, fifo2, fifo3,
-//                nof, noy, nox, bb_en, skip_en, relu_en);
-//        
-//        // output back to host
-//        
+        // initial input
+        if (opcnt == 0) {
+            int niy = noy*stride;
+            int nix = nox*stride;
+            // load mem_in with input
+            for (int idx = 0; idx < nif*niy*nix/POX; idx++) {
+                DTYPE_MEM_ACT block;
+                for (int x = 0; x < POX; x++) {
+                    DTYPE_ACT val;
+                    block.range(W_ACT*(x+1)-1, W_ACT*(x)) = in_host[idx*POX+x].range();
+                }
+                mem_in[idx] = block;
+            }
+        }
+
+        // conv
+        conv(mem_in, weight_mem, fifo1,
+                weight_base, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
+        batch_norm(bn_weight_mem, fifo1, fifo2,
+                bn_weight_base, nof, noy, nox, bb_en, bn_en);
+        skip_conn(mem_add, fifo2, fifo3,
+                nof, noy, nox, bb_en, skip_en, relu_en);
+        
+        // output back to host
+        if (opcnt == 2) {
+            for (int idx = 0; idx < nof*noy*nox/POX; idx++) {
+                DTYPE_MEM_ACT block;
+                block = mem1[idx];
+                for (int x = 0; x < POX; x++) {
+                    DTYPE_ACT val;
+                    out_host[idx*POX+x].range() = block.range(W_ACT*(x+1)-1, W_ACT*(x));
+                }
+            }
+        }
     }
 }
 
