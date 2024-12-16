@@ -336,7 +336,7 @@ int main(){
 	for (int idx = 0; idx < BB6_SKIP_C * BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W; idx++) {
 		in_fil_host_float[idx] = weight_mem[idx];
 	}
-	for (int idx = 0; idx < BB6_SKIP_C * BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W; idx++) {
+	for (int idx = 0; idx < BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W; idx++) {
 		in_add_host_float[idx] = in_add_host[idx];
 	}
 
