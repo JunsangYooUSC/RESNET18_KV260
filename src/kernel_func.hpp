@@ -25,77 +25,6 @@
 // Include project headers
 #include "conv_config.h"
 
-void PE(
-    hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
-    hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF],
-    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX],
-    unsigned int nky,
-    unsigned int nkx,
-    unsigned int nof,
-    unsigned int nif,
-    unsigned int noy,
-    unsigned int nox
-) {
-    DTYPE_MUL mul_vals[POF][POY][POX];
-    DTYPE_MAC mac_vals[POF][POY][POX];
-    DTYPE_ACT in_vals[POY][POX];
-    DTYPE_FIL fil_vals[POF];
-
-    for (int i = 0; i < (nof*noy*nox/POF/POY/POX); i++) {
-        // initialize mac
-        for (int f = 0; f < POF; f++) {
-#pragma HLS unroll
-            for (int y = 0; y < POY; y++) {
-#pragma HLS unroll
-                for (int x = 0; x < POX; x++) {
-#pragma HLS unroll
-                    mac_vals[f][y][x] = 0;
-                }
-            }
-        }
-
-        for (int loop = 0; loop < nky*nkx*nif; loop++) {
-            // read input
-            for (int y = 0; y < POY; y++) {
-#pragma HLS unroll
-                for (int x = 0; x < POX; x++) {
-#pragma HLS unroll
-                    in_vals[y][x] = mac_in_fifo_arr[y][x].read();
-                }
-            }
-            // read weight
-            for (int f = 0; f < POF; f++) {
-#pragma HLS unroll
-                fil_vals[f] = weight_in_fifo_arr[f].read();
-            }
-            // compute
-            for (int f = 0; f < POF; f++) {
-#pragma HLS unroll
-                for (int y = 0; y < POY; y++) {
-#pragma HLS unroll
-                    for (int x = 0; x < POX; x++) {
-#pragma HLS unroll
-                        mul_vals[f][y][x] = in_vals[y][x] * fil_vals[f];
-                        mac_vals[f][y][x] += mul_vals[f][y][x];
-                    }
-                }
-            }
-        }
-
-        // 
-        for (int f = 0; f < POF; f++) {
-#pragma HLS unroll
-            for (int y = 0; y < POY; y++) {
-#pragma HLS unroll
-                for (int x = 0; x < POX; x++) {
-#pragma HLS unroll
-                    out_fifo_arr[f][y][x].write(mac_vals[f][y][x]);
-                }
-            }
-        }
-    }
-}
-
 // BUF2PE with support of stride
 void BUF2PE_stride(
     // DTYPE_ACT *input_buffer, 
@@ -353,6 +282,77 @@ void store_output_fifo(
                         }
                         mem[mem_idx] = block;
                     }
+                }
+            }
+        }
+    }
+}
+
+void PE(
+    hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
+    hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF],
+    hls::stream<DTYPE_MAC> out_fifo_arr[POF][POY][POX],
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox
+) {
+    DTYPE_MUL mul_vals[POF][POY][POX];
+    DTYPE_MAC mac_vals[POF][POY][POX];
+    DTYPE_ACT in_vals[POY][POX];
+    DTYPE_FIL fil_vals[POF];
+
+    for (int i = 0; i < (nof*noy*nox/POF/POY/POX); i++) {
+        // initialize mac
+        for (int f = 0; f < POF; f++) {
+#pragma HLS unroll
+            for (int y = 0; y < POY; y++) {
+#pragma HLS unroll
+                for (int x = 0; x < POX; x++) {
+#pragma HLS unroll
+                    mac_vals[f][y][x] = 0;
+                }
+            }
+        }
+
+        for (int loop = 0; loop < nky*nkx*nif; loop++) {
+            // read input
+            for (int y = 0; y < POY; y++) {
+#pragma HLS unroll
+                for (int x = 0; x < POX; x++) {
+#pragma HLS unroll
+                    in_vals[y][x] = mac_in_fifo_arr[y][x].read();
+                }
+            }
+            // read weight
+            for (int f = 0; f < POF; f++) {
+#pragma HLS unroll
+                fil_vals[f] = weight_in_fifo_arr[f].read();
+            }
+            // compute
+            for (int f = 0; f < POF; f++) {
+#pragma HLS unroll
+                for (int y = 0; y < POY; y++) {
+#pragma HLS unroll
+                    for (int x = 0; x < POX; x++) {
+#pragma HLS unroll
+                        mul_vals[f][y][x] = in_vals[y][x] * fil_vals[f];
+                        mac_vals[f][y][x] += mul_vals[f][y][x];
+                    }
+                }
+            }
+        }
+
+        // 
+        for (int f = 0; f < POF; f++) {
+#pragma HLS unroll
+            for (int y = 0; y < POY; y++) {
+#pragma HLS unroll
+                for (int x = 0; x < POX; x++) {
+#pragma HLS unroll
+                    out_fifo_arr[f][y][x].write(mac_vals[f][y][x]);
                 }
             }
         }
