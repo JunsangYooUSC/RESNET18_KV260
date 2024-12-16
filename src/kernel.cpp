@@ -476,9 +476,51 @@ void conv(
     }
 }
 
-// void batch_norm(
-//     DTYPE_
-// )
+void batch_norm(
+    float *bn_weight_mem,
+    hls::stream<float> in_fifo_arr[POF][POY][POX],
+    hls::stream<float> out_fifo_arr[POF][POY][POX],
+    unsigned int bn_weight_base_addr,
+    unsigned int nof,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int bb_en,
+    unsigned int bn_en
+) {
+    if (!bb_en) return;
+    
+    float mean[POF];
+    float var_mult[POF];
+    float gamma[POF];
+    float beta[POF];
+    for (f_out = 0; f_out < nof; f_out+=POF) {
+        for (int f = 0; f < POF; f++) {
+            mean[f] = bn_weight_mem[f_out+f];
+            var_mult[f] = bn_weight_mem[f_out+f+nof];
+            gamma[f] = bn_weight_mem[f_out+f+nof*2];
+            beta[f] = bn_weight_mem[f_out+f+nof*3];
+        }
+        for (y0 = 0; y0 < noy; y0+=POY) {
+            for (x0 = 0; x0 < nox; x0+=POX) {
+                // parallel
+                for (f = 0; f < POF; f++) {
+                    for (y = 0; y < POY; y++) {
+                        for (x = 0; x < POX; x++) {
+                            float val;
+                            val = in_fifo_arr[f][y][x].read();
+                            // batch norm when enabled
+                            if (bn_en) {
+                                val = (val-mean[f])*var_mult[f]*gamma[f]+beta[f];
+                            }
+                            out_fifo_arr[f][y][x].write(val);
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+}
 
 // kernel function
 void kernel_func(

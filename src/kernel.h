@@ -89,4 +89,16 @@ void conv(
     unsigned int conv_en
 );
 
+void batch_norm(
+    float *bn_weight_mem,
+    hls::stream<float> in_fifo_arr[POF][POY][POX],
+    hls::stream<float> out_fifo_arr[POF][POY][POX],
+    unsigned int bn_weight_base_addr,
+    unsigned int nof,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int bb_en,
+    unsigned int bn_en
+);
+
 #endif

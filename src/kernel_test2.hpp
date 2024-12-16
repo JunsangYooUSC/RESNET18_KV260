@@ -120,12 +120,20 @@ void kernel_test2_func(
         }
         mem0[idx] = block;
     }
-    
-    // conv test
+    hls::stream<float> fifo1[POF][POY][POX];
+    #pragma HLS STREAM variable=fifo1 depth=FIFO_ARR_DEPTH
+    hls::stream<float> fifo2[POF][POY][POX];
+    #pragma HLS STREAM variable=fifo2 depth=FIFO_ARR_DEPTH
+
+    // conv and bn test
     bb_en = 1;
     conv_en = 1;
-    conv(mem0, weight_mem, out_fifo_arr,
+    bn_en = 1;
+    relu_en = 1;
+    conv(mem0, weight_mem, fifo1,
             0, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
+    batch_norm(bn_weight_mem, fifo1, fifo2,
+            0, nof, noy, nox, bb_en, bn_en);
     // consume
     store_output_fifo(mem1, out_fifo_arr,
             nky, nkx, nof, nif, noy, nox);
