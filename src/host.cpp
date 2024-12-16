@@ -89,7 +89,7 @@ void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act,
 							unsigned int out_addr = cdx * noy * nox;
 							out_addr += ndx / stride * nox + mdx / stride;
 							if (out_addr >= nof*noy*nox) {
-								std::cout << "fioutputlter index out-of-bounds: " << out_addr << std::endl;
+								std::cout << "output index out-of-bounds: " << out_addr << std::endl;
 							}
 							// load output mac
 							out_act_mac[out_addr] += mult_element;
@@ -164,7 +164,7 @@ void convolution_bn_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act, floa
 							unsigned int out_addr = cdx * noy * nox;
 							out_addr += ndx / stride * nox + mdx / stride;
 							if (out_addr >= nof*noy*nox) {
-								std::cout << "fioutputlter index out-of-bounds: " << out_addr << std::endl;
+								std::cout << "output index out-of-bounds: " << out_addr << std::endl;
 							}
 							// load output mac
 							out_act_mac[out_addr] += mult_element;
@@ -251,7 +251,7 @@ void convolution_bn_skip_relu_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out
 							unsigned int out_addr = cdx * noy * nox;
 							out_addr += ndx / stride * nox + mdx / stride;
 							if (out_addr >= nof*noy*nox) {
-								std::cout << "fioutputlter index out-of-bounds: " << out_addr << std::endl;
+								std::cout << "output index out-of-bounds: " << out_addr << std::endl;
 							}
 							// load output mac
 							out_act_mac[out_addr] += mult_element;
@@ -367,6 +367,24 @@ int main(){
 			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
 	kernel_test3_func(in_act_host, in_add_host, weight_mem, bn_weight_mem, out_act_host);
 
+	// DTYPE_ACT in_act_host[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
+	float host_mem0[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
+	float host_mem1[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
+	float host_mem2[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
+	for (int idx = 0; idx < BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W; idx++) {
+		host_mem0[idx] = in_act_host[idx];
+	}
+	convolution_bn_golden<float, float, float, float>(host_mem0, weight_mem+BB7_CONV2_WEIGHT_BASE, host_mem1, bn_weight_mem+BB7_CONV2_BN_WEIGHT_BASE,
+			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
+	for (int idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W) {
+		host_mem1[idx] = (host_mem1[idx] > 0) host_mem1[idx] : 0;
+	}
+	convolution_bn_golden<float, float, float, float>(host_mem1, weight_mem, host_mem2, bn_weight_mem,
+			BB7_CONV2_K, BB7_CONV2_K, BB7_CONV2_C, BB7_CONV1_C, BB7_CONV2_H, BB7_CONV2_W, BB7_CONV2_S, BB7_CONV2_PAD);
+	convolution_bn_skip_relu_golden<float, float, float, float>(host_mem2, weight_mem+BB7_SKIP_WEIGHT_BASE, host_mem1, bn_weight_mem+BB7_SKIP_BN_WEIGHT_BASE, host_mem0,
+			BB7_SKIP_K, BB7_SKIP_K, BB7_SKIP_C, BB7_CONV2_C, BB7_SKIP_H, BB7_SKIP_W, BB7_SKIP_S, BB7_SKIP_PAD);
 	
 	kernel_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
+	compare_result<DTYPE_ACT, float, BB7_SKIP_C*BB7_SKIP_H*BB7_SKIP_W>(out_act_host, host_mem1);
+
 }
