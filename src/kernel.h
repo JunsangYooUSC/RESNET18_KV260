@@ -104,7 +104,7 @@ void batch_norm(
 void skip_conn(
     DTYPE_MEM_ACT *mem_add,
     hls::stream<float> in_fifo_arr[POF][POY][POX],
-    hls::stream<DTYPE_ACT> out_fifo_arr[POF][POY][POX],
+    hls::stream<float> out_fifo_arr[POF][POY][POX],
     unsigned int nof,
     unsigned int noy,
     unsigned int nox,
