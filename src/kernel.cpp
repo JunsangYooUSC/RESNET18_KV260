@@ -595,7 +595,7 @@ void kernel_func(
     DTYPE_MEM_ACT mem2[MEM2_SIZE];
     #pragma HLS bind_storage variable=mem2 impl=uram
     // #pragma HLS ARRAY_PARTITION variable=mem2 dim=1 complete
-    DTYPE_MEM_ACT mem3[16];
+//    DTYPE_MEM_ACT mem3[16];
     // off-chip memory
     // DTYPE_MEM_WEIGHT weight_mem[WEIGHT_MEM_SIZE];
 //    #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0
