@@ -314,3 +314,5 @@ void kernel(
             MEM0_SIZE, nky, nkx, nof, nif, noy, nox);
     result2 = 1;
 }
+
+#endif
