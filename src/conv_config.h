@@ -37,7 +37,7 @@
 #define PIF                 1
 #define POX                 7
 #define POY                 7
-#define POF                 4       // change_to: if necessary
+#define POF                 1       // change_to: if necessary
 #define MAX_STRIDE          2
 #define MAX_PAD             3
 
@@ -75,7 +75,7 @@ typedef ap_uint<ACT_PACK*W_ACT> DTYPE_MEM_ACT;
 typedef ap_uint<WEIGHT_PACK*W_FIL> DTYPE_MEM_WEIGHT;
 
 // BUF2PE vectors
-constexpr unsigned int FIFO_ARR_DEPTH = 3*3*2;  // todo: reduce if unnecessary
+constexpr unsigned int FIFO_ARR_DEPTH = 2;  // todo: reduce if unnecessary
 
 // layer sizes
 // input
