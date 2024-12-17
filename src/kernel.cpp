@@ -277,11 +277,11 @@ void kernel(
 
     // interface
     #pragma HLS INTERFACE s_axilite port=return bundle=control
-    #pragma HLS INTERFACE m_axi depth=16 port=act_mem bundle=gmem
-    #pragma HLS INTERFACE m_axi depth=16 port=weight_mem bundle=gmem
-    #pragma HLS INTERFACE m_axi depth=16 port=bn_weight_mem bundle=gmem
-    #pragma HLS INTERFACE m_axi depth=16 port=result1 bundle=gmem
-    #pragma HLS INTERFACE m_axi depth=16 port=result2 bundle=gmem
+    #pragma HLS INTERFACE m_axi port=act_mem bundle=gmem
+    #pragma HLS INTERFACE m_axi port=weight_mem bundle=gmem
+    #pragma HLS INTERFACE m_axi port=bn_weight_mem bundle=gmem
+    #pragma HLS INTERFACE m_axi port=result1 bundle=gmem
+    #pragma HLS INTERFACE m_axi port=result2 bundle=gmem
 
     // fifo
     hls::stream<DTYPE_ACT> load_input_fifo;
