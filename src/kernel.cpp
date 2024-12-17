@@ -119,6 +119,10 @@ void kernel(
     #pragma HLS INTERFACE m_axi depth=16 port=weight_mem bundle=gmem
     #pragma HLS INTERFACE m_axi depth=16 port=bn_weight_mem bundle=gmem
 
+    // fifo
+    hls::stream<DTYPE_ACT> load_input_fifo;
+    #pragma HLS STREAM variable=load_input_fifo depth=FIFO_ARR_DEPTH
+
     // fill act_mem
     load_input(act_mem, load_input_fifo, 0,
             nky, nkx, nof, nif, noy, nox, stride, pad);
