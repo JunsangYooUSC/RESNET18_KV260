@@ -9,6 +9,13 @@
 // Include project headers
 #include "conv_config.h"
 
+void kernel(
+    DTYPE_ACT *act_mem,
+    DTYPE_FIL *weight_mem,
+    float *bn_weight_mem
+);
+
+
 void kernel_func(DTYPE_ACT *in_host, DTYPE_FIL *weight_mem, float *bn_weight_mem, DTYPE_ACT *out_host);
 
 void PE(
