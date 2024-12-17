@@ -54,6 +54,7 @@ void load_input(
                                     else {
                                         unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad);
                                         in_val = act_mem[base_addr+addr];
+                                        std::cout << "load addr: " << addr << std::endl;
                                     }
                                     load_input_fifo.write(in_val);
                                 }
@@ -96,6 +97,7 @@ void store_input_test(
                                     else {
                                         unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad);
                                         act_mem[base_addr+addr] = in_val;
+                                        std::cout << "store addr: " << addr << std::endl;
                                     }
                                 }
                             }
@@ -133,6 +135,81 @@ void load_weight_fifo(
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+void PE(
+    hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
+    hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF],
+    hls::stream<float> out_fifo_arr[POF][POY][POX],
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox
+) {
+    DTYPE_MUL mul_vals[POF][POY][POX];
+    DTYPE_MAC mac_vals[POF][POY][POX];
+    DTYPE_ACT in_vals[POY][POX];
+    DTYPE_FIL fil_vals[POF];
+
+    for (int f_out = 0; f_out < nof; f_out += POF) {
+        for (int y0 = 0; y0 < noy; y0+=POY) {
+            for (int x0 = 0; x0 < nox; x0+=POX) {
+                // parallel
+                for (int f = 0; f < POF; f++) {
+                    for (int y = 0; y < POY; y++) {
+                        for (int x = 0; x < POX; x++) {
+                            mac_vals[f][y][x] = 0;
+                        }
+                    }
+                }
+                for (int f_in = 0; f_in < nif; f_in++){
+                    for (int y = 0; y < nky; y++) {
+                        for (int x = 0; x < nkx; x++) {
+
+
+    for (int i = 0; i < (nof*noy*nox/POF/POY/POX); i++) {
+        // initialize mac
+        for (int f = 0; f < POF; f++) {
+            for (int y = 0; y < POY; y++) {
+                for (int x = 0; x < POX; x++) {
+                    mac_vals[f][y][x] = 0;
+                }
+            }
+        }
+
+        for (int loop = 0; loop < nky*nkx*nif; loop++) {
+            // read input
+            for (int y = 0; y < POY; y++) {
+                for (int x = 0; x < POX; x++) {
+                    in_vals[y][x] = mac_in_fifo_arr[y][x].read();
+                }
+            }
+            // read weight
+            for (int f = 0; f < POF; f++) {
+                fil_vals[f] = weight_in_fifo_arr[f].read();
+            }
+            // compute
+            for (int f = 0; f < POF; f++) {
+                for (int y = 0; y < POY; y++) {
+                    for (int x = 0; x < POX; x++) {
+                        mul_vals[f][y][x] = in_vals[y][x] * fil_vals[f];
+                        mac_vals[f][y][x] += mul_vals[f][y][x];
+                    }
+                }
+            }
+        }
+
+        // 
+        for (int f = 0; f < POF; f++) {
+            for (int y = 0; y < POY; y++) {
+                for (int x = 0; x < POX; x++) {
+                    out_fifo_arr[f][y][x].write(mac_vals[f][y][x]);
                 }
             }
         }
@@ -210,7 +287,7 @@ void kernel(
     result1 = 1;
     for (int idx = 0; idx < nif*noy*stride*nox*stride; idx++) {
         //if (act_mem[idx] != act_mem[MEM0_SIZE+idx]){
-            std::cout << "idx: " << idx << " act_mem[idx]: " << act_mem[idx] << " act_mem[MEM0_SIZE+idx]: " << act_mem[MEM0_SIZE+idx] << std::endl;
+            //std::cout << "idx: " << idx << " act_mem[idx]: " << act_mem[idx] << " act_mem[MEM0_SIZE+idx]: " << act_mem[MEM0_SIZE+idx] << std::endl;
             result1 = 0;
         //}
     }
