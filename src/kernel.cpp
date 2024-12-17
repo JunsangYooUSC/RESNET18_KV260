@@ -738,8 +738,8 @@ void kernel_func(
         }
 
         // // conv
-        // conv(mem_in, weight_mem, fifo1,
-        //         weight_base, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
+        conv(mem_in, weight_mem, fifo1,
+                weight_base, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
         // batch_norm(bn_weight_mem, fifo1, fifo2,
         //         bn_weight_base, nof, noy, nox, bb_en, bn_en);
         // skip_conn(mem_add, fifo2, fifo3,
