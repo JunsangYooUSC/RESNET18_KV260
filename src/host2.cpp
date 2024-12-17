@@ -298,5 +298,10 @@ int main(){
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
 	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
 
+	// fill data
+	gen_rand<DTYPE_ACT, MEM0_SIZE+MEM1_SIZE+MEM2_SIZE>(act_mem, -1, 1);
+	gen_rand<DTYPE_FIL, WEIGHT_MEM_SIZE>(weight_mem, -1, 1);
+	gen_rand<float, BN_WEIGHT_MEM_SIZE>(bn_weight_mem, -1, 1);
+
 	kernel(act_mem, weight_mem, bn_weight_mem);
 }
