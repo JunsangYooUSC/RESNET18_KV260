@@ -199,7 +199,7 @@ void PE(
 }
 
 void store_output_fifo(
-    DTYPE_MEM_ACT *act_mem,
+    DTYPE_ACT *act_mem,
     hls::stream<float> &out_fifo_arr,
     unsigned int base_addr,
     unsigned int nky,
@@ -218,7 +218,7 @@ void store_output_fifo(
                     for (int y = 0; y < POY; y++) {
                         for (int x = 0; x < POX; x++) {
                             unsigned int addr = (out_f+f)*noy*nox + (y0+y)*nox + (x0+x);
-                            mem[base_addr+addr] = out_fifo_arr.read();
+                            act_mem[base_addr+addr] = out_fifo_arr.read();
                         }
                     }
                 }
