@@ -598,63 +598,63 @@ void kernel_func(
     DTYPE_MEM_ACT mem3[16];
     // off-chip memory
     // DTYPE_MEM_WEIGHT weight_mem[WEIGHT_MEM_SIZE];
-    #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0
-    #pragma HLS INTERFACE mode=s_axilite port=weight_mem bundle=control
-
-    // interface
-    #pragma HLS INTERFACE mode=m_axi port=in_host offset=slave bundle=gmem0
-    #pragma HLS INTERFACE mode=m_axi port=out_host offset=slave bundle=gmem0
-    #pragma HLS INTERFACE mode=s_axilite port=in_host bundle=control
-    #pragma HLS INTERFACE mode=s_axilite port=out_host bundle=control
-    #pragma HLS INTERFACE mode=s_axilite port=return bundle=control
-
-    // parameters for kernel functions
-    DTYPE_MEM_ACT *mem_in;
-    DTYPE_MEM_ACT *mem_out;
-    DTYPE_MEM_ACT *mem_add;
-    unsigned nif;
-    unsigned nof;
-    unsigned noy;
-    unsigned nox;
-    unsigned nkx;
-    unsigned nky;
-    unsigned stride;
-    unsigned pad;
-    bool bb_en;
-    bool conv_en;
-    bool bn_en;
-    bool skip_en;
-    bool relu_en;
-    bool max_pool_en;
-    bool avg_pool_en;
-    bool lin_en;
-    unsigned weight_base;
-    unsigned weight_size;
-    unsigned bn_weight_base;
-    unsigned bn_weight_size;
-            nif             = BB6_SKIP_C;
-            nof             = BB7_CONV1_C;
-            noy             = BB7_CONV1_H;
-            nox             = BB7_CONV1_W;
-            nkx             = BB7_CONV1_K;
-            nky             = BB7_CONV1_K;
-            stride          = BB7_CONV1_S;
-            pad             = BB7_CONV1_PAD;
-            bb_en           = BB7_CONV1_BB_EN;
-            conv_en         = BB7_CONV1_CONV_EN;
-            bn_en           = BB7_CONV1_BN_EN;
-            skip_en         = BB7_CONV1_SKIP_EN;
-            relu_en         = BB7_CONV1_RELU_EN;
-            max_pool_en     = BB7_CONV1_MAX_POOL;
-            avg_pool_en     = BB7_CONV1_AVG_POOL;
-            lin_en          = BB7_CONV1_LIN_EN;
-            mem_in          = mem0;
-            mem_out         = mem1;
-            mem_add         = mem3;
-            weight_base     = BB7_CONV1_WEIGHT_BASE;
-            weight_size     = BB7_CONV1_CONV_WEIGHT_SIZE;
-            bn_weight_base  = BB7_CONV1_BN_WEIGHT_BASE;
-            bn_weight_size  = BB7_CONV1_BN_WEIGHT_SIZE;
+//    #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0
+//    #pragma HLS INTERFACE mode=s_axilite port=weight_mem bundle=control
+//
+//    // interface
+//    #pragma HLS INTERFACE mode=m_axi port=in_host offset=slave bundle=gmem0
+//    #pragma HLS INTERFACE mode=m_axi port=out_host offset=slave bundle=gmem0
+//    #pragma HLS INTERFACE mode=s_axilite port=in_host bundle=control
+//    #pragma HLS INTERFACE mode=s_axilite port=out_host bundle=control
+//    #pragma HLS INTERFACE mode=s_axilite port=return bundle=control
+//
+//    // parameters for kernel functions
+//    DTYPE_MEM_ACT *mem_in;
+//    DTYPE_MEM_ACT *mem_out;
+//    DTYPE_MEM_ACT *mem_add;
+//    unsigned nif;
+//    unsigned nof;
+//    unsigned noy;
+//    unsigned nox;
+//    unsigned nkx;
+//    unsigned nky;
+//    unsigned stride;
+//    unsigned pad;
+//    bool bb_en;
+//    bool conv_en;
+//    bool bn_en;
+//    bool skip_en;
+//    bool relu_en;
+//    bool max_pool_en;
+//    bool avg_pool_en;
+//    bool lin_en;
+//    unsigned weight_base;
+//    unsigned weight_size;
+//    unsigned bn_weight_base;
+//    unsigned bn_weight_size;
+//            nif             = BB6_SKIP_C;
+//            nof             = BB7_CONV1_C;
+//            noy             = BB7_CONV1_H;
+//            nox             = BB7_CONV1_W;
+//            nkx             = BB7_CONV1_K;
+//            nky             = BB7_CONV1_K;
+//            stride          = BB7_CONV1_S;
+//            pad             = BB7_CONV1_PAD;
+//            bb_en           = BB7_CONV1_BB_EN;
+//            conv_en         = BB7_CONV1_CONV_EN;
+//            bn_en           = BB7_CONV1_BN_EN;
+//            skip_en         = BB7_CONV1_SKIP_EN;
+//            relu_en         = BB7_CONV1_RELU_EN;
+//            max_pool_en     = BB7_CONV1_MAX_POOL;
+//            avg_pool_en     = BB7_CONV1_AVG_POOL;
+//            lin_en          = BB7_CONV1_LIN_EN;
+//            mem_in          = mem0;
+//            mem_out         = mem1;
+//            mem_add         = mem3;
+//            weight_base     = BB7_CONV1_WEIGHT_BASE;
+//            weight_size     = BB7_CONV1_CONV_WEIGHT_SIZE;
+//            bn_weight_base  = BB7_CONV1_BN_WEIGHT_BASE;
+//            bn_weight_size  = BB7_CONV1_BN_WEIGHT_SIZE;
 
 //    // global pipes
 //    hls::stream<float> fifo1[POF][POY][POX];
