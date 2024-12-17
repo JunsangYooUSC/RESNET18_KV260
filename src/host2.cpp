@@ -306,7 +306,7 @@ int main(){
 	int result2;
 
 	// fill data
-	const std::string fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/input.bin";
+	std::string fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/input.bin";
 	read_bin_fixed<DTYPE_ACT>(fname, act_mem, 0, INPUT_SIZE);
 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight1.bin";
 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_WEIGHT_BASE, BB7_CONV1_CONV_WEIGHT_SIZE);
