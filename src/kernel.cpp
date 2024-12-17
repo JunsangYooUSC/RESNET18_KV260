@@ -213,5 +213,7 @@ void kernel(
             result1 = 0;
         }
     }
+
+    result2 = 1;
 }
 #endif

@@ -307,7 +307,7 @@ int main(){
 
 	kernel(act_mem, weight_mem, bn_weight_mem, result1, result2);
 
-	std::cout << "result1: " << result1;
-	std::cout << "result2: " << result2;
+	std::cout << "result1: " << result1 << std::endl;
+	std::cout << "result2: " << result2 << std::endl;
 	
 }
