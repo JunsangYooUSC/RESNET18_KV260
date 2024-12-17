@@ -139,6 +139,64 @@ void load_weight_fifo(
     }
 }
 
+void PE(
+    hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
+    hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF],
+    hls::stream<float> out_fifo_arr[POF][POY][POX],
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox
+) {
+    DTYPE_MUL mul_vals[POF][POY][POX];
+    DTYPE_MAC mac_vals[POF][POY][POX];
+    DTYPE_ACT in_vals[POY][POX];
+    DTYPE_FIL fil_vals[POF];
+
+    for (int i = 0; i < (nof*noy*nox/POF/POY/POX); i++) {
+        // initialize mac
+        for (int f = 0; f < POF; f++) {
+            for (int y = 0; y < POY; y++) {
+                for (int x = 0; x < POX; x++) {
+                    mac_vals[f][y][x] = 0;
+                }
+            }
+        }
+
+        for (int loop = 0; loop < nky*nkx*nif; loop++) {
+            // read input
+            for (int y = 0; y < POY; y++) {
+                for (int x = 0; x < POX; x++) {
+                    in_vals[y][x] = mac_in_fifo_arr[y][x].read();
+                }
+            }
+            // read weight
+            for (int f = 0; f < POF; f++) {
+                fil_vals[f] = weight_in_fifo_arr[f].read();
+            }
+            // compute
+            for (int f = 0; f < POF; f++) {
+                for (int y = 0; y < POY; y++) {
+                    for (int x = 0; x < POX; x++) {
+                        mul_vals[f][y][x] = in_vals[y][x] * fil_vals[f];
+                        mac_vals[f][y][x] += mul_vals[f][y][x];
+                    }
+                }
+            }
+        }
+
+        // 
+        for (int f = 0; f < POF; f++) {
+            for (int y = 0; y < POY; y++) {
+                for (int x = 0; x < POX; x++) {
+                    out_fifo_arr[f][y][x].write(mac_vals[f][y][x]);
+                }
+            }
+        }
+    }
+}
 
 void kernel(
     DTYPE_ACT *act_mem,
@@ -209,7 +267,7 @@ void kernel(
     store_input_test(act_mem, load_input_fifo, MEM0_SIZE,
             nky, nkx, nof, nif, noy, nox, stride, pad);
     result1 = 1;
-    for (int idx = 0; idx < nof*noy*nox; idx++) {
+    for (int idx = 0; idx < nif*noy*nox; idx++) {
         if (act_mem[idx] != act_mem[MEM0_SIZE+idx]){
             std::cout << "idx: " << idx << " act_mem[idx]: " << act_mem[idx] << " act_mem[MEM0_SIZE+idx]: " << act_mem[MEM0_SIZE+idx] << std::endl;
             result1 = 0;
