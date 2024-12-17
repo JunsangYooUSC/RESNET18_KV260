@@ -323,7 +323,7 @@ int main(){
 
 	std::cout << "first 3 input val: " << act_mem[0] << " " << act_mem[1] << " " << act_mem[2] << std::endl;
 	std::cout << "first 3 weight val: " << weight_mem[0] << " " << weight_mem[1] << " " << weight_mem[2] << std::endl;
-	std::cout << "first 3 bn_weight val: " << bn_weight[0] << " " << bn_weight[1] << " " << bn_weight[2] << std::endl;
+	std::cout << "first 3 bn_weight_mem val: " << bn_weight_mem[0] << " " << bn_weight_mem[1] << " " << bn_weight_mem[2] << std::endl;
 
 	kernel(act_mem, weight_mem, bn_weight_mem, result1, result2);
 	
