@@ -305,7 +305,7 @@ void kernel(
 
     load_input(act_mem, load_input_fifo, 0,
             nky, nkx, nof, nif, noy, nox, stride, pad);
-    load_weight_fifo(weight_mem, load_weight_fifo, 0,
+    load_weight(weight_mem, load_weight_fifo, 0,
             nky, nkx, nof, nif, noy, nox);
     PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
             nky, nkx, nof, nif, noy, nox);
