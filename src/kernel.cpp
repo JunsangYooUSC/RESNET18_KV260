@@ -140,9 +140,9 @@ void load_weight_fifo(
 }
 
 void PE(
-    hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX],
-    hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF],
-    hls::stream<float> out_fifo_arr[POF][POY][POX],
+    hls::stream<DTYPE_ACT> &load_input_fifo,
+    hls::stream<DTYPE_FIL> &load_weight_fifo,
+    hls::stream<float> &pe_out_fifo,
     unsigned int nky,
     unsigned int nkx,
     unsigned int nof,
@@ -169,12 +169,12 @@ void PE(
             // read input
             for (int y = 0; y < POY; y++) {
                 for (int x = 0; x < POX; x++) {
-                    in_vals[y][x] = mac_in_fifo_arr[y][x].read();
+                    in_vals[y][x] = load_input_fifo.read();
                 }
             }
             // read weight
             for (int f = 0; f < POF; f++) {
-                fil_vals[f] = weight_in_fifo_arr[f].read();
+                fil_vals[f] = load_weight_fifo.read();
             }
             // compute
             for (int f = 0; f < POF; f++) {
@@ -191,7 +191,7 @@ void PE(
         for (int f = 0; f < POF; f++) {
             for (int y = 0; y < POY; y++) {
                 for (int x = 0; x < POX; x++) {
-                    out_fifo_arr[f][y][x].write(mac_vals[f][y][x]);
+                    pe_out_fifo.write(mac_vals[f][y][x]);
                 }
             }
         }
@@ -260,6 +260,8 @@ void kernel(
     #pragma HLS STREAM variable=load_input_fifo depth=FIFO_ARR_DEPTH
     hls::stream<DTYPE_ACT> load_weight_fifo;
     #pragma HLS STREAM variable=load_weight_fifo depth=FIFO_ARR_DEPTH
+    hls::stream<DTYPE_ACT> pe_out_fifo;
+    #pragma HLS STREAM variable=pe_out_fifo depth=FIFO_ARR_DEPTH
 
     // load input check
     load_input(act_mem, load_input_fifo, 0,
