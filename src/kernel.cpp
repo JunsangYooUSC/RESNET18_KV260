@@ -210,7 +210,7 @@ void kernel(
     result1 = 1;
     for (int idx = 0; idx < nif*noy*stride*nox*stride; idx++) {
         if (act_mem[idx] != act_mem[MEM0_SIZE+idx]){
-            std::cout << "idx: " << idx << std::endl;
+            std::cout << "idx: " << idx << " act_mem[idx]: " << act_mem[idx] << " act_mem[MEM0_SIZE+idx]: " << act_mem[MEM0_SIZE+idx] << std::endl;
             result1 = 0;
         }
     }
