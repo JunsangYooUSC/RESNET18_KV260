@@ -746,6 +746,8 @@ void kernel_func(
         //         nof, noy, nox, bb_en, skip_en, relu_en);
         // store_output_fifo(mem_out, fifo3,
         //         nky, nkx, nof, nif, noy, nox);
+        store_output_fifo(mem_out, fifo1,
+                nky, nkx, nof, nif, noy, nox);
         
         // output back to host
         if (opcnt == 2) {
