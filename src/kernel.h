@@ -20,7 +20,7 @@ void kernel_func(DTYPE_ACT *in_host, DTYPE_FIL *weight_mem, float *bn_weight_mem
 
 void load_input(
     DTYPE_ACT *act_mem,
-    hls::stream<DTYPE_ACT> load_input_fifo,
+    hls::stream<DTYPE_ACT> &load_input_fifo,
     unsigned int base_addr,
     unsigned int nky,
     unsigned int nkx,
@@ -34,7 +34,7 @@ void load_input(
 
 void store_input_test(
     DTYPE_ACT *act_mem,
-    hls::stream<DTYPE_ACT> load_input_fifo,
+    hls::stream<DTYPE_ACT> &load_input_fifo,
     unsigned int base_addr,
     unsigned int nky,
     unsigned int nkx,
