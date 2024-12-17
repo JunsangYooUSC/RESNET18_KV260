@@ -107,10 +107,44 @@ void store_input_test(
     }
 }
 
+void load_weight_fifo(
+    DTYPE_FIL *weight_mem,
+    hls::stream<DTYPE_FIL> &load_weight_fifo,
+    unsigned int base_addr,
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox
+
+) {
+    DTYPE_FIL filter_buffer[2][POF][nif][nky][nkx];  // todo: use double buffer
+    for (int f_out = 0; f_out < nof; f_out += POF) {
+        for (int y0 = 0; y0 < noy; y0+=POY) {
+            for (int x0 = 0; x0 < nox; x0+=POX) {
+                for (int f_in = 0; f_in < nif; f_in++){
+                    for (int y = 0; y < nky; y++) {
+                        for (int x = 0; x < nkx; x++) {
+                            load_weight_loop1:
+                            for (int f = 0; f < POF; f++) {
+                                unsigned int addr = (f_out+f)*nif*noy*nox + f_in*noy*nox + y*nox + x;
+                                load_weight_fifo.write(weight_mem[addr]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 void kernel(
     DTYPE_ACT *act_mem,
     DTYPE_FIL *weight_mem,
-    float *bn_weight_mem
+    float *bn_weight_mem,
+    int &result1,
+    int &result2
 ) {
 
     unsigned nif;
@@ -159,16 +193,25 @@ void kernel(
     #pragma HLS INTERFACE m_axi depth=16 port=act_mem bundle=gmem
     #pragma HLS INTERFACE m_axi depth=16 port=weight_mem bundle=gmem
     #pragma HLS INTERFACE m_axi depth=16 port=bn_weight_mem bundle=gmem
+    #pragma HLS INTERFACE m_axi depth=16 port=result1 bundle=gmem
+    #pragma HLS INTERFACE m_axi depth=16 port=result2 bundle=gmem
 
     // fifo
     hls::stream<DTYPE_ACT> load_input_fifo;
     #pragma HLS STREAM variable=load_input_fifo depth=FIFO_ARR_DEPTH
+    hls::stream<DTYPE_ACT> load_weight_fifo;
+    #pragma HLS STREAM variable=load_weight_fifo depth=FIFO_ARR_DEPTH
 
-    // fill act_mem
+    // load input check
     load_input(act_mem, load_input_fifo, 0,
             nky, nkx, nof, nif, noy, nox, stride, pad);
     store_input_test(act_mem, load_input_fifo, MEM0_SIZE,
             nky, nkx, nof, nif, noy, nox, stride, pad);
-
+    result1 = 1;
+    for (int idx = 0; idx < nif*noy*stride*nox*strid; idx++) {
+        if (act_mem[idx] != act_mem[MEM0_SIZE+idx]){
+            result1 = 0;
+        }
+    }
 }
 #endif

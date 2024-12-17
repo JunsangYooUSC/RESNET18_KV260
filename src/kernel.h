@@ -12,11 +12,10 @@
 void kernel(
     DTYPE_ACT *act_mem,
     DTYPE_FIL *weight_mem,
-    float *bn_weight_mem
+    float *bn_weight_mem,
+    int &result1,
+    int &result2
 );
-
-
-void kernel_func(DTYPE_ACT *in_host, DTYPE_FIL *weight_mem, float *bn_weight_mem, DTYPE_ACT *out_host);
 
 void load_input(
     DTYPE_ACT *act_mem,
