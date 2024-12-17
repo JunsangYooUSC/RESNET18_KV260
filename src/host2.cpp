@@ -22,9 +22,6 @@
 #include "conv_config.h"
 #include "host_utils.h"
 #include "kernel.h"
-#include "kernel_test.hpp"
-#include "kernel_test2.hpp"
-#include "kernel_test3.hpp"
 
 // Print the configuration information
 #define CHECK_CONFIG		1
