@@ -299,13 +299,13 @@ int main(){
 	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
 	int result1;
 	int result2;
-	
+
 	// fill data
 	gen_rand<DTYPE_ACT, MEM0_SIZE+MEM1_SIZE+MEM2_SIZE>(act_mem, -1, 1);
 	gen_rand<DTYPE_FIL, WEIGHT_MEM_SIZE>(weight_mem, -1, 1);
 	gen_rand<float, BN_WEIGHT_MEM_SIZE>(bn_weight_mem, -1, 1);
 
-	kernel(act_mem, weight_mem, bn_weight_mem, result1, resutl2);
+	kernel(act_mem, weight_mem, bn_weight_mem, result1, result2);
 
 	std::cout << "result1: " << result1;
 	std::cout << "result2: " << result2;
