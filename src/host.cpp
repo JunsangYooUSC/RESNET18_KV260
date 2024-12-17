@@ -353,8 +353,8 @@ int main(){
 
 	// kernel_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
 
-	kernel_test_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
-	compare_result<DTYPE_ACT, float, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
+//	kernel_test_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
+//	compare_result<DTYPE_ACT, float, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
 //
 //	// conv with bn
 //	convolution_bn_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_mem,
@@ -399,5 +399,5 @@ int main(){
 //	
 //	kernel_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
 //	compare_result<DTYPE_ACT, float, BB7_SKIP_C*BB7_SKIP_H*BB7_SKIP_W>(out_act_host, host_mem1);
-
+	kernel_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
 }

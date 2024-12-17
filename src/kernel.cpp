@@ -42,7 +42,7 @@ void BUF2PE_stride(
     unsigned int pad
 ) {
     unsigned int db_idx = 0;
-    DTYPE_ACT input_buffer_stride[2][POY*MAX_STRIDE+MAX_PAD*2][POX*MAX_STRIDE+MAX_PAD*2];
+    DTYPE_ACT input_buffer_stride[POY*MAX_STRIDE+MAX_PAD*2][POX*MAX_STRIDE+MAX_PAD*2];
     // register R* in fig13 of Optimizing_the_Convolution_Operation_to_Accelerate_Deep_Neural_Networks_on_FPGA
     DTYPE_ACT buf2pe_reg_stride[POY*MAX_STRIDE][POX*MAX_STRIDE+1];
     // #pragma HLS BIND_STORAGE variable=buf2pe_reg type=register
@@ -70,7 +70,7 @@ void BUF2PE_stride(
                                 DTYPE_MEM_ACT block = mem[idx1];
                                 data.range() = block.range(W_ACT*(idx2+1)-1,W_ACT*idx2);
                             }
-                            input_buffer_stride[0][y][x] = data;
+                            input_buffer_stride[y][x] = data;
                         }
                     }
                     // intra input tile
@@ -83,7 +83,7 @@ void BUF2PE_stride(
                             for (int x = 0; x < POX*s+1; x++) {
 #pragma HLS unroll
                                 // first row of input buffer
-                                buf2pe_reg_stride[POY*s-1][x] = input_buffer_stride[db_idx][POY*s-1+last_y_idx][x];
+                                buf2pe_reg_stride[POY*s-1][x] = input_buffer_stride[POY*s-1+last_y_idx][x];
                             }
                         }
                         // last register gets new val. rest values are fed from adjacent reg
@@ -92,7 +92,7 @@ void BUF2PE_stride(
 #pragma HLS unroll
                                 buf2pe_reg_stride[POY*s-1][x] = buf2pe_reg_stride[POY*s-1][x+1];
                             }
-                            buf2pe_reg_stride[POY*s-1][POX*s] = input_buffer_stride[db_idx][POY*s-1+last_y_idx][POX*s+last_x_idx];
+                            buf2pe_reg_stride[POY*s-1][POX*s] = input_buffer_stride[POY*s-1+last_y_idx][POX*s+last_x_idx];
                         }
                         // reg values are fed from adjacent reg
                         else if (cnt % nkx == nkx-1) {
@@ -117,7 +117,7 @@ void BUF2PE_stride(
                                 for (int x = 0; x < POX*s+1; x++) {
 #pragma HLS unroll
                                     // first row of input buffer
-                                    buf2pe_reg_stride[y][x] = input_buffer_stride[db_idx][y][x];
+                                    buf2pe_reg_stride[y][x] = input_buffer_stride[y][x];
                                 }
                             }
                             // last register gets new val. rest values are fed from adjacent reg
@@ -126,7 +126,7 @@ void BUF2PE_stride(
 #pragma HLS unroll
                                     buf2pe_reg_stride[y][x] = buf2pe_reg_stride[y][x+1];
                                 }
-                                buf2pe_reg_stride[y][POX*s] = input_buffer_stride[db_idx][y][POX*s+cnt];
+                                buf2pe_reg_stride[y][POX*s] = input_buffer_stride[y][POX*s+cnt];
                             }
                             // reg values are fed from adjacent reg
                             else if (cnt == nkx-1) {
@@ -159,7 +159,7 @@ void BUF2PE_stride(
                             for (int x = 0; x < POX*s+1; x++) {
 #pragma HLS unroll
                                 // first row of input buffer
-                                buf2pe_reg_stride[0][x] = input_buffer_stride[db_idx][0][x];
+                                buf2pe_reg_stride[0][x] = input_buffer_stride[0][x];
                             }
                         }
                         // last register gets new val. rest values are fed from adjacent reg
@@ -168,7 +168,7 @@ void BUF2PE_stride(
 #pragma HLS unroll
                                 buf2pe_reg_stride[0][x] = buf2pe_reg_stride[0][x+1];
                             }
-                            buf2pe_reg_stride[0][POX*s] = input_buffer_stride[db_idx][0][POX*s+cnt];
+                            buf2pe_reg_stride[0][POX*s] = input_buffer_stride[0][POX*s+cnt];
                         }
                         // reg values are fed from adjacent reg
                         else if (cnt == nkx-1) {
