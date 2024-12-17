@@ -504,11 +504,11 @@ void batch_norm(
             for (int x0 = 0; x0 < nox; x0+=POX) {
                 // parallel
                 for (int f = 0; f < POF; f++) {
-#pragma unroll
+#pragma HLS unroll
                     for (int y = 0; y < POY; y++) {
-#pragma unroll                        
+#pragma HLS unroll                        
                         for (int x = 0; x < POX; x++) {
-#pragma unroll
+#pragma HLS unroll
                             float val;
                             val = in_fifo_arr[f][y][x].read();
                             // batch norm when enabled
@@ -542,11 +542,11 @@ void skip_conn(
         for (int y0 = 0; y0 < noy; y0+=POY) {
             for (int x0 = 0; x0 < nox; x0+=POX) {
                 for (int f = 0; f < POF; f++) {
-#pragma unroll
+#pragma HLS unroll
                     for (int y = 0; y < POY; y++) {
-#pragma unroll 
+#pragma HLS unroll 
                         for (int x = 0; x < POX; x++) {
-#pragma unroll
+#pragma HLS unroll
                             float val = in_fifo_arr[f][y][x].read();
                             if (skip_en) {
                                 unsigned add_addr = ((f_out+f)*noy*nox + (y0+y)*nox + x0) / POX;
