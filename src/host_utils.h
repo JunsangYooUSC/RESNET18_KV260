@@ -97,7 +97,7 @@ void compare_result(DTYPE1 *mat1, DTYPE2 *mat2, float tolerance = 0.2) {
 	}
 }
 
-void read_bin_float(const std::string &filename, float *data, unsigned int size) {
+void read_bin_float(const std::string &filename, float *data, unsigned int base_addr, unsigned int size) {
 	FILE *file = fopen(filename.c_str(), "rb");
 	unsigned total_reads = fread(data, sizeof(float), size, file);
 	assert(size == total_reads && "read mismatch");
@@ -105,7 +105,7 @@ void read_bin_float(const std::string &filename, float *data, unsigned int size)
 }
 
 template<typename T>
-void read_bin_fixed(const std::string &filename, T *data, unsigned int size) {
+void read_bin_fixed(const std::string &filename, T *data, unsigned int base_addr, unsigned int size) {
 	FILE *file = fopen(filename.c_str(), "rb");
 	unsigned total_reads = fread(data, sizeof(T), size, file);
 	// assert(size == total_reads && "read mismatch");

@@ -306,13 +306,20 @@ int main(){
 	int result2;
 
 	// fill data
-	const std::string fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/layer4_0_conv1_weights.bin";
-	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
-	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/layer4_0_conv2_weights.bin";
-	read_bin_fixed<DTYPE_FIL>(fname, BB7_CONV2_WEIGHT_BASE+weight_mem, BB7_CONV2_CONV_WEIGHT_SIZE);
-	gen_rand<DTYPE_ACT, MEM0_SIZE+MEM1_SIZE+MEM2_SIZE>(act_mem, -1, 1);
-	gen_rand<DTYPE_FIL, WEIGHT_MEM_SIZE>(weight_mem, -1, 1);
-	gen_rand<float, BN_WEIGHT_MEM_SIZE>(bn_weight_mem, -1, 1);
+	const std::string fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/input.bin";
+	read_bin_fixed<DTYPE_ACT>(fname, act_mem, 0, INPUT_SIZE);
+	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight1.bin";
+	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_WEIGHT_BASE, BB7_CONV1_CONV_WEIGHT_SIZE);
+	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight2.bin";
+	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV2_WEIGHT_BASE, BB7_CONV2_CONV_WEIGHT_SIZE);
+	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight3.bin";
+	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_SKIP_WEIGHT_BASE, BB7_SKIP_CONV_WEIGHT_SIZE);
+	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_weight1.bin";
+	read_bin_float(fname, bn_weight_mem, BB7_CONV1_BN_WEIGHT_BASE, BB7_CONV1_BN_WEIGHT_SIZE);
+	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_weight2.bin";
+	read_bin_float(fname, bn_weight_mem, BB7_CONV2_BN_WEIGHT_BASE, BB7_CONV2_BN_WEIGHT_SIZE);
+	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_weight3.bin";
+	read_bin_float(fname, bn_weight_mem, BB7_SKIP_BN_WEIGHT_BASE, BB7_SKIP_BN_WEIGHT_SIZE);
 
 	kernel(act_mem, weight_mem, bn_weight_mem, result1, result2);
 	
