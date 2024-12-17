@@ -259,6 +259,10 @@ void store_output_fifo(
     unsigned int nox
 ) {
     DTYPE_ACT output_buffer[2][POF][POY][POX];
+    #pragma HLS ARRAY_PARTITION variable=output_buffer dim=4 complete
+    #pragma HLS ARRAY_PARTITION variable=output_buffer dim=3 complete
+    #pragma HLS ARRAY_PARTITION variable=output_buffer dim=2 complete
+    
     for (int out_f = 0; out_f < nof; out_f+=POF) {
         for (int y0 = 0; y0 < noy; y0+=POY) {
             for (int x0 = 0; x0 < nox; x0+=POX) {
