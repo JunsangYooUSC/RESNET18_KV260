@@ -9,6 +9,10 @@
 // Include project headers
 #include "conv_config.h"
 
+constexpr unsigned ACT_MEM_SIZE = CONV1_C*CONV1_H*CONV1_W;
+constexpr unsigned WEIGHT_MEM_SIZE = 10000000;
+constexpr unsigned BN_WEIGHT_MEM_SIZE = 100000;
+
 void kernel_func(DTYPE_ACT *in_host, DTYPE_FIL *weight_mem, float *bn_weight_mem, DTYPE_ACT *out_host);
 
 void PE(
