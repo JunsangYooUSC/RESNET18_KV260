@@ -208,7 +208,7 @@ void kernel(
     store_input_test(act_mem, load_input_fifo, MEM0_SIZE,
             nky, nkx, nof, nif, noy, nox, stride, pad);
     result1 = 1;
-    for (int idx = 0; idx < nif*noy*stride*nox*strid; idx++) {
+    for (int idx = 0; idx < nif*noy*stride*nox*stride; idx++) {
         if (act_mem[idx] != act_mem[MEM0_SIZE+idx]){
             result1 = 0;
         }
