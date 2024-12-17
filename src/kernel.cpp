@@ -113,6 +113,47 @@ void kernel(
     float *bn_weight_mem
 ) {
 
+    unsigned nif;
+    unsigned nof;
+    unsigned noy;
+    unsigned nox;
+    unsigned nkx;
+    unsigned nky;
+    unsigned stride;
+    unsigned pad;
+    bool bb_en;
+    bool conv_en;
+    bool bn_en;
+    bool skip_en;
+    bool relu_en;
+    bool max_pool_en;
+    bool avg_pool_en;
+    bool lin_en;
+    unsigned weight_base;
+    unsigned weight_size;
+    unsigned bn_weight_base;
+    unsigned bn_weight_size;
+    nif             = BB6_SKIP_C;
+    nof             = BB7_CONV1_C;
+    noy             = BB7_CONV1_H;
+    nox             = BB7_CONV1_W;
+    nkx             = BB7_CONV1_K;
+    nky             = BB7_CONV1_K;
+    stride          = BB7_CONV1_S;
+    pad             = BB7_CONV1_PAD;
+    bb_en           = BB7_CONV1_BB_EN;
+    conv_en         = BB7_CONV1_CONV_EN;
+    bn_en           = BB7_CONV1_BN_EN;
+    skip_en         = BB7_CONV1_SKIP_EN;
+    relu_en         = BB7_CONV1_RELU_EN;
+    max_pool_en     = BB7_CONV1_MAX_POOL;
+    avg_pool_en     = BB7_CONV1_AVG_POOL;
+    lin_en          = BB7_CONV1_LIN_EN;
+    weight_base     = BB7_CONV1_WEIGHT_BASE;
+    weight_size     = BB7_CONV1_CONV_WEIGHT_SIZE;
+    bn_weight_base  = BB7_CONV1_BN_WEIGHT_BASE;
+    bn_weight_size  = BB7_CONV1_BN_WEIGHT_SIZE;
+
     // interface
     #pragma HLS INTERFACE s_axilite port=return bundle=control
     #pragma HLS INTERFACE m_axi depth=16 port=act_mem bundle=gmem
