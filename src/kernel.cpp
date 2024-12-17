@@ -230,8 +230,8 @@ void conv_kernel(
     DTYPE_ACT *act_mem,
     DTYPE_FIL *weight_mem,
     float *bn_weight_mem,
-    int &result1,
-    int &result2
+    int *result1,
+    int *result2
 ) {
 
     unsigned nif;
@@ -277,11 +277,11 @@ void conv_kernel(
 
     // interface
     #pragma HLS INTERFACE s_axilite port=return bundle=control
-    #pragma HLS INTERFACE mode=m_axi port=act_mem offset=slave bundle=gmem0
-    #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0
-    #pragma HLS INTERFACE mode=m_axi port=bn_weight_mem offset=slave bundle=gmem0
-    #pragma HLS INTERFACE mode=m_axi port=result1 offset=slave bundle=gmem0
-    #pragma HLS INTERFACE mode=m_axi port=result2 offset=slave bundle=gmem0
+    #pragma HLS INTERFACE mode=m_axi port=act_mem offset=slave bundle=gmem0 depth = 500000
+    #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0 depth = 500000
+    #pragma HLS INTERFACE mode=m_axi port=bn_weight_mem offset=slave bundle=gmem0 depth = 500000
+    #pragma HLS INTERFACE mode=m_axi port=result1 offset=slave bundle=gmem0 depth = 1
+    #pragma HLS INTERFACE mode=m_axi port=result2 offset=slave bundle=gmem0 depth = 1
     #pragma HLS INTERFACE mode=s_axilite port=act_mem bundle=control
     #pragma HLS INTERFACE mode=s_axilite port=weight_mem bundle=control
     #pragma HLS INTERFACE mode=s_axilite port=bn_weight_mem bundle=control
@@ -301,10 +301,10 @@ void conv_kernel(
             nky, nkx, nof, nif, noy, nox, stride, pad);
     store_input_test(act_mem, load_input_fifo, MEM0_SIZE,
             nky, nkx, nof, nif, noy, nox, stride, pad);
-    result1 = 1;
+    (*result1) = 1;
     for (int idx = 0; idx < nif*noy*nox; idx++) {
         if (act_mem[idx] != act_mem[MEM0_SIZE+idx]){
-            result1 = 0;
+            (*result1) = 0;
         }
     }
 
@@ -316,7 +316,7 @@ void conv_kernel(
             nky, nkx, nof, nif, noy, nox);
     store_output_fifo(act_mem, pe_out_fifo, MEM0_SIZE, 
             nky, nkx, nof, nif, noy, nox);
-    result2 = 1;
+    (*result2) = 1;
 }
 
 #endif

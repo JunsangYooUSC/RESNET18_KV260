@@ -325,7 +325,7 @@ int main(){
 	std::cout << "first 3 weight val: " << weight_mem[0] << " " << weight_mem[1] << " " << weight_mem[2] << std::endl;
 	std::cout << "first 3 bn_weight_mem val: " << bn_weight_mem[0] << " " << bn_weight_mem[1] << " " << bn_weight_mem[2] << std::endl;
 
-	conv_kernel(act_mem, weight_mem, bn_weight_mem, result1, result2);
+	conv_kernel(act_mem, weight_mem, bn_weight_mem, &result1, &result2);
 	
 	// golden conv gen
 	float in_act_host_float[INPUT_SIZE];
