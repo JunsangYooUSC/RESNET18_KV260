@@ -327,7 +327,7 @@ int main(){
 
     for (int idx = 0; idx < OUTPUT_SIZE; idx++) {
         if (out_act_host_float[idx] != act_mem[MEM0_SIZE+idx]){
-			std::cout << "idx: " << idx << " host: " << out_act_host_float[idx] << " kernel: " << act_mem[idx];
+			std::cout << "idx: " << idx << " host: " << out_act_host_float[idx] << " kernel: " << act_mem[idx] << std::endl;
             result2 = 0;
         }
     }
