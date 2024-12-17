@@ -306,6 +306,10 @@ int main(){
 	int result2;
 
 	// fill data
+	const std::string fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/layer4_0_conv1_weights.bin";
+	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
+	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/layer4_0_conv2_weights.bin";
+	read_bin_fixed<DTYPE_FIL>(fname, BB7_CONV2_WEIGHT_BASE+weight_mem, BB7_CONV2_CONV_WEIGHT_SIZE);
 	gen_rand<DTYPE_ACT, MEM0_SIZE+MEM1_SIZE+MEM2_SIZE>(act_mem, -1, 1);
 	gen_rand<DTYPE_FIL, WEIGHT_MEM_SIZE>(weight_mem, -1, 1);
 	gen_rand<float, BN_WEIGHT_MEM_SIZE>(bn_weight_mem, -1, 1);
