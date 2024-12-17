@@ -277,11 +277,16 @@ void conv_kernel(
 
     // interface
     #pragma HLS INTERFACE s_axilite port=return bundle=control
-    #pragma HLS INTERFACE m_axi port=act_mem bundle=gmem
-    #pragma HLS INTERFACE m_axi port=weight_mem bundle=gmem
-    #pragma HLS INTERFACE m_axi port=bn_weight_mem bundle=gmem
-    #pragma HLS INTERFACE m_axi port=result1 bundle=gmem
-    #pragma HLS INTERFACE m_axi port=result2 bundle=gmem
+    #pragma HLS INTERFACE mode=m_axi port=act_mem offset=slave bundle=gmem0
+    #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0
+    #pragma HLS INTERFACE mode=m_axi port=bn_weight_mem offset=slave bundle=gmem0
+    #pragma HLS INTERFACE mode=m_axi port=result1 offset=slave bundle=gmem0
+    #pragma HLS INTERFACE mode=m_axi port=result2 offset=slave bundle=gmem0
+    #pragma HLS INTERFACE mode=s_axilite port=act_mem bundle=control
+    #pragma HLS INTERFACE mode=s_axilite port=weight_mem bundle=control
+    #pragma HLS INTERFACE mode=s_axilite port=bn_weight_mem bundle=control
+    #pragma HLS INTERFACE mode=s_axilite port=result1 bundle=control
+    #pragma HLS INTERFACE mode=s_axilite port=result2 bundle=control
 
     // fifo
     hls::stream<DTYPE_ACT> load_input_fifo;
