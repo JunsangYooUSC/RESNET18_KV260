@@ -259,10 +259,6 @@ void store_output_fifo(
     unsigned int nox
 ) {
     DTYPE_ACT output_buffer[2][POF][POY][POX];
-    #pragma HLS ARRAY_PARTITION variable=output_buffer dim=4 complete
-    #pragma HLS ARRAY_PARTITION variable=output_buffer dim=3 complete
-    #pragma HLS ARRAY_PARTITION variable=output_buffer dim=2 complete
-    
     for (int out_f = 0; out_f < nof; out_f+=POF) {
         for (int y0 = 0; y0 < noy; y0+=POY) {
             for (int x0 = 0; x0 < nox; x0+=POX) {
@@ -466,9 +462,9 @@ void conv(
     else {
         // fifo
         hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX];
-        #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH compact=byte
+        #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH
         hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF];
-        #pragma HLS STREAM variable=weight_in_fifo_arr depth=FIFO_ARR_DEPTH compact=byte
+        #pragma HLS STREAM variable=weight_in_fifo_arr depth=FIFO_ARR_DEPTH
 
 // #pragma HLS DATAFLOW
         BUF2PE_stride(mem_in, mac_in_fifo_arr,
@@ -508,11 +504,11 @@ void batch_norm(
             for (int x0 = 0; x0 < nox; x0+=POX) {
                 // parallel
                 for (int f = 0; f < POF; f++) {
-#pragma HLS unroll
+#pragma unroll
                     for (int y = 0; y < POY; y++) {
-#pragma HLS unroll                        
+#pragma unroll                        
                         for (int x = 0; x < POX; x++) {
-#pragma HLS unroll
+#pragma unroll
                             float val;
                             val = in_fifo_arr[f][y][x].read();
                             // batch norm when enabled
@@ -546,11 +542,11 @@ void skip_conn(
         for (int y0 = 0; y0 < noy; y0+=POY) {
             for (int x0 = 0; x0 < nox; x0+=POX) {
                 for (int f = 0; f < POF; f++) {
-#pragma HLS unroll
+#pragma unroll
                     for (int y = 0; y < POY; y++) {
-#pragma HLS unroll 
+#pragma unroll 
                         for (int x = 0; x < POX; x++) {
-#pragma HLS unroll
+#pragma unroll
                             float val = in_fifo_arr[f][y][x].read();
                             if (skip_en) {
                                 unsigned add_addr = ((f_out+f)*noy*nox + (y0+y)*nox + x0) / POX;
@@ -592,13 +588,13 @@ void kernel_func(
     // on-chip memory
     DTYPE_MEM_ACT mem0[MEM0_SIZE];
     #pragma HLS bind_storage variable=mem0 impl=uram
-    // #pragma HLS ARRAY_PARTITION variable=mem0 dim=1 complete
+    #pragma HLS ARRAY_PARTITION variable=mem0 dim=1 complete
     DTYPE_MEM_ACT mem1[MEM1_SIZE];
     #pragma HLS bind_storage variable=mem1 impl=uram
-    // #pragma HLS ARRAY_PARTITION variable=mem1 dim=1 complete
+    #pragma HLS ARRAY_PARTITION variable=mem1 dim=1 complete
     DTYPE_MEM_ACT mem2[MEM2_SIZE];
     #pragma HLS bind_storage variable=mem2 impl=uram
-    // #pragma HLS ARRAY_PARTITION variable=mem2 dim=1 complete
+    #pragma HLS ARRAY_PARTITION variable=mem2 dim=1 complete
     DTYPE_MEM_ACT mem3[16];
     // off-chip memory
     // DTYPE_MEM_WEIGHT weight_mem[WEIGHT_MEM_SIZE];
@@ -639,11 +635,11 @@ void kernel_func(
 
     // global pipes
     hls::stream<float> fifo1[POF][POY][POX];
-    #pragma HLS STREAM variable=fifo1 depth=FIFO_ARR_DEPTH compact=byte
+    #pragma HLS STREAM variable=fifo1 depth=FIFO_ARR_DEPTH
     hls::stream<float> fifo2[POF][POY][POX];
-    #pragma HLS STREAM variable=fifo2 depth=FIFO_ARR_DEPTH compact=byte
+    #pragma HLS STREAM variable=fifo2 depth=FIFO_ARR_DEPTH
     hls::stream<float> fifo3[POF][POY][POX];
-    #pragma HLS STREAM variable=fifo3 depth=FIFO_ARR_DEPTH compact=byte
+    #pragma HLS STREAM variable=fifo3 depth=FIFO_ARR_DEPTH
 
     for (int opcnt = 0; opcnt < 3; opcnt++) {
         if (opcnt == 0) {
@@ -737,7 +733,7 @@ void kernel_func(
             }
         }
 
-        // // conv
+        // conv
         conv(mem_in, weight_mem, fifo1,
                 weight_base, nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
         batch_norm(bn_weight_mem, fifo1, fifo2,
@@ -746,8 +742,6 @@ void kernel_func(
                 nof, noy, nox, bb_en, skip_en, relu_en);
         store_output_fifo(mem_out, fifo3,
                 nky, nkx, nof, nif, noy, nox);
-        // store_output_fifo(mem_in, fifo1,
-        //         nky, nkx, nof, nif, noy, nox);
         
         // output back to host
         if (opcnt == 2) {
