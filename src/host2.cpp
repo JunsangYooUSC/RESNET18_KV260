@@ -297,7 +297,7 @@ int main(){
 	// DTYPE_FIL *weight_mem;		// todo: weight packing
 	// float *bn_weight_mem;
 
-	DTYPE_ACT act_mem[ACT_MEM_SIZE*3];
+	DTYPE_ACT act_mem[MEM0_SIZE+MEM1_SIZE+MEM2_SIZE];
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
 	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
 
