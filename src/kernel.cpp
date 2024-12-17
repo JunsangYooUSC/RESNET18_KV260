@@ -48,7 +48,7 @@ void load_input(
                             for (int i = 0; i < nky; i++) {
                                 for (int j = 0; j < nkx; j++) {
                                     DTYPE_ACT in_val;
-                                    if ( (y0 + y + i < pad) || (y0 + y + i >= noy*stride + pad) || (x0 + x + j < pad) || (x0 + x + j >= pad) ){
+                                    if ( (y0 + y + i < pad) || (y0 + y + i >= noy*stride + pad) || (x0 + x + j < pad) || (x0 + x + j >= nox*stride + pad) ){
                                         in_val = 0;
                                     }
                                     else {
@@ -90,7 +90,7 @@ void store_input_test(
                                 for (int j = 0; j < nkx; j++) {
                                     DTYPE_ACT in_val;
                                     in_val = load_input_fifo.read();
-                                    if ( (y0 + y + i < pad) || (y0 + y + i >= noy*stride + pad) || (x0 + x + j < pad) || (x0 + x + j >= pad) ){
+                                    if ( (y0 + y + i < pad) || (y0 + y + i >= noy*stride + pad) || (x0 + x + j < pad) || (x0 + x + j >= nox*stride + pad) ){
                                         in_val = 0;
                                     }
                                     else {
