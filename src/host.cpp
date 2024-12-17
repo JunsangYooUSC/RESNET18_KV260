@@ -301,10 +301,10 @@ int main(){
 	float *bn_weight_mem = new float[BN_WEIGHT_MEM_SIZE];
 
 	// // load weights
-	const std::string fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/layer4_0_conv1_weights.bin";
-	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
-	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/layer4_0_conv2_weights.bin";
-	read_bin_fixed<DTYPE_FIL>(fname, BB7_CONV2_WEIGHT_BASE+weight_mem, BB7_CONV2_CONV_WEIGHT_SIZE);
+	// const std::string fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/layer4_0_conv1_weights.bin";
+	// read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_CONV_WEIGHT_SIZE);
+	// fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/layer4_0_conv2_weights.bin";
+	// read_bin_fixed<DTYPE_FIL>(fname, BB7_CONV2_WEIGHT_BASE+weight_mem, BB7_CONV2_CONV_WEIGHT_SIZE);
 	// 
 	// std::cout << "weight_mem[BB7_CONV2_WEIGHT_BASE]: " << weight_mem[BB7_CONV2_WEIGHT_BASE] << std::endl;
 	// std::cout << "weight_mem[BB7_CONV2_WEIGHT_BASE+1]: " << weight_mem[BB7_CONV2_WEIGHT_BASE+1] << std::endl;
