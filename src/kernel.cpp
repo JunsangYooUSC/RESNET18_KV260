@@ -198,6 +198,35 @@ void PE(
     }
 }
 
+void store_output_fifo(
+    DTYPE_MEM_ACT *act_mem,
+    hls::stream<float> &out_fifo_arr,
+    unsigned int base_addr,
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox
+) {
+    
+    for (int out_f = 0; out_f < nof; out_f+=POF) {
+        for (int y0 = 0; y0 < noy; y0+=POY) {
+            for (int x0 = 0; x0 < nox; x0+=POX) {
+                // parallel
+                for (int f = 0; f < POF; f++) {
+                    for (int y = 0; y < POY; y++) {
+                        for (int x = 0; x < POX; x++) {
+                            unsigned int addr = (out_f+f)*noy*nox + (y0+y)*nox + (x0+x);
+                            mem[base_addr+addr] = out_fifo_arr.read();
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 void kernel(
     DTYPE_ACT *act_mem,
     DTYPE_FIL *weight_mem,
@@ -275,6 +304,13 @@ void kernel(
         }
     }
 
+    load_input(act_mem, load_input_fifo, 0,
+            nky, nkx, nof, nif, noy, nox, stride, pad);
+    load_weight_fifo(weight_mem, load_weight_fifo, 0,
+            nky, nkx, nof, nif, noy, nox);
+    PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
+            nky, nkx, nof, nif, noy, nox);
+    store_output_fifo(act_mem, pe_out_fifo,
+            MEM0_SIZE, nky, nkx, nof, nif, noy, nox);
     result2 = 1;
 }
-#endif
