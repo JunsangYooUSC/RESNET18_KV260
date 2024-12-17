@@ -230,8 +230,8 @@ void kernel(
     DTYPE_ACT *act_mem,
     DTYPE_FIL *weight_mem,
     float *bn_weight_mem,
-    int result1,
-    int result2
+    int &result1,
+    int &result2
 ) {
 
     unsigned nif;
