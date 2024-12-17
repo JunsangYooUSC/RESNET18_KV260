@@ -35,8 +35,8 @@
 #define PKX                 1
 #define PKY                 1
 #define PIF                 1
-#define POX                 7
-#define POY                 7
+#define POX                 1
+#define POY                 1
 #define POF                 1       // change_to: if necessary
 #define MAX_STRIDE          2
 #define MAX_PAD             3
