@@ -54,7 +54,6 @@ void load_input(
                                     else {
                                         unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad);
                                         in_val = act_mem[base_addr+addr];
-                                        std::cout << "load addr: " << addr << std::endl;
                                     }
                                     load_input_fifo.write(in_val);
                                 }
@@ -97,7 +96,6 @@ void store_input_test(
                                     else {
                                         unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad);
                                         act_mem[base_addr+addr] = in_val;
-                                        std::cout << "store addr: " << addr << std::endl;
                                     }
                                 }
                             }
@@ -211,7 +209,7 @@ void kernel(
     store_input_test(act_mem, load_input_fifo, MEM0_SIZE,
             nky, nkx, nof, nif, noy, nox, stride, pad);
     result1 = 1;
-    for (int idx = 0; idx < nif*noy*stride*nox*stride; idx++) {
+    for (int idx = 0; idx < nof*noy*nox; idx++) {
         //if (act_mem[idx] != act_mem[MEM0_SIZE+idx]){
             //std::cout << "idx: " << idx << " act_mem[idx]: " << act_mem[idx] << " act_mem[MEM0_SIZE+idx]: " << act_mem[MEM0_SIZE+idx] << std::endl;
             result1 = 0;
