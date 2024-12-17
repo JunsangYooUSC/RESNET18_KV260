@@ -588,13 +588,13 @@ void kernel_func(
     // on-chip memory
     DTYPE_MEM_ACT mem0[MEM0_SIZE];
     #pragma HLS bind_storage variable=mem0 impl=uram
-    #pragma HLS ARRAY_PARTITION variable=mem0 dim=1 complete
+    // #pragma HLS ARRAY_PARTITION variable=mem0 dim=1 complete
     DTYPE_MEM_ACT mem1[MEM1_SIZE];
     #pragma HLS bind_storage variable=mem1 impl=uram
-    #pragma HLS ARRAY_PARTITION variable=mem1 dim=1 complete
+    // #pragma HLS ARRAY_PARTITION variable=mem1 dim=1 complete
     DTYPE_MEM_ACT mem2[MEM2_SIZE];
     #pragma HLS bind_storage variable=mem2 impl=uram
-    #pragma HLS ARRAY_PARTITION variable=mem2 dim=1 complete
+    // #pragma HLS ARRAY_PARTITION variable=mem2 dim=1 complete
     DTYPE_MEM_ACT mem3[16];
     // off-chip memory
     // DTYPE_MEM_WEIGHT weight_mem[WEIGHT_MEM_SIZE];
