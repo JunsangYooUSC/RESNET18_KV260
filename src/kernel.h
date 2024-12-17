@@ -45,7 +45,7 @@ void store_input_test(
     unsigned int pad
 );
 
-void load_weight_fifo(
+void load_weight(
     DTYPE_FIL *weight_mem,
     hls::stream<DTYPE_FIL> &load_weight_fifo,
     unsigned int base_addr,

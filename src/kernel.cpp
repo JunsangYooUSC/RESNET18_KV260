@@ -107,7 +107,7 @@ void store_input_test(
     }
 }
 
-void load_weight_fifo(
+void load_weight(
     DTYPE_FIL *weight_mem,
     hls::stream<DTYPE_FIL> &load_weight_fifo,
     unsigned int base_addr,
@@ -117,7 +117,6 @@ void load_weight_fifo(
     unsigned int nif,
     unsigned int noy,
     unsigned int nox
-
 ) {
     DTYPE_FIL filter_buffer[2][POF][nif][nky][nkx];  // todo: use double buffer
     for (int f_out = 0; f_out < nof; f_out += POF) {
