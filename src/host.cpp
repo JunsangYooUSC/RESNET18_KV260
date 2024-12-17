@@ -374,7 +374,13 @@ int main(){
 	float bn_weight_mem0[BB7_CONV1_BN_WEIGHT_SIZE];
 	float bn_weight_mem1[BB7_CONV2_BN_WEIGHT_SIZE];
 	float bn_weight_mem2[BB7_SKIP_BN_WEIGHT_SIZE];
-	
+	for (int idx = 0; idx < BB7_CONV1_CONV_WEIGHT_SIZE; idx++) weight_mem0[idx] = weight_mem[idx+BB7_CONV1_WEIGHT_BASE];
+	for (int idx = 0; idx < BB7_CONV2_CONV_WEIGHT_SIZE; idx++) weight_mem1[idx] = weight_mem[idx+BB7_CONV2_WEIGHT_BASE];
+	for (int idx = 0; idx < BB7_SKIP_CONV_WEIGHT_SIZE; idx++) weight_mem2[idx] = weight_mem[idx+BB7_SKIP_WEIGHT_BASE];
+	for (int idx = 0; idx < BB7_CONV1_BN_WEIGHT_SIZE; idx++) bn_weight_mem0[idx] = weight_mem[idx+BB7_CONV1_BN_WEIGHT_BASE];
+	for (int idx = 0; idx < BB7_CONV2_BN_WEIGHT_SIZE; idx++) bn_weight_mem1[idx] = weight_mem[idx+BB7_CONV2_BN_WEIGHT_BASE];
+	for (int idx = 0; idx < BB7_SKIP_BN_WEIGHT_SIZE; idx++) bn_weight_mem2[idx] = weight_mem[idx+BB7_SKIP_BN_WEIGHT_BASE];
+
 	float host_mem0[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
 	float host_mem1[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
 	float host_mem2[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
