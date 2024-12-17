@@ -26,6 +26,11 @@
 // Print the configuration information
 #define CHECK_CONFIG		1
 
+#define INPUT_SIZE 			(BB6_SKIP_C*BB7_CONV1_H*BB7_CONV1_W*BB7_CONV1_S*BB7_CONV1_S)
+#define OUTPUT_SIZE			(BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W)
+#define FILTER_SIZE			(BB6_SKIP_C*BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W)
+
+
 // Function: golden convolution
 template<typename D_ACT, typename D_FILTER, typename D_MULT, typename D_MAC>
 void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act,
@@ -306,8 +311,27 @@ int main(){
 	gen_rand<float, BN_WEIGHT_MEM_SIZE>(bn_weight_mem, -1, 1);
 
 	kernel(act_mem, weight_mem, bn_weight_mem, result1, result2);
+	
+	// golden conv gen
+	float in_act_host_float[INPUT_SIZE];
+	float in_fil_host_float[FILTER_SIZE];
+	float out_act_host_float[OUTPUT_SIZE];
+	for (int idx = 0; idx < INPUT_SIZE; idx++) {
+		in_act_host_float[idx] = (float) act_mem[idx];
+	}
+	for (int idx = 0; idx < FILTER_SIZE; idx++) {
+		in_fil_host_float[idx] = (float) weight_mem[idx];
+	}
+ 	convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float,
+ 			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
+
+    for (int idx = 0; idx < nof*noy*nox; idx++) {
+        if (out_act_host_float[idx] != act_mem[MEM0_SIZE+idx]){
+            result2 = 0;
+        }
+    }
 
 	std::cout << "result1: " << result1 << std::endl;
 	std::cout << "result2: " << result2 << std::endl;
-	
+
 }
