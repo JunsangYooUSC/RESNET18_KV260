@@ -202,8 +202,8 @@ void kernel(
     DTYPE_ACT *act_mem,
     DTYPE_FIL *weight_mem,
     float *bn_weight_mem,
-    int &result1,
-    int &result2
+    int result1,
+    int result2
 ) {
 
     unsigned nif;
@@ -269,7 +269,6 @@ void kernel(
     result1 = 1;
     for (int idx = 0; idx < nif*noy*nox; idx++) {
         if (act_mem[idx] != act_mem[MEM0_SIZE+idx]){
-            std::cout << "idx: " << idx << " act_mem[idx]: " << act_mem[idx] << " act_mem[MEM0_SIZE+idx]: " << act_mem[MEM0_SIZE+idx] << std::endl;
             result1 = 0;
         }
     }
