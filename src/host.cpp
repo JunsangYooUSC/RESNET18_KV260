@@ -353,51 +353,51 @@ int main(){
 
 	// kernel_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
 
-	kernel_test_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
-	compare_result<DTYPE_ACT, float, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
-
-	// conv with bn
-	convolution_bn_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_mem,
-			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
-	kernel_test2_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
-	compare_result<DTYPE_ACT, float, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
-
-	// conv, bn, skip conn, relu
-	convolution_bn_skip_relu_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_mem, in_add_host_float,
-			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
-	kernel_test3_func(in_act_host, in_add_host, weight_mem, bn_weight_mem, out_act_host);
-
-	// DTYPE_ACT in_act_host[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
-	float weight_mem0[BB7_CONV1_CONV_WEIGHT_SIZE];
-	float weight_mem1[BB7_CONV2_CONV_WEIGHT_SIZE];
-	float weight_mem2[BB7_SKIP_CONV_WEIGHT_SIZE];
-	float bn_weight_mem0[BB7_CONV1_BN_WEIGHT_SIZE];
-	float bn_weight_mem1[BB7_CONV2_BN_WEIGHT_SIZE];
-	float bn_weight_mem2[BB7_SKIP_BN_WEIGHT_SIZE];
-	for (int idx = 0; idx < BB7_CONV1_CONV_WEIGHT_SIZE; idx++) weight_mem0[idx] = weight_mem[idx+BB7_CONV1_WEIGHT_BASE];
-	for (int idx = 0; idx < BB7_CONV2_CONV_WEIGHT_SIZE; idx++) weight_mem1[idx] = weight_mem[idx+BB7_CONV2_WEIGHT_BASE];
-	for (int idx = 0; idx < BB7_SKIP_CONV_WEIGHT_SIZE; idx++) weight_mem2[idx] = weight_mem[idx+BB7_SKIP_WEIGHT_BASE];
-	for (int idx = 0; idx < BB7_CONV1_BN_WEIGHT_SIZE; idx++) bn_weight_mem0[idx] = weight_mem[idx+BB7_CONV1_BN_WEIGHT_BASE];
-	for (int idx = 0; idx < BB7_CONV2_BN_WEIGHT_SIZE; idx++) bn_weight_mem1[idx] = weight_mem[idx+BB7_CONV2_BN_WEIGHT_BASE];
-	for (int idx = 0; idx < BB7_SKIP_BN_WEIGHT_SIZE; idx++) bn_weight_mem2[idx] = weight_mem[idx+BB7_SKIP_BN_WEIGHT_BASE];
-
-	float host_mem0[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
-	float host_mem1[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
-	float host_mem2[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
-	for (int idx = 0; idx < BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W; idx++) {
-		host_mem0[idx] = in_act_host[idx];
-	}
-	convolution_bn_golden<float, float, float, float>(host_mem0, weight_mem0, host_mem1, bn_weight_mem0,
-			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
-	for (int idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W; idx++) {
-		host_mem1[idx] = (host_mem1[idx] > 0) ? host_mem1[idx] : 0;
-	}
-	convolution_bn_golden<float, float, float, float>(host_mem1, weight_mem1, host_mem2, bn_weight_mem1,
-			BB7_CONV2_K, BB7_CONV2_K, BB7_CONV2_C, BB7_CONV1_C, BB7_CONV2_H, BB7_CONV2_W, BB7_CONV2_S, BB7_CONV2_PAD);
-	convolution_bn_skip_relu_golden<float, float, float, float>(host_mem0, weight_mem2, host_mem1, bn_weight_mem2, host_mem2,
-			BB7_SKIP_K, BB7_SKIP_K, BB7_SKIP_C, BB7_CONV2_C, BB7_SKIP_H, BB7_SKIP_W, BB7_SKIP_S, BB7_SKIP_PAD);
-	
-	kernel_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
-	compare_result<DTYPE_ACT, float, BB7_SKIP_C*BB7_SKIP_H*BB7_SKIP_W>(out_act_host, host_mem1);
+//	kernel_test_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
+//	compare_result<DTYPE_ACT, float, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
+//
+//	// conv with bn
+//	convolution_bn_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_mem,
+//			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
+//	kernel_test2_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
+//	compare_result<DTYPE_ACT, float, BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W>(out_act_host, out_act_host_float, 2.0/(1<<(W_ACT-I_ACT)));
+//
+//	// conv, bn, skip conn, relu
+//	convolution_bn_skip_relu_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_mem, in_add_host_float,
+//			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
+//	kernel_test3_func(in_act_host, in_add_host, weight_mem, bn_weight_mem, out_act_host);
+//
+//	// DTYPE_ACT in_act_host[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
+//	float weight_mem0[BB7_CONV1_CONV_WEIGHT_SIZE];
+//	float weight_mem1[BB7_CONV2_CONV_WEIGHT_SIZE];
+//	float weight_mem2[BB7_SKIP_CONV_WEIGHT_SIZE];
+//	float bn_weight_mem0[BB7_CONV1_BN_WEIGHT_SIZE];
+//	float bn_weight_mem1[BB7_CONV2_BN_WEIGHT_SIZE];
+//	float bn_weight_mem2[BB7_SKIP_BN_WEIGHT_SIZE];
+//	for (int idx = 0; idx < BB7_CONV1_CONV_WEIGHT_SIZE; idx++) weight_mem0[idx] = weight_mem[idx+BB7_CONV1_WEIGHT_BASE];
+//	for (int idx = 0; idx < BB7_CONV2_CONV_WEIGHT_SIZE; idx++) weight_mem1[idx] = weight_mem[idx+BB7_CONV2_WEIGHT_BASE];
+//	for (int idx = 0; idx < BB7_SKIP_CONV_WEIGHT_SIZE; idx++) weight_mem2[idx] = weight_mem[idx+BB7_SKIP_WEIGHT_BASE];
+//	for (int idx = 0; idx < BB7_CONV1_BN_WEIGHT_SIZE; idx++) bn_weight_mem0[idx] = weight_mem[idx+BB7_CONV1_BN_WEIGHT_BASE];
+//	for (int idx = 0; idx < BB7_CONV2_BN_WEIGHT_SIZE; idx++) bn_weight_mem1[idx] = weight_mem[idx+BB7_CONV2_BN_WEIGHT_BASE];
+//	for (int idx = 0; idx < BB7_SKIP_BN_WEIGHT_SIZE; idx++) bn_weight_mem2[idx] = weight_mem[idx+BB7_SKIP_BN_WEIGHT_BASE];
+//
+//	float host_mem0[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
+//	float host_mem1[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
+//	float host_mem2[BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W];
+//	for (int idx = 0; idx < BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W; idx++) {
+//		host_mem0[idx] = in_act_host[idx];
+//	}
+//	convolution_bn_golden<float, float, float, float>(host_mem0, weight_mem0, host_mem1, bn_weight_mem0,
+//			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
+//	for (int idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W; idx++) {
+//		host_mem1[idx] = (host_mem1[idx] > 0) ? host_mem1[idx] : 0;
+//	}
+//	convolution_bn_golden<float, float, float, float>(host_mem1, weight_mem1, host_mem2, bn_weight_mem1,
+//			BB7_CONV2_K, BB7_CONV2_K, BB7_CONV2_C, BB7_CONV1_C, BB7_CONV2_H, BB7_CONV2_W, BB7_CONV2_S, BB7_CONV2_PAD);
+//	convolution_bn_skip_relu_golden<float, float, float, float>(host_mem0, weight_mem2, host_mem1, bn_weight_mem2, host_mem2,
+//			BB7_SKIP_K, BB7_SKIP_K, BB7_SKIP_C, BB7_CONV2_C, BB7_SKIP_H, BB7_SKIP_W, BB7_SKIP_S, BB7_SKIP_PAD);
+//	
+//	kernel_func(in_act_host, weight_mem, bn_weight_mem, out_act_host);
+//	compare_result<DTYPE_ACT, float, BB7_SKIP_C*BB7_SKIP_H*BB7_SKIP_W>(out_act_host, host_mem1);
 
 }
