@@ -466,9 +466,9 @@ void conv(
     else {
         // fifo
         hls::stream<DTYPE_ACT> mac_in_fifo_arr[POY][POX];
-        #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH
+        #pragma HLS STREAM variable=mac_in_fifo_arr depth=FIFO_ARR_DEPTH compact=byte
         hls::stream<DTYPE_FIL> weight_in_fifo_arr[POF];
-        #pragma HLS STREAM variable=weight_in_fifo_arr depth=FIFO_ARR_DEPTH
+        #pragma HLS STREAM variable=weight_in_fifo_arr depth=FIFO_ARR_DEPTH compact=byte
 
 // #pragma HLS DATAFLOW
         BUF2PE_stride(mem_in, mac_in_fifo_arr,
@@ -639,11 +639,11 @@ void kernel_func(
 
     // global pipes
     hls::stream<float> fifo1[POF][POY][POX];
-    #pragma HLS STREAM variable=fifo1 depth=FIFO_ARR_DEPTH
+    #pragma HLS STREAM variable=fifo1 depth=FIFO_ARR_DEPTH compact=byte
     hls::stream<float> fifo2[POF][POY][POX];
-    #pragma HLS STREAM variable=fifo2 depth=FIFO_ARR_DEPTH
+    #pragma HLS STREAM variable=fifo2 depth=FIFO_ARR_DEPTH compact=byte
     hls::stream<float> fifo3[POF][POY][POX];
-    #pragma HLS STREAM variable=fifo3 depth=FIFO_ARR_DEPTH
+    #pragma HLS STREAM variable=fifo3 depth=FIFO_ARR_DEPTH compact=byte
 
     for (int opcnt = 0; opcnt < 3; opcnt++) {
         if (opcnt == 0) {
