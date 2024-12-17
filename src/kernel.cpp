@@ -286,7 +286,7 @@ void kernel(
     // fifo
     hls::stream<DTYPE_ACT> load_input_fifo;
     #pragma HLS STREAM variable=load_input_fifo depth=FIFO_ARR_DEPTH
-    hls::stream<DTYPE_ACT> load_weight_fifo;
+    hls::stream<DTYPE_FIL> load_weight_fifo;
     #pragma HLS STREAM variable=load_weight_fifo depth=FIFO_ARR_DEPTH
     hls::stream<float> pe_out_fifo;
     #pragma HLS STREAM variable=pe_out_fifo depth=FIFO_ARR_DEPTH
