@@ -321,6 +321,10 @@ int main(){
 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_weight3.bin";
 	read_bin_float(fname, bn_weight_mem, BB7_SKIP_BN_WEIGHT_BASE, BB7_SKIP_BN_WEIGHT_SIZE);
 
+	std::cout << "first 3 input val: " << act_mem[0] << " " << act_mem[1] << " " << act_mem[2] << std::endl;
+	std::cout << "first 3 weight val: " << weight_mem[0] << " " << weight_mem[1] << " " << weight_mem[2] << std::endl;
+	std::cout << "first 3 bn_weight val: " << bn_weight[0] << " " << bn_weight[1] << " " << bn_weight[2] << std::endl;
+
 	kernel(act_mem, weight_mem, bn_weight_mem, result1, result2);
 	
 	// golden conv gen
