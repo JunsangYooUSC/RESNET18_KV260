@@ -237,7 +237,7 @@ int main(){
 		std::cout << "in_size: " << in_size << std::endl;
 		std::cout << "out_size: " << out_size << std::endl;
 		
-	}:
+	}
 
 	// kernel calculation
 	conv_kernel(act_in_host, act_out_host, weight_mem, bn_weight_mem, &start_layer, &end_layer);
