@@ -290,7 +290,6 @@ void skip_conn(
                             float val = in_fifo.read();
                             if (skip_en) {
                                 unsigned add_addr = (f_out+f)*noy*nox + (y0+y)*nox + x0+x;
-                                std::cout << "add_addr: " << add_addr << std::endl;
                                 DTYPE_ACT add_val = act_mem[base_addr + add_addr];
                                 val = val + (float)add_val;
                             }
