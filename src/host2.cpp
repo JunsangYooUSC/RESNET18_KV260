@@ -302,7 +302,7 @@ int main(){
 	DTYPE_ACT act_mem[MEM0_SIZE+MEM1_SIZE+MEM2_SIZE];
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
 	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
-	for (int idx = 0; idx < MEM0_SIZE+MEM1_SIZE+MEM2_SIZE; idx++) act_mam[idx] = 0;
+	for (int idx = 0; idx < MEM0_SIZE+MEM1_SIZE+MEM2_SIZE; idx++) act_mem[idx] = 0;
 	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem[idx] = 0;
 	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem[idx] = 0;
 	
