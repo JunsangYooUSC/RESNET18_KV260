@@ -124,10 +124,10 @@ int main(){
 		if (*layer_cnt == *start_layer){
 			// load input
 			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/input.bin";
-			read_bin_fixed<DTYPE_ACT>(fname, act_mem, *base_addr_in, *in_size);
+			read_bin_fixed<DTYPE_ACT>(fname, act_in_host, *base_addr_in, *in_size);
 			// copy for host validation
 			for (int idx = 0; idx < *in_size; idx++) {
-				act_host_float[*base_addr_in+idx] = act_mem[*base_addr_in+idx];
+				act_host_float[*base_addr_in+idx] = act_in_host[*base_addr_in+idx];
 			}
 		}
 		// BB7_CONV1 layer cnt 21

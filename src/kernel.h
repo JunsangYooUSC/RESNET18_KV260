@@ -12,10 +12,41 @@
 #include "conv_config.h"
 
 void conv_kernel(
-    DTYPE_ACT *act_mem_host,
+    DTYPE_ACT *act_in_host,
+    DTYPE_ACT *act_out_host,
     DTYPE_FIL *weight_mem,
     float *bn_weight_mem,
-    DTYPE_ACT *act_out_host
+    unsigned *start_layer,
+    unsigned *end_layer
+);
+
+void controller (
+    unsigned *layer_cnt,
+    unsigned *nif,
+    unsigned *nof,
+    unsigned *noy,
+    unsigned *nox,
+    unsigned *nkx,
+    unsigned *nky,
+    unsigned *stride,
+    unsigned *pad,
+    bool *bb_en,
+    bool *conv_en,
+    bool *bn_en,
+    bool *skip_en,
+    bool *relu_en,
+    bool *max_pool_en,
+    bool *avg_pool_en,
+    bool *lin_en,
+    unsigned *base_addr_in,
+    unsigned *base_addr_out,
+    unsigned *base_addr_add,
+    unsigned *weight_base,
+    unsigned *weight_size,
+    unsigned *bn_weight_base,
+    unsigned *bn_weight_size,
+    unsigned *in_size,
+    unsigned *out_size
 );
 
 void load_input(
