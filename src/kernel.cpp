@@ -1039,10 +1039,10 @@ void conv_kernel(
         );
 
         // initial input
-        if (*layer_cnt == *start_layer) {
+        if (layer_cnt == start_layer) {
             // load input
-            for (int idx = 0; idx < *in_size; idx++){
-                act_mem[*base_addr_in+idx] = act_in_host[idx];
+            for (int idx = 0; idx < in_size; idx++){
+                act_mem[base_addr_in+idx] = act_in_host[idx];
             }
         }
 
@@ -1061,9 +1061,9 @@ void conv_kernel(
                 nky, nkx, nof, nif, noy, nox);
                 
         // output back to host
-        if (*layer_cnt == *end_layer) {
+        if (layer_cnt == end_layer) {
             for (int idx = 0; idx < out_size; idx++){
-                act_out_host[idx] = act_mem[*base_addr_out+idx];
+                act_out_host[idx] = act_mem[base_addr_out+idx];
             }
         }
 
