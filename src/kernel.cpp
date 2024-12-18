@@ -217,7 +217,6 @@ void store_output_fifo(
                         for (int x = 0; x < POX; x++) {
                             unsigned int addr = (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
                             act_mem[base_addr+addr] = out_fifo_arr.read();
-                            std::cout << "act_mem[" << base_addr+addr << "]: " << act_mem[base_addr+addr] << std::endl;
                         }
                     }
                 }
@@ -379,6 +378,9 @@ void conv_kernel(
             nof, noy, nox, 1, 1);
     store_output_fifo(act_mem, bn_out_fifo, MEM0_SIZE, 
             nky, nkx, nof, nif, noy, nox);
+    for (int idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W; idx++) {
+        act_mem_host[MEM0_SIZE+idx] = act_mem[MEM0_SIZE+idx];
+    }
     (*result2) = 1;
 }
 
