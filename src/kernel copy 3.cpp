@@ -392,114 +392,39 @@ void conv_kernel(
     #pragma HLS STREAM variable=bn_out_fifo depth=FIFO_ARR_DEPTH
     hls::stream<float> skip_out_fifo;
     #pragma HLS STREAM variable=skip_out_fifo depth=FIFO_ARR_DEPTH
-    
-    int loops = 1;
-    for (int opcnt = 0; opcnt < loops; opcnt++) {
-        if (opcnt == 0) {
-            nif             = BB6_SKIP_C;
-            nof             = BB7_CONV1_C;
-            noy             = BB7_CONV1_H;
-            nox             = BB7_CONV1_W;
-            nkx             = BB7_CONV1_K;
-            nky             = BB7_CONV1_K;
-            stride          = BB7_CONV1_S;
-            pad             = BB7_CONV1_PAD;
-            bb_en           = BB7_CONV1_BB_EN;
-            conv_en         = BB7_CONV1_CONV_EN;
-            bn_en           = BB7_CONV1_BN_EN;
-            skip_en         = BB7_CONV1_SKIP_EN;
-            relu_en         = BB7_CONV1_RELU_EN;
-            max_pool_en     = BB7_CONV1_MAX_POOL;
-            avg_pool_en     = BB7_CONV1_AVG_POOL;
-            lin_en          = BB7_CONV1_LIN_EN;
-            base_addr_in    = 0;
-            base_addr_out   = MEM0_SIZE;
-            base_addr_add   = 0;
-            weight_base     = BB7_CONV1_WEIGHT_BASE;
-            weight_size     = BB7_CONV1_CONV_WEIGHT_SIZE;
-            bn_weight_base  = BB7_CONV1_BN_WEIGHT_BASE;
-            bn_weight_size  = BB7_CONV1_BN_WEIGHT_SIZE;
-        } 
-        else if (opcnt == 1) {
-            nif             = BB7_CONV1_C;
-            nof             = BB7_CONV2_C;
-            noy             = BB7_CONV2_H;
-            nox             = BB7_CONV2_W;
-            nkx             = BB7_CONV2_K;
-            nky             = BB7_CONV2_K;
-            stride          = BB7_CONV2_S;
-            pad             = BB7_CONV2_PAD;
-            bb_en           = BB7_CONV2_BB_EN;
-            conv_en         = BB7_CONV2_CONV_EN;
-            bn_en           = BB7_CONV2_BN_EN;
-            skip_en         = BB7_CONV2_SKIP_EN;
-            relu_en         = BB7_CONV2_RELU_EN;
-            max_pool_en     = BB7_CONV2_MAX_POOL;
-            avg_pool_en     = BB7_CONV2_AVG_POOL;
-            lin_en          = BB7_CONV2_LIN;
-            base_addr_in    = MEM0_SIZE;
-            base_addr_out   = MEM0_SIZE+MEM1_SIZE;
-            base_addr_add   = 0;
-            weight_base     = BB7_CONV2_WEIGHT_BASE;
-            weight_size     = BB7_CONV2_CONV_WEIGHT_SIZE;
-            bn_weight_base  = BB7_CONV2_BN_WEIGHT_BASE;
-            bn_weight_size  = BB7_CONV2_BN_WEIGHT_SIZE;
-        }
-        else if (opcnt == 2) {
-            nif             = BB7_CONV2_C;
-            nof             = BB7_SKIP_C;
-            noy             = BB7_SKIP_H;
-            nox             = BB7_SKIP_W;
-            nkx             = BB7_SKIP_K;
-            nky             = BB7_SKIP_K;
-            stride          = BB7_SKIP_S;
-            pad             = BB7_SKIP_PAD;
-            bb_en           = BB7_SKIP_BB_EN;
-            conv_en         = BB7_SKIP_CONV_EN;
-            bn_en           = BB7_SKIP_BN_EN;
-            skip_en         = BB7_SKIP_SKIP_EN;
-            relu_en         = BB7_SKIP_RELU_EN;
-            max_pool_en     = BB7_SKIP_MAX_POOL;
-            avg_pool_en     = BB7_SKIP_AVG_POOL;
-            lin_en          = BB7_SKIP_LIN;
-            base_addr_in    = 0;
-            base_addr_out   = MEM0_SIZE;
-            base_addr_add   = MEM0_SIZE+MEM1_SIZE;
-            weight_base     = BB7_SKIP_WEIGHT_BASE;
-            weight_size     = BB7_SKIP_CONV_WEIGHT_SIZE;
-            bn_weight_base  = BB7_SKIP_BN_WEIGHT_BASE;
-            bn_weight_size  = BB7_SKIP_BN_WEIGHT_SIZE;
-        }
-
-        // initial input
-        if (opcnt == 0) {
-            // load input
-            for (int idx = 0; idx < BB6_SKIP_C*BB7_CONV1_H*BB7_CONV1_W*BB7_CONV1_S*BB7_CONV1_S; idx++){
-                act_mem[idx] = act_mem_host[idx];
-            }
-        }
-
-        // conv
-        load_input(act_mem, load_input_fifo, base_addr_in,
-                nky, nkx, nof, nif, noy, nox, stride, pad);
-        load_weight(weight_mem, load_weight_fifo, weight_base,
-                nky, nkx, nof, nif, noy, nox);
-        PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
-                nky, nkx, nof, nif, noy, nox);
-        batch_norm(bn_weight_mem, pe_out_fifo, bn_out_fifo, bn_weight_base,
-                nof, noy, nox, 1, 1);
-        skip_conn(act_mem, bn_out_fifo, skip_out_fifo, base_addr_add,
-                nof, noy, nox, 1, 1, 1);
-        store_output(act_mem, skip_out_fifo, base_addr_out, 
-                nky, nkx, nof, nif, noy, nox);
-        // output back to host
-        if (opcnt == loops-1) {
-            for (int idx = 0; idx < BB6_SKIP_C*BB7_CONV1_H*BB7_CONV1_W; idx++){
-                act_mem_host[MEM0_SIZE+idx] = act_mem[MEM0_SIZE+idx];
-            }
-        }
+    // load input
+    for (int idx = 0; idx < BB6_SKIP_C*BB7_CONV1_H*BB7_CONV1_W*BB7_CONV1_S*BB7_CONV1_S; idx++){
+        act_mem[idx] = act_mem_host[idx];
     }
-
+    
+    // load input check
+    // load_input(act_mem, load_input_fifo, 0,
+    //         nky, nkx, nof, nif, noy, nox, stride, pad);
+    // store_input_test(act_mem, load_input_fifo, MEM0_SIZE,
+    //         nky, nkx, nof, nif, noy, nox, stride, pad);
+    // (*result1) = 1;
+    // for (int idx = 0; idx < nif*noy*nox; idx++) {
+    //     if (act_mem[idx] != act_mem[MEM0_SIZE+idx]){
+    //         (*result1) = 0;
+    //     }
+    // }
+    
+    load_input(act_mem, load_input_fifo, 0,
+            nky, nkx, nof, nif, noy, nox, stride, pad);
+    load_weight(weight_mem, load_weight_fifo, 0,
+            nky, nkx, nof, nif, noy, nox);
+    PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
+            nky, nkx, nof, nif, noy, nox);
+    batch_norm(bn_weight_mem, pe_out_fifo, bn_out_fifo, 0,
+            nof, noy, nox, 1, 1);
+    skip_conn(act_mem, bn_out_fifo, skip_out_fifo, 0,
+            nof, noy, nox, 1, 1, 1);
+    store_output(act_mem, skip_out_fifo, MEM0_SIZE, 
+            nky, nkx, nof, nif, noy, nox);
+    for (int idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W; idx++) {
+        act_mem_host[MEM0_SIZE+idx] = act_mem[MEM0_SIZE+idx];
+    }
+    (*result2) = 1;
 }
 
 #endif
