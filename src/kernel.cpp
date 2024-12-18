@@ -474,7 +474,7 @@ void conv_kernel(
         // initial input
         if (opcnt == 0) {
             // load input
-            for (int idx = 0; idx < BB6_SKIP_C*BB7_CONV1_H*BB7_CONV1_W*BB7_CONV1_S*BB7_CONV1_S; idx++){
+            for (int idx = 0; idx < nif*noy*nox*stride*stride; idx++){
                 act_mem[idx] = act_mem_host[idx];
             }
         }
@@ -494,7 +494,7 @@ void conv_kernel(
                 nky, nkx, nof, nif, noy, nox);
         // output back to host
         if (opcnt == loops-1) {
-            for (int idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W; idx++){
+            for (int idx = 0; idx < nof*noy*nox; idx++){
                 act_mem_host[MEM0_SIZE+idx] = act_mem[MEM0_SIZE+idx];
                 // act_mem_host[MEM0_SIZE+MEM1_SIZE+idx] = act_mem[MEM0_SIZE+MEM1_SIZE+idx];
             }
