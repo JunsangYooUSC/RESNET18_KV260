@@ -226,6 +226,55 @@ void store_output_fifo(
     }
 }
 
+// void batch_norm(
+//     float *bn_weight_mem,
+//     hls::stream<float> &in_fifo_arr,
+//     hls::stream<float> &out_fifo_arr,
+//     unsigned int bn_weight_base_addr,
+//     unsigned int nof,
+//     unsigned int noy,
+//     unsigned int nox,
+//     unsigned int bb_en,
+//     unsigned int bn_en
+// ) {
+//     if (!bb_en) return;
+//     
+//     float mean[POF];
+//     float var_mult[POF];
+//     float gamma[POF];
+//     float beta[POF];
+//     for (int f_out = 0; f_out < nof; f_out+=POF) {
+//         for (int f = 0; f < POF; f++) {
+//             mean[f] = bn_weight_mem[f_out+f];
+//             var_mult[f] = bn_weight_mem[f_out+f+nof];
+//             gamma[f] = bn_weight_mem[f_out+f+nof*2];
+//             beta[f] = bn_weight_mem[f_out+f+nof*3];
+//         }
+//         for (int y0 = 0; y0 < noy; y0+=POY) {
+//             for (int x0 = 0; x0 < nox; x0+=POX) {
+//                 // parallel
+//                 for (int f = 0; f < POF; f++) {
+// #pragma HLS unroll
+//                     for (int y = 0; y < POY; y++) {
+// #pragma HLS unroll                        
+//                         for (int x = 0; x < POX; x++) {
+// #pragma HLS unroll
+//                             float val;
+//                             val = in_fifo_arr[f][y][x].read();
+//                             // batch norm when enabled
+//                             if (bn_en) {
+//                                 val = (val-mean[f])*var_mult[f]*gamma[f]+beta[f];
+//                             }
+//                             out_fifo_arr[f][y][x].write(val);
+//                         }
+//                     }
+//                 }
+// 
+//             }
+//         }
+//     }
+// }
+
 void conv_kernel(
     DTYPE_ACT *act_mem,
     DTYPE_FIL *weight_mem,
@@ -276,17 +325,32 @@ void conv_kernel(
     bn_weight_size  = BB7_CONV1_BN_WEIGHT_SIZE;
 
     // interface
+    // #pragma HLS INTERFACE s_axilite port=return bundle=control
+    // #pragma HLS INTERFACE mode=m_axi port=act_mem offset=slave bundle=gmem0 depth = 10000000
+    // #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0 depth = 10000000
+    // #pragma HLS INTERFACE mode=m_axi port=bn_weight_mem offset=slave bundle=gmem0 depth = 10000000
+    // #pragma HLS INTERFACE mode=m_axi port=result1 offset=slave bundle=gmem0 depth = 1
+    // #pragma HLS INTERFACE mode=m_axi port=result2 offset=slave bundle=gmem0 depth = 1
+    // #pragma HLS INTERFACE mode=s_axilite port=act_mem bundle=control
+    // #pragma HLS INTERFACE mode=s_axilite port=weight_mem bundle=control
+    // #pragma HLS INTERFACE mode=s_axilite port=bn_weight_mem bundle=control
+    // #pragma HLS INTERFACE mode=s_axilite port=result1 bundle=control
+    // #pragma HLS INTERFACE mode=s_axilite port=result2 bundle=control
     #pragma HLS INTERFACE s_axilite port=return bundle=control
-    #pragma HLS INTERFACE mode=m_axi port=act_mem offset=slave bundle=gmem0 depth = 10000000
+    // #pragma HLS INTERFACE mode=m_axi port=act_mem offset=slave bundle=gmem0 depth = 10000000
     #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0 depth = 10000000
     #pragma HLS INTERFACE mode=m_axi port=bn_weight_mem offset=slave bundle=gmem0 depth = 10000000
     #pragma HLS INTERFACE mode=m_axi port=result1 offset=slave bundle=gmem0 depth = 1
     #pragma HLS INTERFACE mode=m_axi port=result2 offset=slave bundle=gmem0 depth = 1
-    #pragma HLS INTERFACE mode=s_axilite port=act_mem bundle=control
+    // #pragma HLS INTERFACE mode=s_axilite port=act_mem bundle=control
     #pragma HLS INTERFACE mode=s_axilite port=weight_mem bundle=control
     #pragma HLS INTERFACE mode=s_axilite port=bn_weight_mem bundle=control
     #pragma HLS INTERFACE mode=s_axilite port=result1 bundle=control
     #pragma HLS INTERFACE mode=s_axilite port=result2 bundle=control
+    
+    #pragma HLS BIND_STORAGE variable=act_mem type=ram_2p impl=uram
+    #pragma HLS ARRAY_PARTITION variable=act_mem block factor=8
+
 
     // fifo
     hls::stream<DTYPE_ACT> load_input_fifo;
