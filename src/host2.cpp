@@ -43,10 +43,8 @@ int main(){
 	DTYPE_ACT act_out_host[MAX_ACT_MEM_SIZE];
 	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_in_host[idx] = 0;
 	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_out_host[idx] = 0;
-	unsigned *start_layer;
-	unsigned *end_layer;
-	*start_layer = 21;
-	*end_layer = 21;
+	unsigned start_layer = 21;
+	unsigned end_layer = 21;
 	// kernel offchip memory
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
 	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
@@ -65,61 +63,61 @@ int main(){
 	std::string fname;
 
 	// mimic controller 
-	unsigned *layer_cnt;
-	unsigned *nif;
-	unsigned *nof;
-	unsigned *noy;
-	unsigned *nox;
-	unsigned *nkx;
-	unsigned *nky;
-	unsigned *stride;
-	unsigned *pad;
-	bool *bb_en;
-	bool *conv_en;
-	bool *bn_en;
-	bool *skip_en;
-	bool *relu_en;
-	bool *max_pool_en;
-	bool *avg_pool_en;
-	bool *lin_en;
-	unsigned *base_addr_in;
-	unsigned *base_addr_out;
-	unsigned *base_addr_add;
-	unsigned *weight_base;
-	unsigned *weight_size;
-	unsigned *bn_weight_base;
-	unsigned *bn_weight_size;
-	unsigned *in_size;
-	unsigned *out_size;
+	unsigned layer_cnt = 0;
+	unsigned nif = 0;
+	unsigned nof = 0;
+	unsigned noy = 0;
+	unsigned nox = 0;
+	unsigned nkx = 0;
+	unsigned nky = 0;
+	unsigned stride = 0;
+	unsigned pad = 0;
+	bool bb_en = 0;
+	bool conv_en = 0;
+	bool bn_en = 0;
+	bool skip_en = 0;
+	bool relu_en = 0;
+	bool max_pool_en = 0;
+	bool avg_pool_en = 0;
+	bool lin_en = 0;
+	unsigned base_addr_in = 0;
+	unsigned base_addr_out = 0;
+	unsigned base_addr_add = 0;
+	unsigned weight_base = 0;
+	unsigned weight_size = 0;
+	unsigned bn_weight_base = 0;
+	unsigned bn_weight_size = 0;
+	unsigned in_size = 0;
+	unsigned out_size = 0;
 
     for (*layer_cnt = *start_layer; *layer_cnt <= *end_layer; *layer_cnt++) {
         controller (
-            *layer_cnt,
-            *nif,
-            *nof,
-            *noy,
-            *nox,
-            *nkx,
-            *nky,
-            *stride,
-            *pad,
-            *bb_en,
-            *conv_en,
-            *bn_en,
-            *skip_en,
-            *relu_en,
-            *max_pool_en,
-            *avg_pool_en,
-            *lin_en,
-            *base_addr_in,
-            *base_addr_out,
-            *base_addr_add,
-            *weight_base,
-            *weight_size,
-            *bn_weight_base,
-            *bn_weight_size,
-            *in_size,
-            *out_size
+            &layer_cnt,
+            &nif,
+            &nof,
+            &noy,
+            &nox,
+            &nkx,
+            &nky,
+            &stride,
+            &pad,
+            &bb_en,
+            &conv_en,
+            &bn_en,
+            &skip_en,
+            &relu_en,
+            &max_pool_en,
+            &avg_pool_en,
+            &lin_en,
+            &base_addr_in,
+            &base_addr_out,
+            &base_addr_add,
+            &weight_base,
+            &weight_size,
+            &bn_weight_base,
+            &bn_weight_size,
+            &in_size,
+            &out_size
         );
 		if (*layer_cnt == *start_layer){
 			// load input
