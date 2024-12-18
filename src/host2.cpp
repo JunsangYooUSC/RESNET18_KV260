@@ -29,7 +29,7 @@
 #define INPUT_SIZE 			(BB6_SKIP_C*BB7_CONV1_H*BB7_CONV1_W*BB7_CONV1_S*BB7_CONV1_S)
 #define OUTPUT_SIZE			(BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W)
 #define FILTER_SIZE			(BB6_SKIP_C*BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W)
-
+#define BN_WEIGHT_SIZE		BB7_CONV1_BN_WEIGHT_SIZE
 
 // Function: golden convolution
 template<typename D_ACT, typename D_FILTER, typename D_MULT, typename D_MAC>
@@ -179,14 +179,13 @@ void convolution_bn_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act, floa
 
 	for (int f = 0; f < nof; f++) {
 		float mean = bn_weight_mem[f];
-		float var_mult = bn_weight_mem[f+nof];
-		float gamma = bn_weight_mem[f+2*nof];
-		float beta = bn_weight_mem[f+3*nof];
+		float mult_factor = bn_weight_mem[f+nof];
+		float beta = bn_weight_mem[f+2*nof];
 		for (int y = 0; y < noy; y++) {
 			for (int x = 0; x < nox; x++) {
 				int idx = f*noy*nox + y*nox + x;
 				float val = (float) out_act_mac[idx];
-				val = (val-mean)*var_mult*gamma+beta;
+				val = (val-mean)*mult_factor+beta;
 				out_act[idx] = val;
 			}
 		}
@@ -266,14 +265,13 @@ void convolution_bn_skip_relu_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out
 
 	for (int f = 0; f < nof; f++) {
 		float mean = bn_weight_mem[f];
-		float var_mult = bn_weight_mem[f+nof];
-		float gamma = bn_weight_mem[f+2*nof];
-		float beta = bn_weight_mem[f+3*nof];
+		float mult_factor = bn_weight_mem[f+nof];
+		float beta = bn_weight_mem[f+2*nof];
 		for (int y = 0; y < noy; y++) {
 			for (int x = 0; x < nox; x++) {
 				int idx = f*noy*nox + y*nox + x;
 				float val = (float) out_act_mac[idx];
-				val = (val-mean)*var_mult*gamma+beta;
+				val = (val-mean)*mult_factor+beta;
 				out_vals[idx] = val;
 			}
 		}
@@ -335,6 +333,7 @@ int main(){
 	// golden conv gen
 	float in_act_host_float[INPUT_SIZE];
 	float in_fil_host_float[FILTER_SIZE];
+	float bn_weight_host_float[BN_WEIGHT_SIZE];
 	float out_act_host_float[OUTPUT_SIZE];
 	for (int idx = 0; idx < INPUT_SIZE; idx++) {
 		in_act_host_float[idx] = (float) act_mem[idx];
@@ -342,7 +341,12 @@ int main(){
 	for (int idx = 0; idx < FILTER_SIZE; idx++) {
 		in_fil_host_float[idx] = (float) weight_mem[idx];
 	}
- 	convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float,
+	for (int idx = 0; idx < BN_WEIGHT_SIZE; idx++) {
+		bn_weight_host_float[idx] = bn_weight_mem[idx];
+	}
+ 	// convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float,
+ 	// 		BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
+ 	convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_host_float,
  			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
 
     // for (int idx = 0; idx < OUTPUT_SIZE; idx++) {

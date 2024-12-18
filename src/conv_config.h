@@ -28,7 +28,7 @@
 
 // *****************************************
 // simulation settings vs synthesis settings
-#define SIM_MODE            0
+#define SIM_MODE            1
 // *****************************************
 
 // kernel parallel parameters
@@ -488,7 +488,7 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 constexpr unsigned BB7_CONV1_WEIGHT_BASE = 0;
 constexpr unsigned BB7_CONV1_CONV_WEIGHT_SIZE = BB6_SKIP_C * BB7_CONV1_C * BB7_CONV1_K * BB7_CONV1_K / WEIGHT_PACK;
 constexpr unsigned BB7_CONV1_BN_WEIGHT_BASE = 0;
-constexpr unsigned BB7_CONV1_BN_WEIGHT_SIZE = 4 * BB7_CONV1_C;
+constexpr unsigned BB7_CONV1_BN_WEIGHT_SIZE = 3 * BB7_CONV1_C;
 // BB7_CONV2    
 #if SIM_MODE
 #define BB7_CONV2_C             32
@@ -514,7 +514,7 @@ constexpr unsigned BB7_CONV1_BN_WEIGHT_SIZE = 4 * BB7_CONV1_C;
 constexpr unsigned BB7_CONV2_WEIGHT_BASE = BB7_CONV1_WEIGHT_BASE + BB7_CONV1_CONV_WEIGHT_SIZE;
 constexpr unsigned BB7_CONV2_CONV_WEIGHT_SIZE = BB7_CONV1_C * BB7_CONV2_C * BB7_CONV2_K * BB7_CONV2_K / WEIGHT_PACK;
 constexpr unsigned BB7_CONV2_BN_WEIGHT_BASE = BB7_CONV1_BN_WEIGHT_BASE + BB7_CONV1_BN_WEIGHT_SIZE;
-constexpr unsigned BB7_CONV2_BN_WEIGHT_SIZE = 4 * BB7_CONV2_C;
+constexpr unsigned BB7_CONV2_BN_WEIGHT_SIZE = 3 * BB7_CONV2_C;
 // BB7_SKIP 
 #if SIM_MODE
 #define BB7_SKIP_C              32
@@ -540,7 +540,7 @@ constexpr unsigned BB7_CONV2_BN_WEIGHT_SIZE = 4 * BB7_CONV2_C;
 constexpr unsigned BB7_SKIP_WEIGHT_BASE = BB7_CONV2_WEIGHT_BASE + BB7_CONV2_CONV_WEIGHT_SIZE;
 constexpr unsigned BB7_SKIP_CONV_WEIGHT_SIZE = BB7_CONV2_C * BB7_SKIP_C * BB7_SKIP_K * BB7_SKIP_K / WEIGHT_PACK;
 constexpr unsigned BB7_SKIP_BN_WEIGHT_BASE = BB7_CONV2_BN_WEIGHT_BASE + BB7_CONV2_BN_WEIGHT_SIZE;
-constexpr unsigned BB7_SKIP_BN_WEIGHT_SIZE = 4 * BB7_CONV2_C;
+constexpr unsigned BB7_SKIP_BN_WEIGHT_SIZE = 3 * BB7_CONV2_C;
 
 // BB8_CONV1    
 #define BB8_CONV1_C             512

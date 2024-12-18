@@ -226,54 +226,47 @@ void store_output_fifo(
     }
 }
 
-// void batch_norm(
-//     float *bn_weight_mem,
-//     hls::stream<float> &in_fifo_arr,
-//     hls::stream<float> &out_fifo_arr,
-//     unsigned int bn_weight_base_addr,
-//     unsigned int nof,
-//     unsigned int noy,
-//     unsigned int nox,
-//     unsigned int bb_en,
-//     unsigned int bn_en
-// ) {
-//     if (!bb_en) return;
-//     
-//     float mean[POF];
-//     float var_mult[POF];
-//     float gamma[POF];
-//     float beta[POF];
-//     for (int f_out = 0; f_out < nof; f_out+=POF) {
-//         for (int f = 0; f < POF; f++) {
-//             mean[f] = bn_weight_mem[f_out+f];
-//             var_mult[f] = bn_weight_mem[f_out+f+nof];
-//             gamma[f] = bn_weight_mem[f_out+f+nof*2];
-//             beta[f] = bn_weight_mem[f_out+f+nof*3];
-//         }
-//         for (int y0 = 0; y0 < noy; y0+=POY) {
-//             for (int x0 = 0; x0 < nox; x0+=POX) {
-//                 // parallel
-//                 for (int f = 0; f < POF; f++) {
-// #pragma HLS unroll
-//                     for (int y = 0; y < POY; y++) {
-// #pragma HLS unroll                        
-//                         for (int x = 0; x < POX; x++) {
-// #pragma HLS unroll
-//                             float val;
-//                             val = in_fifo_arr[f][y][x].read();
-//                             // batch norm when enabled
-//                             if (bn_en) {
-//                                 val = (val-mean[f])*var_mult[f]*gamma[f]+beta[f];
-//                             }
-//                             out_fifo_arr[f][y][x].write(val);
-//                         }
-//                     }
-//                 }
-// 
-//             }
-//         }
-//     }
-// }
+void batch_norm(
+    float *bn_weight_mem,
+    hls::stream<float> &in_fifo_arr,
+    hls::stream<float> &out_fifo_arr,
+    unsigned int bn_weight_base_addr,
+    unsigned int nof,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int bb_en,
+    unsigned int bn_en
+) {
+    if (!bb_en) return;
+    
+    float mean;
+    float mult_factor;
+    float beta;
+    for (int f_out = 0; f_out < nof; f_out+=POF) {
+        for (int y0 = 0; y0 < noy; y0+=POY) {
+            for (int x0 = 0; x0 < nox; x0+=POX) {
+                // parallel
+                for (int f = 0; f < POF; f++) {
+                    mean = bn_weight_mem[(f_out+f)];
+                    mult_factor = bn_weight_mem[nof+(f_out+f)];
+                    beta = bn_weight_mem[nof*2+(f_out+f)];
+                    for (int y = 0; y < POY; y++) {
+                        for (int x = 0; x < POX; x++) {
+                            float val;
+                            val = in_fifo_arr.read();
+                            // batch norm when enabled
+                            if (bn_en) {
+                                val = (val-mean)*mult_factor+beta;
+                            }
+                            out_fifo_arr.write(val);
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+}
 
 void conv_kernel(
     DTYPE_ACT *act_mem_host,
@@ -358,7 +351,8 @@ void conv_kernel(
     #pragma HLS STREAM variable=load_weight_fifo depth=FIFO_ARR_DEPTH
     hls::stream<float> pe_out_fifo;
     #pragma HLS STREAM variable=pe_out_fifo depth=FIFO_ARR_DEPTH
-
+    hls::stream<float> bn_out_fifo;
+    #pragma HLS STREAM variable=bn_out_fifo depth=FIFO_ARR_DEPTH
     // load input
     for (int idx = 0; idx < BB6_SKIP_C*BB7_CONV1_H*BB7_CONV1_W*BB7_CONV1_S*BB7_CONV1_S; idx++){
         act_mem[idx] = act_mem_host[idx];
@@ -382,7 +376,9 @@ void conv_kernel(
             nky, nkx, nof, nif, noy, nox);
     PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
             nky, nkx, nof, nif, noy, nox);
-    store_output_fifo(act_mem, pe_out_fifo, MEM0_SIZE, 
+    batch_norm(bn_weight_mem, pe_out_fifo, bn_out_fifo, 0,
+            nof, noy, nox, 1, 1);
+    store_output_fifo(act_mem, bn_out_fifo, MEM0_SIZE, 
             nky, nkx, nof, nif, noy, nox);
     (*result2) = 1;
 }
