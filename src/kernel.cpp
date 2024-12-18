@@ -308,7 +308,7 @@ void skip_conn(
 void conv_kernel(
     DTYPE_ACT *act_mem_host,
     DTYPE_FIL *weight_mem,
-    float *bn_weight_mem,
+    float *bn_weight_mem
 ) {
     DTYPE_ACT act_mem[MEM0_SIZE+MEM1_SIZE+MEM2_SIZE];
     unsigned nif;
