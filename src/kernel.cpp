@@ -222,7 +222,6 @@ void store_output_fifo(
     unsigned int noy,
     unsigned int nox
 ) {
-    int cnt = 0;
     int cnt1 = 0;
     for (int f_out = 0; f_out < nof; f_out += POF) {
         for (int y0 = 0; y0 < noy; y0 += POY) {
@@ -239,7 +238,6 @@ void store_output_fifo(
             }
         }
     }
-    std::cout << "store cnt: " << cnt << std::endl;
     std::cout << "store cnt1: " << cnt1 << std::endl;
 }
 
