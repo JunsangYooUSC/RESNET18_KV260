@@ -487,9 +487,9 @@ void conv_kernel(
         PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
                 nky, nkx, nof, nif, noy, nox);
         batch_norm(bn_weight_mem, pe_out_fifo, bn_out_fifo, bn_weight_base,
-                nof, noy, nox, 1, 1);
+                nof, noy, nox, bb_en, bn_en);
         skip_conn(act_mem, bn_out_fifo, skip_out_fifo, base_addr_add,
-                nof, noy, nox, 1, 1, 1);
+                nof, noy, nox, bb_en, skip_en, relu_en);
         store_output(act_mem, skip_out_fifo, base_addr_out, 
                 nky, nkx, nof, nif, noy, nox);
         // output back to host
