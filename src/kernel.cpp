@@ -231,7 +231,6 @@ void store_output_fifo(
                         for (int x = 0; x < POX; x++) {
                             unsigned int addr = (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
                             act_mem[base_addr+addr] = out_fifo_arr.read();
-                            std::cout << "addr sum: " << base_addr+addr << std::endl;
                         }
                     }
                 }
@@ -322,7 +321,6 @@ void conv_kernel(
     //     }
     // }
 
-    std::cout << "MEM0_SIZE: " << MEM0_SIZE << std::endl;
     load_input(act_mem, load_input_fifo, 0,
             nky, nkx, nof, nif, noy, nox, stride, pad);
     load_weight(weight_mem, load_weight_fifo, 0,
