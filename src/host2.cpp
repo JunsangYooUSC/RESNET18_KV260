@@ -92,7 +92,7 @@ int main(){
 	unsigned *in_size;
 	unsigned *out_size;
 
-    for (int *layer_cnt = *start_layer; *layer_cnt <= *end_layer; *layer_cnt++) {
+    for (*layer_cnt = *start_layer; *layer_cnt <= *end_layer; *layer_cnt++) {
         controller (
             *layer_cnt,
             *nif,
