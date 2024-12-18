@@ -241,7 +241,7 @@ void store_output_fifo(
                 for (int f = 0; f < POF; f++) {
                     for (int y = 0; y < POY; y++) {
                         for (int x = 0; x < POX; x++) {
-                            unsigned int addr = (out_f+f)*noy*nox + (y0+y)*nox + (x0+x);
+                            unsigned int addr = (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
                             act_mem[base_addr+addr] = out_fifo_arr.read();
                             cnt++;
                         }
