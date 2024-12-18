@@ -53,7 +53,8 @@ void load_input(
                                             in_val = 0;
                                         }
                                         else {
-                                            unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad);
+                                            // unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad);
+                                            unsigned addr = f_in*noy*stride*nox*stride + (y0+y+i-pad)*nox*stride + (x0+x+j-pad);
                                             in_val = act_mem[base_addr+addr];
                                         }
                                         load_input_fifo.write(in_val);
@@ -99,7 +100,8 @@ void store_input_test(
                                             in_val = 0;
                                         }
                                         else {
-                                            unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad);
+                                            // unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad);
+                                            unsigned addr = f_in*noy*stride*nox*stride + (y0+y+i-pad)*nox*stride + (x0+x+j-pad);
                                             act_mem[base_addr+addr] = in_val;
                                         }
                                         cnt++;
