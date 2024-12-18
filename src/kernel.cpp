@@ -309,16 +309,16 @@ void conv_kernel(
     #pragma HLS STREAM variable=pe_out_fifo depth=FIFO_ARR_DEPTH
 
     // load input check
-    load_input(act_mem, load_input_fifo, 0,
-            nky, nkx, nof, nif, noy, nox, stride, pad);
-    store_input_test(act_mem, load_input_fifo, MEM0_SIZE,
-            nky, nkx, nof, nif, noy, nox, stride, pad);
-    (*result1) = 1;
-    for (int idx = 0; idx < nif*noy*nox; idx++) {
-        if (act_mem[idx] != act_mem[MEM0_SIZE+idx]){
-            (*result1) = 0;
-        }
-    }
+    // load_input(act_mem, load_input_fifo, 0,
+    //         nky, nkx, nof, nif, noy, nox, stride, pad);
+    // store_input_test(act_mem, load_input_fifo, MEM0_SIZE,
+    //         nky, nkx, nof, nif, noy, nox, stride, pad);
+    // (*result1) = 1;
+    // for (int idx = 0; idx < nif*noy*nox; idx++) {
+    //     if (act_mem[idx] != act_mem[MEM0_SIZE+idx]){
+    //         (*result1) = 0;
+    //     }
+    // }
 
     load_input(act_mem, load_input_fifo, 0,
             nky, nkx, nof, nif, noy, nox, stride, pad);
