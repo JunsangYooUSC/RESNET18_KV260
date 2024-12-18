@@ -327,7 +327,7 @@ int main(){
 	conv_kernel(act_mem, weight_mem, bn_weight_mem);
 	
 	// golden conv gen
-	float act_host_float[MEM0_SIZE];
+	float act_host_float[MEM0_SIZE+MEM1_SIZE+MEM2_SIZE];
 	float fil_host_float[WEIGHT_MEM_SIZE];
 	float bn_weight_host_float[BN_WEIGHT_MEM_SIZE];
 	float out_act_host_float[OUTPUT_SIZE];
