@@ -313,11 +313,11 @@ int main(){
 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV2_WEIGHT_BASE, BB7_CONV2_CONV_WEIGHT_SIZE);
 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight3.bin";
 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_SKIP_WEIGHT_BASE, BB7_SKIP_CONV_WEIGHT_SIZE);
-	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_weight1.bin";
+	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight1.bin";
 	read_bin_float(fname, bn_weight_mem, BB7_CONV1_BN_WEIGHT_BASE, BB7_CONV1_BN_WEIGHT_SIZE);
-	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_weight2.bin";
+	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight2.bin";
 	read_bin_float(fname, bn_weight_mem, BB7_CONV2_BN_WEIGHT_BASE, BB7_CONV2_BN_WEIGHT_SIZE);
-	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_weight3.bin";
+	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight3.bin";
 	read_bin_float(fname, bn_weight_mem, BB7_SKIP_BN_WEIGHT_BASE, BB7_SKIP_BN_WEIGHT_SIZE);
 
 	std::cout << "first 3 input val: " << act_mem[0] << " " << act_mem[1] << " " << act_mem[2] << std::endl;
