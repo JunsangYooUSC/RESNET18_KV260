@@ -500,7 +500,7 @@ void conv_kernel(
                 nky, nkx, nof, nif, noy, nox);
         // output back to host
         if (opcnt == loops-1) {
-            for (int idx = 0; idx < BB6_SKIP_C*BB7_CONV1_H*BB7_CONV1_W; idx++){
+            for (int idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W; idx++){
                 act_mem_host[MEM0_SIZE+idx] = act_mem[MEM0_SIZE+idx];
             }
         }
