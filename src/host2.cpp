@@ -304,10 +304,6 @@ int main(){
 	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem[idx] = 0;
 	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem[idx] = 0;
 	
-
-	int result1;
-	int result2;
-
 	// fill data
 	std::string fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/input.bin";
 	read_bin_fixed<DTYPE_ACT>(fname, act_mem, 0, INPUT_SIZE);
@@ -328,7 +324,7 @@ int main(){
 	std::cout << "first 3 weight val: " << weight_mem[0] << " " << weight_mem[1] << " " << weight_mem[2] << std::endl;
 	std::cout << "first 3 bn_weight_mem val: " << bn_weight_mem[0] << " " << bn_weight_mem[1] << " " << bn_weight_mem[2] << std::endl;
 
-	conv_kernel(act_mem, weight_mem, bn_weight_mem, &result1, &result2);
+	conv_kernel(act_mem, weight_mem, bn_weight_mem);
 	
 	// golden conv gen
 	float in_act_host_float[INPUT_SIZE];
