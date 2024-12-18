@@ -333,9 +333,7 @@ void controller (
     unsigned *in_size,
     unsigned *out_size
 ) {
-    if (*start_layer > *end_layer) return;
-
-    if (layer_cnt == 0) {
+    if (*layer_cnt == 0) {
         *nif                = IN_C;
         *nof                = CONV1_C;
         *noy                = CONV1_H;
@@ -362,7 +360,7 @@ void controller (
         *in_size            = CONV1_IN_SIZE;
         *out_size           = CONV1_OUT_SIZE;
     }
-    else if (layer_cnt == 1) {
+    else if (*layer_cnt == 1) {
         *nif                = CONV1_C;
         *nof                = MAXPOOL_C;
         *noy                = MAXPOOL_H;
@@ -389,7 +387,7 @@ void controller (
         *in_size            = MAXPOOL_IN_SIZE;
         *out_size           = MAXPOOL_OUT_SIZE;
     }
-    else if(layer_cnt == 2) {
+    else if(*layer_cnt == 2) {
         *nif                = MAXPOOL_C;
         *nof                = BB1_CONV1_C;
         *noy                = BB1_CONV1_H;
@@ -416,7 +414,7 @@ void controller (
         *in_size            = BB1_CONV1_IN_SIZE;
         *out_size           = BB1_CONV1_OUT_SIZE;
     }
-    else if(layer_cnt == 3) {
+    else if(*layer_cnt == 3) {
         *nif                = BB1_CONV1_C;
         *nof                = BB1_CONV2_C;
         *noy                = BB1_CONV2_H;
@@ -443,7 +441,7 @@ void controller (
         *in_size            = BB1_CONV2_IN_SIZE;
         *out_size           = BB1_CONV2_OUT_SIZE;
     }
-    else if(layer_cnt == 4) {
+    else if(*layer_cnt == 4) {
         *nif                = BB1_CONV2_C;
         *nof                = BB1_SKIP_C;
         *noy                = BB1_SKIP_H;
@@ -470,7 +468,7 @@ void controller (
         *in_size            = BB1_SKIP_IN_SIZE;
         *out_size           = BB1_SKIP_OUT_SIZE;
     }
-    else if(layer_cnt == 5) {
+    else if(*layer_cnt == 5) {
         *nif                = BB1_SKIP_C;
         *nof                = BB2_CONV1_C;
         *noy                = BB2_CONV1_H;
@@ -497,7 +495,7 @@ void controller (
         *in_size            = BB2_CONV1_IN_SIZE;
         *out_size           = BB2_CONV1_OUT_SIZE;
     }
-    else if(layer_cnt == 6) {
+    else if(*layer_cnt == 6) {
         *nif                = BB2_CONV1_C;
         *nof                = BB2_CONV2_C;
         *noy                = BB2_CONV2_H;
@@ -524,7 +522,7 @@ void controller (
         *in_size            = BB2_CONV2_IN_SIZE;
         *out_size           = BB2_CONV2_OUT_SIZE;
     }
-    else if(layer_cnt == 7) {
+    else if(*layer_cnt == 7) {
         *nif                = BB2_CONV2_C;
         *nof                = BB2_SKIP_C;
         *noy                = BB2_SKIP_H;
@@ -822,8 +820,38 @@ void controller (
         *in_size            = BB6_CONV1_IN_SIZE;
         *out_size           = BB6_CONV1_OUT_SIZE;
     }
+    else if(layer_cnt == 18) {
+        *nif                = BB6_CONV1_C;
+        *nof                = BB6_CONV2_C;
+        *noy                = BB6_CONV2_H;
+        *nox                = BB6_CONV2_W;
+        *nkx                = BB6_CONV2_K;
+        *nky                = BB6_CONV2_K;
+        *stride             = BB6_CONV2_S;
+        *pad                = BB6_CONV2_PAD;
+        *bb_en              = BB6_CONV2_BB_EN;
+        *conv_en            = BB6_CONV2_CONV_EN;
+        *bn_en              = BB6_CONV2_BN_EN;
+        *skip_en            = BB6_CONV2_SKIP_EN;
+        *relu_en            = BB6_CONV2_RELU_EN;
+        *max_pool_en        = BB6_CONV2_MAX_POOL_EN;
+        *avg_pool_en        = BB6_CONV2_AVG_POOL_EN;
+        *lin_en             = BB6_CONV2_LIN_EN;
+        *base_addr_in       = BB6_CONV2_BASE_ADDR_IN;
+        *base_addr_out      = BB6_CONV2_BASE_ADDR_OUT;
+        *base_addr_add      = BB6_CONV2_BASE_ADDR_ADD;
+        *weight_base        = BB6_CONV2_WEIGHT_BASE;
+        *weight_size        = BB6_CONV2_WEIGHT_SIZE;
+        *bn_weight_base     = BB6_CONV2_BN_WEIGHT_BASE;
+        *bn_weight_size     = BB6_CONV2_BN_WEIGHT_SIZE;
+        *in_size            = BB6_CONV2_IN_SIZE;
+        *out_size           = BB6_CONV2_OUT_SIZE;
+    }
+    else if (layer_cnt == 19) {
+        
+    }
     */
-    else if (layer_cnt == 21) {
+    else if (*layer_cnt == 21) {
         *nif                = BB6_SKIP_C;
         *nof                = BB7_CONV1_C;
         *noy                = BB7_CONV1_H;
@@ -850,7 +878,7 @@ void controller (
         *in_size            = BB7_CONV1_IN_SIZE;
         *out_size           = BB7_CONV1_OUT_SIZE;
     }
-    else if (layer_cnt == 22) {
+    else if (*layer_cnt == 22) {
         *nif                = BB7_CONV1_C;
         *nof                = BB7_CONV2_C;
         *noy                = BB7_CONV2_H;
@@ -877,7 +905,7 @@ void controller (
         *in_size            = BB7_CONV2_IN_SIZE;
         *out_size           = BB7_CONV2_OUT_SIZE;
     }
-    else if (layer_cnt == 23) {
+    else if (*layer_cnt == 23) {
         *nif                = BB7_CONV2_C;
         *nof                = BB7_SKIP_C;
         *noy                = BB7_SKIP_H;
