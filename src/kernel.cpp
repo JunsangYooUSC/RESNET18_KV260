@@ -132,8 +132,7 @@ void load_weight(
                                 for (int i = 0; i < nky; i++) {
                                     for (int j = 0; j < nkx; j++) {
                                         unsigned int addr = (f_out+f)*nif*nky*nkx + f_in*nky*nkx + i*nky + j;
-                                        // load_weight_fifo.write(weight_mem[addr]);
-                                        load_weight_fifo.write(addr);
+                                        load_weight_fifo.write(weight_mem[addr]);
                                     }
                                 }
                             }
