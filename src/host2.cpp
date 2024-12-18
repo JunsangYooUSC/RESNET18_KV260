@@ -327,15 +327,15 @@ int main(){
 	conv_kernel(act_mem, weight_mem, bn_weight_mem);
 	
 	// golden conv gen
-	float in_act_host_float[INPUT_SIZE];
-	float in_fil_host_float[FILTER_SIZE];
-	float bn_weight_host_float[BN_WEIGHT_SIZE];
+	float act_host_float[MEM0_SIZE];
+	float fil_host_float[WEIGHT_MEM_SIZE];
+	float bn_weight_host_float[BN_WEIGHT_MEM_SIZE];
 	float out_act_host_float[OUTPUT_SIZE];
 	for (int idx = 0; idx < INPUT_SIZE; idx++) {
-		in_act_host_float[idx] = (float) act_mem[idx];
+		act_host_float[idx] = (float) act_mem[idx];
 	}
 	for (int idx = 0; idx < FILTER_SIZE; idx++) {
-		in_fil_host_float[idx] = (float) weight_mem[idx];
+		fil_host_float[idx] = (float) weight_mem[idx];
 	}
 	for (int idx = 0; idx < BN_WEIGHT_SIZE; idx++) {
 		bn_weight_host_float[idx] = bn_weight_mem[idx];
@@ -344,14 +344,37 @@ int main(){
  	// 		BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
  	// convolution_bn_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_host_float,
  	// 		BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
-	convolution_bn_skip_relu_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_host_float, in_act_host_float,
-			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
+	// convolution_bn_skip_relu_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_host_float, in_act_host_float,
+	// 		BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
     // for (int idx = 0; idx < OUTPUT_SIZE; idx++) {
     //     if (out_act_host_float[idx] != act_mem[MEM0_SIZE+idx]){
 	// 		std::cout << "idx: " << idx << " host: " << out_act_host_float[idx] << " kernel: " << act_mem[MEM0_SIZE+idx] << std::endl;
     //         result2 = 0;
     //     }
     // }
+	convolution_bn_golden<float, float, float, float>(
+			act_host_float, 
+			fil_host_float+BB7_CONV1_WEIGHT_BASE, 
+			act_host_float+MEM0_SIZE, 
+			bn_weight_host_float+BB7_CONV1_BN_WEIGHT_BASE,
+			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
+	for (idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W; idx++) {
+		act_host_float[MEM0_SIZE+idx] = (act_host_float[MEM0_SIZE+idx] > 0) ? act_host_float[MEM0_SIZE+idx] : (DTYPE_ACT) 0;
+	}
+	convolution_bn_golden<float, float, float, float>(
+			act_host_float+MEM0_SIZE,
+			fil_host_float+BB7_CONV2_WEIGHT_BASE,
+			act_host_float+MEM0_SIZE+MEM1_SIZE,
+			bn_weight_host_float+BB7_CONV2_BN_WEIGHT_BASE,
+			BB7_CONV2_K, BB7_CONV2_K, BB7_CONV2_C, BB7_CONV1_C, BB7_CONV2_H, BB7_CONV2_W, BB7_CONV2_S, BB7_CONV2_PAD);
+	convolution_bn_skip_relu_golden<float, float, float, float>(
+			act_host_float,
+			fil_host_float+BB7_SKIP_WEIGHT_BASE,
+			act_host_float+MEM0_SIZE,
+			bn_weight_host_float+BB7_SKIP_BN_WEIGHT_BASE,
+			act_host_float+MEM0_SIZE+MEM1_SIZE,
+			BB7_SKIP_K, BB7_SKIP_K, BB7_SKIP_C, BB7_CONV2_C, BB7_SKIP_H, BB7_SKIP_W, BB7_SKIP_S, BB7_SKIP_PAD);
+	
 	compare_result<DTYPE_ACT, float, OUTPUT_SIZE>(act_mem+MEM0_SIZE, out_act_host_float, 0.1);
 
 }
