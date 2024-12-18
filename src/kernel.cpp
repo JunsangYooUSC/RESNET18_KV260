@@ -38,7 +38,6 @@ void load_input(
     unsigned int stride,
     unsigned int pad
 ) {
-    int cnt = 0;
     for (int f_out = 0; f_out < nof; f_out += POF) {
         for (int y0 = 0; y0 < noy*stride; y0 += POY*stride) {
             for (int x0 = 0; x0 < nox*stride; x0 += POX*stride) {
@@ -58,7 +57,6 @@ void load_input(
                                             in_val = act_mem[base_addr+addr];
                                         }
                                         load_input_fifo.write(in_val);
-                                        cnt ++;
                                     }
                                 }
                             }
@@ -68,7 +66,6 @@ void load_input(
             }
         }
     }
-    std::cout << "load_input cnt: " << cnt << std::endl;
 }
 
 void store_input_test(
@@ -84,7 +81,6 @@ void store_input_test(
     unsigned int stride,
     unsigned int pad
 ) {
-    int cnt = 0;
     for (int f_out = 0; f_out < nof; f_out += POF) {
         for (int y0 = 0; y0 < noy*stride; y0 += POY*stride) {
             for (int x0 = 0; x0 < nox*stride; x0 += POX*stride) {
@@ -104,7 +100,6 @@ void store_input_test(
                                             unsigned addr = f_in*noy*stride*nox*stride + (y0+y+i-pad)*nox*stride + (x0+x+j-pad);
                                             act_mem[base_addr+addr] = in_val;
                                         }
-                                        cnt++;
                                     }
                                 }
                             }
@@ -114,7 +109,6 @@ void store_input_test(
             }
         }
     }
-    std::cout << "store_input cnt: " << cnt << std::endl;    
 }
 
 void load_weight(
@@ -128,7 +122,6 @@ void load_weight(
     unsigned int noy,
     unsigned int nox
 ) {
-    int cnt = 0; 
     for (int f_out = 0; f_out < nof; f_out += POF) {
         for (int y0 = 0; y0 < noy; y0 += POY) {
             for (int x0 = 0; x0 < nox; x0 += POX) {
@@ -140,7 +133,6 @@ void load_weight(
                                     for (int j = 0; j < nkx; j++) {
                                         unsigned int addr = (f_out+f)*nif*nky*nkx + f_in*nky*nkx + i*nky + j;
                                         load_weight_fifo.write(weight_mem[addr]);
-                                        cnt++;
                                     }
                                 }
                             }
@@ -150,7 +142,6 @@ void load_weight(
             }
         }
     }
-    std::cout << "load_weight cnt: " << cnt << std::endl;
 }
 
 void PE(
@@ -164,8 +155,6 @@ void PE(
     unsigned int noy,
     unsigned int nox
 ) {
-    int cnt = 0;
-    int cnt1 = 0;
     DTYPE_MAC mac_vals[POF][POY][POX];
     for (int f_out = 0; f_out < nof; f_out += POF) {
         for (int y0 = 0; y0 < noy; y0 += POY) {
@@ -189,7 +178,6 @@ void PE(
                                         DTYPE_FIL fil_in = load_weight_fifo.read();
                                         DTYPE_MUL mul_val = act_in * fil_in;
                                         mac_vals[f][y][x] += mul_val;
-                                        cnt++;
                                     }
                                 }
                             }
@@ -203,15 +191,12 @@ void PE(
                             unsigned int addr = (f_out+f)*noy*nox + y*nox + x;
                             // std::cout << "mac_vals[f][y][x]: " << mac_vals[f][y][x] << std::endl;                            
                             pe_out_fifo.write(mac_vals[f][y][x]);
-                            cnt1++;
                         }
                     }
                 }
             }
         }
     }
-    std::cout << "PE cnt: " << cnt << std::endl;
-    std::cout << "PE output cnt: " << cnt1 << std::endl;
 }
 
 void store_output_fifo(
@@ -322,7 +307,7 @@ void conv_kernel(
     //         (*result1) = 0;
     //     }
     // }
-
+    std::cout << "error please" << std::endl;
     load_input(act_mem, load_input_fifo, 0,
             nky, nkx, nof, nif, noy, nox, stride, pad);
     load_weight(weight_mem, load_weight_fifo, 0,
