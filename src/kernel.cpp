@@ -208,7 +208,7 @@ void PE(
         }
     }
     std::cout << "PE cnt: " << cnt << std::endl;
-    std::cout1 << "PE output cnt: " << cnt1 << std::endl;
+    std::cout << "PE output cnt: " << cnt1 << std::endl;
 }
 
 void store_output_fifo(
