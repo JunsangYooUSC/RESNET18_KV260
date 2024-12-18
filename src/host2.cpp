@@ -46,7 +46,7 @@ int main(){
 	unsigned *start_layer;
 	unsigned *end_layer;
 	*start_layer = 21;
-	*end_layer = 23;
+	*end_layer = 21;
 	// kernel offchip memory
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
 	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
@@ -246,7 +246,7 @@ int main(){
 
 	// compare host and kernel
 	compare_result<DTYPE_ACT, float, MAX_ACT_MEM_SIZE>(act_out_host, act_host_float+*base_addr_out);
-	
+
 /*
 	// fill data
 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight2.bin";
