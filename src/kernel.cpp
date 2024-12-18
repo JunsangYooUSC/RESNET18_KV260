@@ -250,6 +250,7 @@ void batch_norm(
                     mean = bn_weight_mem[(f_out+f)];
                     mult_factor = bn_weight_mem[nof+(f_out+f)];
                     beta = bn_weight_mem[nof*2+(f_out+f)];
+                    std::cout << "mean: " << mean << std::endl;
                     for (int y = 0; y < POY; y++) {
                         for (int x = 0; x < POX; x++) {
                             float val;
@@ -369,7 +370,6 @@ void conv_kernel(
     //         (*result1) = 0;
     //     }
     // }
-    std::cout << "error please" << std::endl;
     load_input(act_mem, load_input_fifo, 0,
             nky, nkx, nof, nif, noy, nox, stride, pad);
     load_weight(weight_mem, load_weight_fifo, 0,
