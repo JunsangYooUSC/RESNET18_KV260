@@ -329,6 +329,9 @@ void conv_kernel(
     bool max_pool_en;
     bool avg_pool_en;
     bool lin_en;
+    unsigned base_addr_in;
+    unsigned base_addr_out;
+    unsigned base_addr_add;
     unsigned weight_base;
     unsigned weight_size;
     unsigned bn_weight_base;
@@ -349,6 +352,9 @@ void conv_kernel(
     max_pool_en     = BB7_CONV1_MAX_POOL;
     avg_pool_en     = BB7_CONV1_AVG_POOL;
     lin_en          = BB7_CONV1_LIN_EN;
+    base_addr_in    = 0;
+    base_addr_out   = MEM0_SIZE;
+    base_addr_add   = 0;
     weight_base     = BB7_CONV1_WEIGHT_BASE;
     weight_size     = BB7_CONV1_CONV_WEIGHT_SIZE;
     bn_weight_base  = BB7_CONV1_BN_WEIGHT_BASE;
