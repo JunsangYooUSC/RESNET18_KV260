@@ -367,16 +367,18 @@ int main(){
 			act_host_float+MEM0_SIZE+MEM1_SIZE,
 			bn_weight_host_float+BB7_CONV2_BN_WEIGHT_BASE,
 			BB7_CONV2_K, BB7_CONV2_K, BB7_CONV2_C, BB7_CONV1_C, BB7_CONV2_H, BB7_CONV2_W, BB7_CONV2_S, BB7_CONV2_PAD);
-	convolution_bn_skip_relu_golden<float, float, float, float>(
-			act_host_float,
-			fil_host_float+BB7_SKIP_WEIGHT_BASE,
-			act_host_float+MEM0_SIZE,
-			bn_weight_host_float+BB7_SKIP_BN_WEIGHT_BASE,
-			act_host_float+MEM0_SIZE+MEM1_SIZE,
-			BB7_SKIP_K, BB7_SKIP_K, BB7_SKIP_C, BB7_CONV2_C, BB7_SKIP_H, BB7_SKIP_W, BB7_SKIP_S, BB7_SKIP_PAD);
+	//convolution_bn_skip_relu_golden<float, float, float, float>(
+	//		act_host_float,
+	//		fil_host_float+BB7_SKIP_WEIGHT_BASE,
+	//		act_host_float+MEM0_SIZE,
+	//		bn_weight_host_float+BB7_SKIP_BN_WEIGHT_BASE,
+	//		act_host_float+MEM0_SIZE+MEM1_SIZE,
+	//		BB7_SKIP_K, BB7_SKIP_K, BB7_SKIP_C, BB7_CONV2_C, BB7_SKIP_H, BB7_SKIP_W, BB7_SKIP_S, BB7_SKIP_PAD);
 	
-	compare_result<DTYPE_ACT, float, OUTPUT_SIZE>(act_mem+MEM0_SIZE, act_host_float+MEM0_SIZE, 0.1);
+	// compare_result<DTYPE_ACT, float, OUTPUT_SIZE>(act_mem+MEM0_SIZE, act_host_float+MEM0_SIZE, 0.1);
+	compare_result<DTYPE_ACT, float, OUTPUT_SIZE>(act_mem+MEM0_SIZE+MEM1_SIZE, act_host_float+MEM0_SIZE+MEM1_SIZE, 0.1);
 	for (int idx = 0; idx < 10; idx++) {
-		std::cout << "output[" << idx << "]: " << act_host_float[MEM0_SIZE+idx] << std::endl;
+		// std::cout << "output[" << idx << "]: " << act_host_float[MEM0_SIZE+idx] << std::endl;
+		std::cout << "output[" << idx << "]: " << act_host_float[MEM0_SIZE+MEM1_SIZE+idx] << std::endl;
 	}
 }

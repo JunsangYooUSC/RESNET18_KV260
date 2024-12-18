@@ -393,7 +393,7 @@ void conv_kernel(
     bn_weight_base  = BB7_CONV1_BN_WEIGHT_BASE;
     bn_weight_size  = BB7_CONV1_BN_WEIGHT_SIZE;
 
-    int loops = 3;
+    int loops = 2;
     for (int opcnt = 0; opcnt < loops; opcnt++) {
         if (opcnt == 0) {
             nif             = BB6_SKIP_C;
@@ -495,7 +495,8 @@ void conv_kernel(
         // output back to host
         if (opcnt == loops-1) {
             for (int idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W; idx++){
-                act_mem_host[MEM0_SIZE+idx] = act_mem[MEM0_SIZE+idx];
+                // act_mem_host[MEM0_SIZE+idx] = act_mem[MEM0_SIZE+idx];
+                act_mem_host[MEM0_SIZE+MEM1_SIZE+idx] = act_mem[MEM0_SIZE+MEM1_SIZE+idx];
             }
         }
     }
