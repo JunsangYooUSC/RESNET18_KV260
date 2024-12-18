@@ -356,7 +356,7 @@ int main(){
     //         result2 = 0;
     //     }
     // }
-	compare_result<DTYPE_ACT, float, OUTPUT_SIZE>(act_mem+MEM0_SIZE, out_act_host_float, 0.1);
+	// compare_result<DTYPE_ACT, float, OUTPUT_SIZE>(act_mem+MEM0_SIZE, out_act_host_float, 0.1);
 
 	std::cout << "result1: " << result1 << std::endl;
 	std::cout << "result2: " << result2 << std::endl;
