@@ -186,6 +186,7 @@ void PE(
                                         DTYPE_ACT act_in = load_input_fifo.read();
                                         DTYPE_FIL fil_in = load_weight_fifo.read();
                                         DTYPE_MUL mul_val = act_in * fil_in;
+                                        std::cout << "mul_val: " << mul_val << std::endl;
                                         mac_vals[f][y][x] += mul_val;
                                         cnt++;
                                     }
