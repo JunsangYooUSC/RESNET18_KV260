@@ -258,6 +258,7 @@ void batch_norm(
                             // batch norm when enabled
                             if (bn_en) {
                                 val = (val-mean)*mult_factor+beta;
+                                std::cout << "val: " << val << std::endl;
                             }
                             out_fifo.write(val);
                         }
