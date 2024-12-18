@@ -223,10 +223,21 @@ void store_output_fifo(
     unsigned int nox
 ) {
     int cnt = 0;
-    for (int out_f = 0; out_f < nof; out_f+=POF) {
-        for (int y0 = 0; y0 < noy; y0+=POY) {
-            for (int x0 = 0; x0 < nox; x0+=POX) {
-                // parallel
+    for (int f_out = 0; f_out < nof; f_out += POF) {
+        for (int y0 = 0; y0 < noy; y0 += POY) {
+            for (int x0 = 0; x0 < nox; x0 += POX) {
+                for (int f_in = 0; f_in < nif; f_in ++) {
+                    for (int f = 0; f < POF; f++) {
+                        for (int y = 0; y < POY; y++) {
+                            for (int x = 0; x < POX; x++) {
+                                for (int i = 0; i < nky; i++) {
+                                    for (int j = 0; j < nkx; j++) {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 for (int f = 0; f < POF; f++) {
                     for (int y = 0; y < POY; y++) {
                         for (int x = 0; x < POX; x++) {
