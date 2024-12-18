@@ -189,7 +189,6 @@ void PE(
                     for (int y = 0; y < POY; y++) {
                         for (int x = 0; x < POX; x++) {
                             unsigned int addr = (f_out+f)*noy*nox + y*nox + x;
-                            // std::cout << "mac_vals[f][y][x]: " << mac_vals[f][y][x] << std::endl;                            
                             pe_out_fifo.write(mac_vals[f][y][x]);
                         }
                     }
@@ -218,6 +217,7 @@ void store_output_fifo(
                         for (int x = 0; x < POX; x++) {
                             unsigned int addr = (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
                             act_mem[base_addr+addr] = out_fifo_arr.read();
+                            std::cout << "act_mem[base_addr+addr]: " << act_mem[base_addr+addr] << std::endl;
                         }
                     }
                 }
@@ -250,7 +250,6 @@ void batch_norm(
                     mean = bn_weight_mem[(f_out+f)];
                     mult_factor = bn_weight_mem[nof+(f_out+f)];
                     beta = bn_weight_mem[nof*2+(f_out+f)];
-                    std::cout << "mult_factor: " << mult_factor << std::endl;
                     for (int y = 0; y < POY; y++) {
                         for (int x = 0; x < POX; x++) {
                             float val;
@@ -258,7 +257,6 @@ void batch_norm(
                             // batch norm when enabled
                             if (bn_en) {
                                 val = (val-mean)*mult_factor+beta;
-                                std::cout << "val: " << val << std::endl;
                             }
                             out_fifo.write(val);
                         }
