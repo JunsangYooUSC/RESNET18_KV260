@@ -10,11 +10,9 @@
 #include "conv_config.h"
 
 void conv_kernel(
-    DTYPE_ACT *act_mem,
+    DTYPE_ACT *act_mem_host,
     DTYPE_FIL *weight_mem,
     float *bn_weight_mem,
-    int *result1,
-    int *result2
 );
 
 void load_input(
