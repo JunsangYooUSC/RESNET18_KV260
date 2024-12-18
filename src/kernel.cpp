@@ -344,8 +344,8 @@ void conv_kernel(
             nky, nkx, nof, nif, noy, nox);
     PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
             nky, nkx, nof, nif, noy, nox);
-    // store_output_fifo(act_mem, pe_out_fifo, MEM0_SIZE, 
-    //         nky, nkx, nof, nif, noy, nox);
+    store_output_fifo(act_mem, pe_out_fifo, MEM0_SIZE, 
+            nky, nkx, nof, nif, noy, nox);
     (*result2) = 1;
 }
 
