@@ -393,7 +393,7 @@ void conv_kernel(
     bn_weight_base  = BB7_CONV1_BN_WEIGHT_BASE;
     bn_weight_size  = BB7_CONV1_BN_WEIGHT_SIZE;
 
-    int loops = 2;
+    int loops = 1;
     for (int opcnt = 0; opcnt < loops; opcnt++) {
         if (opcnt == 0) {
             nif             = BB6_SKIP_C;
