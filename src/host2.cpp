@@ -44,7 +44,7 @@ int main(){
 	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_in_host[idx] = 0;
 	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_out_host[idx] = 0;
 	unsigned start_layer = 21;
-	unsigned end_layer = 21;
+	unsigned end_layer = 23;
 	// kernel offchip memory
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
 	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
@@ -210,6 +210,7 @@ int main(){
 		}
 		
 		// for debugging
+		std::cout << "****************************************" << std::endl;
 		std::cout << "layer_cnt: " << layer_cnt << std::endl;
 		std::cout << "nif: " << nif << std::endl;
 		std::cout << "nof: " << nof << std::endl;
@@ -236,7 +237,8 @@ int main(){
 		std::cout << "bn_weight_size: " << bn_weight_size << std::endl;
 		std::cout << "in_size: " << in_size << std::endl;
 		std::cout << "out_size: " << out_size << std::endl;
-		
+		std::cout << "****************************************" << std::endl;
+		std::cout << std::endl;
 	}
 
 	// kernel calculation
