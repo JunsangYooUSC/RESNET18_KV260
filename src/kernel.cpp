@@ -228,8 +228,8 @@ void store_output_fifo(
 
 void batch_norm(
     float *bn_weight_mem,
-    hls::stream<float> &in_fifo_arr,
-    hls::stream<float> &out_fifo_arr,
+    hls::stream<float> &in_fifo,
+    hls::stream<float> &out_fifo,
     unsigned int bn_weight_base_addr,
     unsigned int nof,
     unsigned int noy,
@@ -250,16 +250,16 @@ void batch_norm(
                     mean = bn_weight_mem[(f_out+f)];
                     mult_factor = bn_weight_mem[nof+(f_out+f)];
                     beta = bn_weight_mem[nof*2+(f_out+f)];
-                    std::cout << "mean: " << mean << std::endl;
+                    std::cout << "mult_factor: " << mult_factor << std::endl;
                     for (int y = 0; y < POY; y++) {
                         for (int x = 0; x < POX; x++) {
                             float val;
-                            val = in_fifo_arr.read();
+                            val = in_fifo.read();
                             // batch norm when enabled
                             if (bn_en) {
                                 val = (val-mean)*mult_factor+beta;
                             }
-                            out_fifo_arr.write(val);
+                            out_fifo.write(val);
                         }
                     }
                 }
