@@ -311,6 +311,41 @@ void conv_kernel(
     float *bn_weight_mem
 ) {
     DTYPE_ACT act_mem[MEM0_SIZE+MEM1_SIZE+MEM2_SIZE];
+    // interface
+    // #pragma HLS INTERFACE s_axilite port=return bundle=control
+    // #pragma HLS INTERFACE mode=m_axi port=act_mem offset=slave bundle=gmem0 depth = 10000000
+    // #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0 depth = 10000000
+    // #pragma HLS INTERFACE mode=m_axi port=bn_weight_mem offset=slave bundle=gmem0 depth = 10000000
+    // #pragma HLS INTERFACE mode=m_axi port=result1 offset=slave bundle=gmem0 depth = 1
+    // #pragma HLS INTERFACE mode=m_axi port=result2 offset=slave bundle=gmem0 depth = 1
+    // #pragma HLS INTERFACE mode=s_axilite port=act_mem bundle=control
+    // #pragma HLS INTERFACE mode=s_axilite port=weight_mem bundle=control
+    // #pragma HLS INTERFACE mode=s_axilite port=bn_weight_mem bundle=control
+    // #pragma HLS INTERFACE mode=s_axilite port=result1 bundle=control
+    // #pragma HLS INTERFACE mode=s_axilite port=result2 bundle=control
+    #pragma HLS INTERFACE s_axilite port=return bundle=control
+    #pragma HLS INTERFACE mode=m_axi port=act_mem_host offset=slave bundle=gmem0 depth = 10000000
+    #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0 depth = 10000000
+    #pragma HLS INTERFACE mode=m_axi port=bn_weight_mem offset=slave bundle=gmem0 depth = 10000000
+    #pragma HLS INTERFACE mode=s_axilite port=act_mem_host bundle=control
+    #pragma HLS INTERFACE mode=s_axilite port=weight_mem bundle=control
+    #pragma HLS INTERFACE mode=s_axilite port=bn_weight_mem bundle=control
+    
+    #pragma HLS BIND_STORAGE variable=act_mem type=ram_2p impl=uram
+    #pragma HLS ARRAY_PARTITION variable=act_mem block factor=8
+
+    // fifo
+    hls::stream<DTYPE_ACT> load_input_fifo;
+    #pragma HLS STREAM variable=load_input_fifo depth=FIFO_ARR_DEPTH
+    hls::stream<DTYPE_FIL> load_weight_fifo;
+    #pragma HLS STREAM variable=load_weight_fifo depth=FIFO_ARR_DEPTH
+    hls::stream<float> pe_out_fifo;
+    #pragma HLS STREAM variable=pe_out_fifo depth=FIFO_ARR_DEPTH
+    hls::stream<float> bn_out_fifo;
+    #pragma HLS STREAM variable=bn_out_fifo depth=FIFO_ARR_DEPTH
+    hls::stream<float> skip_out_fifo;
+    #pragma HLS STREAM variable=skip_out_fifo depth=FIFO_ARR_DEPTH
+    
     unsigned nif;
     unsigned nof;
     unsigned noy;
@@ -358,45 +393,6 @@ void conv_kernel(
     bn_weight_base  = BB7_CONV1_BN_WEIGHT_BASE;
     bn_weight_size  = BB7_CONV1_BN_WEIGHT_SIZE;
 
-    // interface
-    // #pragma HLS INTERFACE s_axilite port=return bundle=control
-    // #pragma HLS INTERFACE mode=m_axi port=act_mem offset=slave bundle=gmem0 depth = 10000000
-    // #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0 depth = 10000000
-    // #pragma HLS INTERFACE mode=m_axi port=bn_weight_mem offset=slave bundle=gmem0 depth = 10000000
-    // #pragma HLS INTERFACE mode=m_axi port=result1 offset=slave bundle=gmem0 depth = 1
-    // #pragma HLS INTERFACE mode=m_axi port=result2 offset=slave bundle=gmem0 depth = 1
-    // #pragma HLS INTERFACE mode=s_axilite port=act_mem bundle=control
-    // #pragma HLS INTERFACE mode=s_axilite port=weight_mem bundle=control
-    // #pragma HLS INTERFACE mode=s_axilite port=bn_weight_mem bundle=control
-    // #pragma HLS INTERFACE mode=s_axilite port=result1 bundle=control
-    // #pragma HLS INTERFACE mode=s_axilite port=result2 bundle=control
-    #pragma HLS INTERFACE s_axilite port=return bundle=control
-    // #pragma HLS INTERFACE mode=m_axi port=act_mem offset=slave bundle=gmem0 depth = 10000000
-    #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0 depth = 10000000
-    #pragma HLS INTERFACE mode=m_axi port=bn_weight_mem offset=slave bundle=gmem0 depth = 10000000
-    #pragma HLS INTERFACE mode=m_axi port=result1 offset=slave bundle=gmem0 depth = 1
-    #pragma HLS INTERFACE mode=m_axi port=result2 offset=slave bundle=gmem0 depth = 1
-    // #pragma HLS INTERFACE mode=s_axilite port=act_mem bundle=control
-    #pragma HLS INTERFACE mode=s_axilite port=weight_mem bundle=control
-    #pragma HLS INTERFACE mode=s_axilite port=bn_weight_mem bundle=control
-    #pragma HLS INTERFACE mode=s_axilite port=result1 bundle=control
-    #pragma HLS INTERFACE mode=s_axilite port=result2 bundle=control
-    
-    #pragma HLS BIND_STORAGE variable=act_mem type=ram_2p impl=uram
-    #pragma HLS ARRAY_PARTITION variable=act_mem block factor=8
-
-    // fifo
-    hls::stream<DTYPE_ACT> load_input_fifo;
-    #pragma HLS STREAM variable=load_input_fifo depth=FIFO_ARR_DEPTH
-    hls::stream<DTYPE_FIL> load_weight_fifo;
-    #pragma HLS STREAM variable=load_weight_fifo depth=FIFO_ARR_DEPTH
-    hls::stream<float> pe_out_fifo;
-    #pragma HLS STREAM variable=pe_out_fifo depth=FIFO_ARR_DEPTH
-    hls::stream<float> bn_out_fifo;
-    #pragma HLS STREAM variable=bn_out_fifo depth=FIFO_ARR_DEPTH
-    hls::stream<float> skip_out_fifo;
-    #pragma HLS STREAM variable=skip_out_fifo depth=FIFO_ARR_DEPTH
-    
     int loops = 1;
     for (int opcnt = 0; opcnt < loops; opcnt++) {
         if (opcnt == 0) {
