@@ -28,7 +28,7 @@
 
 // *****************************************
 // simulation settings vs synthesis settings
-#define SIM_MODE            0
+#define SIM_MODE            1
 // *****************************************
 
 // kernel parallel parameters
