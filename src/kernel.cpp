@@ -308,7 +308,8 @@ void skip_conn(
 void conv_kernel(
     DTYPE_ACT *act_mem_host,
     DTYPE_FIL *weight_mem,
-    float *bn_weight_mem
+    float *bn_weight_mem,
+    DTYPE_ACT *act_out_host
 ) {
     DTYPE_ACT act_mem[MEM0_SIZE+MEM1_SIZE+MEM2_SIZE];
     // interface
@@ -393,7 +394,7 @@ void conv_kernel(
     bn_weight_base  = BB7_CONV1_BN_WEIGHT_BASE;
     bn_weight_size  = BB7_CONV1_BN_WEIGHT_SIZE;
 
-    int loops = 1;
+    int loops = 2;
     for (int opcnt = 0; opcnt < loops; opcnt++) {
         if (opcnt == 0) {
             nif             = BB6_SKIP_C;
@@ -495,7 +496,8 @@ void conv_kernel(
         // output back to host
         if (opcnt == loops-1) {
             for (int idx = 0; idx < nof*noy*nox; idx++){
-                act_mem_host[MEM0_SIZE+idx] = act_mem[MEM0_SIZE+idx];
+                // act_mem_host[MEM0_SIZE+idx] = act_mem[MEM0_SIZE+idx];
+                act_out_host[idx] = act_mem[base_addr_out+idx];
                 // act_mem_host[MEM0_SIZE+MEM1_SIZE+idx] = act_mem[MEM0_SIZE+MEM1_SIZE+idx];
             }
         }

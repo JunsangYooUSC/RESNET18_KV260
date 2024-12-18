@@ -323,8 +323,8 @@ int main(){
 	std::cout << "first 3 input val: " << act_mem[0] << " " << act_mem[1] << " " << act_mem[2] << std::endl;
 	std::cout << "first 3 weight val: " << weight_mem[0] << " " << weight_mem[1] << " " << weight_mem[2] << std::endl;
 	std::cout << "first 3 bn_weight_mem val: " << bn_weight_mem[0] << " " << bn_weight_mem[1] << " " << bn_weight_mem[2] << std::endl;
-
-	conv_kernel(act_mem, weight_mem, bn_weight_mem);
+	DTYPE_ACT act_out_host[MEM0_SIZE];
+	conv_kernel(act_mem, weight_mem, bn_weight_mem, act_out_host);
 	
 	// golden conv gen
 	float act_host_float[MEM0_SIZE+MEM1_SIZE+MEM2_SIZE];
@@ -375,10 +375,10 @@ int main(){
 	//		act_host_float+MEM0_SIZE+MEM1_SIZE,
 	//		BB7_SKIP_K, BB7_SKIP_K, BB7_SKIP_C, BB7_CONV2_C, BB7_SKIP_H, BB7_SKIP_W, BB7_SKIP_S, BB7_SKIP_PAD);
 	
-	compare_result<DTYPE_ACT, float, OUTPUT_SIZE>(act_mem+MEM0_SIZE, act_host_float+MEM0_SIZE, 0.1);
+	compare_result<DTYPE_ACT, float, OUTPUT_SIZE>(act_out_host, act_host_float+MEM0_SIZE, 0.1);
 	// compare_result<DTYPE_ACT, float, OUTPUT_SIZE>(act_mem+MEM0_SIZE+MEM1_SIZE, act_host_float+MEM0_SIZE+MEM1_SIZE, 0.1);
 	for (int idx = 0; idx < 10; idx++) {
-		std::cout << "output[" << idx << "]: " << act_host_float[MEM0_SIZE+idx] << std::endl;
+		std::cout << "output[" << idx << "]: " << act_out_host[idx] << std::endl;
 		// std::cout << "output[" << idx << "]: " << act_host_float[MEM0_SIZE+MEM1_SIZE+idx] << std::endl;
 	}
 }
