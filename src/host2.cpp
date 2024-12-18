@@ -346,9 +346,10 @@ int main(){
 	}
  	// convolution_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float,
  	// 		BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
- 	convolution_bn_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_host_float,
- 			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
-
+ 	// convolution_bn_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_host_float,
+ 	// 		BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
+	convolution_bn_skip_relu_golden<float, float, float, float>(in_act_host_float, in_fil_host_float, out_act_host_float, bn_weight_host_float, in_act_host_float,
+			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
     // for (int idx = 0; idx < OUTPUT_SIZE; idx++) {
     //     if (out_act_host_float[idx] != act_mem[MEM0_SIZE+idx]){
 	// 		std::cout << "idx: " << idx << " host: " << out_act_host_float[idx] << " kernel: " << act_mem[MEM0_SIZE+idx] << std::endl;

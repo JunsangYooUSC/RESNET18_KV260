@@ -198,9 +198,9 @@ void PE(
     }
 }
 
-void store_output_fifo(
+void store_output(
     DTYPE_ACT *act_mem,
-    hls::stream<float> &out_fifo_arr,
+    hls::stream<float> &out_fifo,
     unsigned int base_addr,
     unsigned int nky,
     unsigned int nkx,
@@ -216,7 +216,7 @@ void store_output_fifo(
                     for (int y = 0; y < POY; y++) {
                         for (int x = 0; x < POX; x++) {
                             unsigned int addr = (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
-                            act_mem[base_addr+addr] = out_fifo_arr.read();
+                            act_mem[base_addr+addr] = out_fifo.read();
                         }
                     }
                 }
@@ -262,6 +262,44 @@ void batch_norm(
                     }
                 }
 
+            }
+        }
+    }
+}
+
+void skip_conn(
+    DTYPE_ACT *act_mem,
+    hls::stream<float> &in_fifo,
+    hls::stream<float> &out_fifo,
+    unsigned int base_addr,
+    unsigned int nof,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int bb_en,
+    unsigned int skip_en,
+    unsigned int relu_en
+) {
+    if (!bb_en) return;
+
+    for (int f_out = 0; f_out < nof; f_out+=POF) {
+        for (int y0 = 0; y0 < noy; y0+=POY) {
+            for (int x0 = 0; x0 < nox; x0+=POX) {
+                for (int f = 0; f < POF; f++) {
+                    for (int y = 0; y < POY; y++) {
+                        for (int x = 0; x < POX; x++) {
+                            float val = in_fifo.read();
+                            if (skip_en) {
+                                unsigned add_addr = (f_out+f)*noy*nox + (y0+y)*nox + x0;
+                                DTYPE_ACT add_val = act_mem[base_addr + add_addr];
+                                val = val + (float)add_val;
+                            }
+                            if (relu_en) {
+                                val = (val > 0) ? val : 0;
+                            }
+                            out_fifo.write(val);
+                        }
+                    }
+                }
             }
         }
     }
@@ -352,6 +390,8 @@ void conv_kernel(
     #pragma HLS STREAM variable=pe_out_fifo depth=FIFO_ARR_DEPTH
     hls::stream<float> bn_out_fifo;
     #pragma HLS STREAM variable=bn_out_fifo depth=FIFO_ARR_DEPTH
+    hls::stream<float> skip_out_fifo;
+    #pragma HLS STREAM variable=skip_out_fifo depth=FIFO_ARR_DEPTH
     // load input
     for (int idx = 0; idx < BB6_SKIP_C*BB7_CONV1_H*BB7_CONV1_W*BB7_CONV1_S*BB7_CONV1_S; idx++){
         act_mem[idx] = act_mem_host[idx];
@@ -376,7 +416,9 @@ void conv_kernel(
             nky, nkx, nof, nif, noy, nox);
     batch_norm(bn_weight_mem, pe_out_fifo, bn_out_fifo, 0,
             nof, noy, nox, 1, 1);
-    store_output_fifo(act_mem, bn_out_fifo, MEM0_SIZE, 
+    skip_conn(act_mem, bn_out_fifo, skip_out_fifo, 0,
+            nof, noy, nox, 1, 1, 1);
+    store_output(act_mem, skip_out_fifo, MEM0_SIZE, 
             nky, nkx, nof, nif, noy, nox);
     for (int idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W; idx++) {
         act_mem_host[MEM0_SIZE+idx] = act_mem[MEM0_SIZE+idx];
