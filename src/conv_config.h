@@ -22,6 +22,8 @@
 #include <ap_int.h>
 #include <hls_vector.h>
 #include <hls_stream.h>
+#include <algorithm>
+
 // Include C++ headers
 #include <cmath>
 #include <cassert>
@@ -93,165 +95,227 @@ constexpr unsigned int FIFO_ARR_DEPTH = 18;  // todo: reduce if unnecessary
 // 2: mem2
 // 3: fake mem block mem3
 
-// CONV1
-#define CONV1_C                 64
-#define CONV1_H                 112
-#define CONV1_W                 112
-#define CONV1_K                 7
-#define CONV1_S                 2
-#define CONV1_PAD               3
-#define CONV1_CONV_EN           1
-#define CONV1_BN_EN             1
-#define CONV1_SKIP_EN           2
-#define CONV1_RELU_EN           1
-#define CONV1_MAX_POOL          0
-#define CONV1_AVG_POOL          0
-#define CONV1_LIN               0
-#define CONV1_IN_MEM            0
-#define CONV1_OUT_MEM           1
-#define CONV1_SKIP_MEM          3
+// CONV1 layer cnt 1
+#define CONV1_C                     64
+#define CONV1_H                     112
+#define CONV1_W                     112
+#define CONV1_K                     7
+#define CONV1_S                     2
+#define CONV1_PAD                   3
+#define CONV1_BB_EN                 1
+#define CONV1_CONV_EN               1
+#define CONV1_BN_EN                 1
+#define CONV1_SKIP_EN               0
+#define CONV1_RELU_EN               1
+#define CONV1_MAX_POOL_EN           0
+#define CONV1_AVG_POOL_EN           0
+#define CONV1_LIN_EN                0
+#define CONV1_BASE_ADDR_IN          MEM0_BASE_ADDR
+#define CONV1_BASE_ADDR_OUT         MEM1_BASE_ADDR
+#define CONV1_BASE_ADDR_ADD         NOMEM_BASE_ADDR
 constexpr unsigned CONV1_WEIGHT_BASE = 0;
-constexpr unsigned CONV1_CONV_WEIGHT_SIZE = IN_C * CONV1_C * CONV1_K * CONV1_K / WEIGHT_PACK;
+constexpr unsigned CONV1_WEIGHT_SIZE = IN_C * CONV1_C * CONV1_K * CONV1_K / WEIGHT_PACK;
 constexpr unsigned CONV1_BN_WEIGHT_BASE = 0;
-constexpr unsigned CONV1_BN_WEIGHT_SIZE = 4 * CONV1_C / WEIGHT_PACK;
+constexpr unsigned CONV1_BN_WEIGHT_SIZE = 3 * CONV1_C;
+constexpr unsigned CONV1_IN_SIZE = IN_C * IN_H * IN_W;
+constexpr unsigned CONV1_OUT_SIZE = CONV1_C * CONV1_H * CONV1_W;
 
-// MAXPOOL
-#define MAXPOOL_C               64
-#define MAXPOOL_H               56
-#define MAXPOOL_W               56
-#define MAXPOOL_K               3
-#define MAXPOOL_S               2
-#define MAXPOOL_PAD             1
-#define MAXPOOL_CONV_EN         0
-#define MAXPOOL_BN_EN           0
-#define MAXPOOL_SKIP_EN         0
-#define MAXPOOL_RELU_EN         0
-#define MAXPOOL_MAX_POOL        1
-#define MAXPOOL_AVG_POOL        0
-#define MAXPOOL_LIN             0
-#define MAXPOOL_IN_MEM          1
-#define MAXPOOL_OUT_MEM         0
-#define MAXPOOL_SKIP_MEM        3
+// MAXPOOL layer cnt 2
+#define MAXPOOL_C                   64
+#define MAXPOOL_H                   56
+#define MAXPOOL_W                   56
+#define MAXPOOL_K                   3
+#define MAXPOOL_S                   2
+#define MAXPOOL_PAD                 1
+#define MAXPOOL_BB_EN               0
+#define MAXPOOL_CONV_EN             0
+#define MAXPOOL_BN_EN               0
+#define MAXPOOL_SKIP_EN             0
+#define MAXPOOL_RELU_EN             0
+#define MAXPOOL_MAX_POOL_EN         1
+#define MAXPOOL_AVG_POOL_EN         0
+#define MAXPOOL_LIN_EN              0
+#define MAXPOOL_BASE_ADDR_IN        MEM1_BASE_ADDR
+#define MAXPOOL_BASE_ADDR_OUT       MEM0_BASE_ADDR
+#define MAXPOOL_BASE_ADDR_ADD       NOMEM_BASE_ADDR
+constexpr unsigned MAXPOOL_WEIGHT_BASE = 0;
+constexpr unsigned MAXPOOL_WEIGHT_SIZE = 0;
+constexpr unsigned MAXPOOL_BN_WEIGHT_BASE = 0;
+constexpr unsigned MAXPOOL_BN_WEIGHT_SIZE = 0;
+constexpr unsigned MAXPOOL_IN_SIZE = CONV1_C * CONV1_H * CONV1_W;
+constexpr unsigned MAXPOOL_OUT_SIZE = MAXPOOL_C * MAXPOOL_H * MAXPOOL_W;
 
-// BB1_CONV1
-#define BB1_CONV1_C             64
-#define BB1_CONV1_H             56
-#define BB1_CONV1_W             56
-#define BB1_CONV1_K             3
-#define BB1_CONV1_S             1
-#define BB1_CONV1_PAD           1
-#define BB1_CONV1_CONV_EN       1
-#define BB1_CONV1_BN_EN         1
-#define BB1_CONV1_SKIP_EN       2
-#define BB1_CONV1_RELU_EN       1
-#define BB1_CONV1_MAX_POOL      0
-#define BB1_CONV1_AVG_POOL      0
-#define BB1_CONV1_LIN           0
-#define BB1_CONV1_IN_MEM        0
-#define BB1_CONV1_OUT_MEM       1
-#define BB1_CONV1_SKIP_MEM      3
-constexpr unsigned BB1_CONV1_WEIGHT_BASE = CONV1_WEIGHT_BASE + CONV1_CONV_WEIGHT_SIZE;
-constexpr unsigned BB1_CONV1_CONV_WEIGHT_SIZE = MAXPOOL_C * BB1_CONV1_C * BB1_CONV1_K * BB1_CONV1_K / WEIGHT_PACK;
+// BB1_CONV1 layer cnt 3
+#define BB1_CONV1_C                 64
+#define BB1_CONV1_H                 56
+#define BB1_CONV1_W                 56
+#define BB1_CONV1_K                 3
+#define BB1_CONV1_S                 1
+#define BB1_CONV1_PAD               1
+#define BB1_CONV1_BB_EN             1
+#define BB1_CONV1_CONV_EN           1
+#define BB1_CONV1_BN_EN             1
+#define BB1_CONV1_SKIP_EN           0
+#define BB1_CONV1_RELU_EN           1
+#define BB1_CONV1_MAX_POOL_EN       0
+#define BB1_CONV1_AVG_POOL_EN       0
+#define BB1_CONV1_LIN_EN            0
+#define BB1_CONV1_BASE_ADDR_IN      MEM0_BASE_ADDR
+#define BB1_CONV1_BASE_ADDR_OUT     MEM1_BASE_ADDR
+#define BB1_CONV1_BASE_ADDR_ADD     NOMEM_BASE_ADDR
+constexpr unsigned BB1_CONV1_WEIGHT_BASE = CONV1_WEIGHT_BASE + CONV1_WEIGHT_SIZE;
+constexpr unsigned BB1_CONV1_WEIGHT_SIZE = MAXPOOL_C * BB1_CONV1_C * BB1_CONV1_K * BB1_CONV1_K / WEIGHT_PACK;
 constexpr unsigned BB1_CONV1_BN_WEIGHT_BASE = CONV1_BN_WEIGHT_BASE + CONV1_BN_WEIGHT_SIZE;
-constexpr unsigned BB1_CONV1_BN_WEIGHT_SIZE = 4 * BB1_CONV1_C / WEIGHT_PACK;
+constexpr unsigned BB1_CONV1_BN_WEIGHT_SIZE = 3 * BB1_CONV1_C;
+constexpr unsigned BB1_CONV1_IN_SIZE = MAXPOOL_C * MAXPOOL_H * MAXPOOL_W;
+constexpr unsigned BB1_CONV1_OUT_SIZE = BB1_CONV1_C * BB1_CONV1_H * BB1_CONV1_W;
 
-// BB1_CONV2   
-#define BB1_CONV2_C             64
-#define BB1_CONV2_H             56
-#define BB1_CONV2_W             56
-#define BB1_CONV2_K             3
-#define BB1_CONV2_S             1
-#define BB1_CONV2_PAD           1
-#define BB1_CONV2_CONV_EN       1
-#define BB1_CONV2_BN_EN         1
-#define BB1_CONV2_SKIP_EN       2
-#define BB1_CONV2_RELU_EN       2
-#define BB1_CONV2_MAX_POOL      0
-#define BB1_CONV2_AVG_POOL      0
-#define BB1_CONV2_LIN           0
-#define BB1_CONV2_IN_MEM        1
-#define BB1_CONV2_OUT_MEM       2
-#define BB1_CONV2_SKIP_MEM      3
-constexpr unsigned BB1_CONV2_WEIGHT_BASE = BB1_CONV1_WEIGHT_BASE + BB1_CONV1_CONV_WEIGHT_SIZE;
-constexpr unsigned BB1_CONV2_CONV_WEIGHT_SIZE = BB1_CONV1_C * BB1_CONV2_C * BB1_CONV2_K * BB1_CONV2_K / WEIGHT_PACK;
+// BB1_CONV2 layer cnt 4 
+#define BB1_CONV2_C                 64
+#define BB1_CONV2_H                 56
+#define BB1_CONV2_W                 56
+#define BB1_CONV2_K                 3
+#define BB1_CONV2_S                 1
+#define BB1_CONV2_PAD               1
+#define BB1_CONV2_BB_EN             1
+#define BB1_CONV2_CONV_EN           1
+#define BB1_CONV2_BN_EN             1
+#define BB1_CONV2_SKIP_EN           0
+#define BB1_CONV2_RELU_EN           0
+#define BB1_CONV2_MAX_POOL_EN       0
+#define BB1_CONV2_AVG_POOL_EN       0
+#define BB1_CONV2_LIN_EN            0
+#define BB1_CONV2_BASE_ADDR_IN      MEM1_BASE_ADDR
+#define BB1_CONV2_BASE_ADDR_OUT     MEM2_BASE_ADDR
+#define BB1_CONV2_BASE_ADDR_ADD     NOMEM_BASE_ADDR
+constexpr unsigned BB1_CONV2_WEIGHT_BASE = BB1_CONV1_WEIGHT_BASE + BB1_CONV1_WEIGHT_SIZE;
+constexpr unsigned BB1_CONV2_WEIGHT_SIZE = BB1_CONV1_C * BB1_CONV2_C * BB1_CONV2_K * BB1_CONV2_K / WEIGHT_PACK;
 constexpr unsigned BB1_CONV2_BN_WEIGHT_BASE = BB1_CONV1_BN_WEIGHT_BASE + BB1_CONV1_BN_WEIGHT_SIZE;
-constexpr unsigned BB1_CONV2_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
+constexpr unsigned BB1_CONV2_BN_WEIGHT_SIZE = 3 * BB1_CONV2_C;
+constexpr unsigned BB1_CONV2_IN_SIZE = BB1_CONV1_C * BB1_CONV1_H * BB1_CONV1_W;
+constexpr unsigned BB1_CONV2_OUT_SIZE = BB1_CONV2_C * BB1_CONV2_H * BB1_CONV2_W;
 
-// BB1_SKIP
-#define BB1_SKIP_C              64
-#define BB1_SKIP_H              56
-#define BB1_SKIP_W              56
-#define BB1_SKIP_K              0
-#define BB1_SKIP_S              0
-#define BB1_SKIP_PAD            0
-#define BB1_SKIP_CONV_EN        2
-#define BB1_SKIP_BN_EN          2
-#define BB1_SKIP_SKIP_EN        1
-#define BB1_SKIP_RELU_EN        1
-#define BB1_SKIP_MAX_POOL       0
-#define BB1_SKIP_AVG_POOL       0
-#define BB1_SKIP_LIN            0
-#define BB1_SKIP_IN_MEM         2
-#define BB1_SKIP_OUT_MEM        1
-#define BB1_SKIP_SKIP_MEM       0
-constexpr unsigned BB1_SKIP_WEIGHT_BASE = BB1_CONV2_WEIGHT_BASE + BB1_CONV2_CONV_WEIGHT_SIZE;
-constexpr unsigned BB1_SKIP_CONV_WEIGHT_SIZE = BB1_CONV2_C * BB1_SKIP_C * BB1_SKIP_K * BB1_SKIP_K / WEIGHT_PACK;
-constexpr unsigned BB1_SKIP_BN_WEIGHT_BASE = BB1_CONV2_BN_WEIGHT_BASE + BB1_CONV2_BN_WEIGHT_SIZE;
-constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
+// BB1_SKIP layer cnt 5
+#define BB1_SKIP_C                  64
+#define BB1_SKIP_H                  56
+#define BB1_SKIP_W                  56
+#define BB1_SKIP_K                  0
+#define BB1_SKIP_S                  0
+#define BB1_SKIP_PAD                0
+#define BB1_SKIP_BB_EN              1
+#define BB1_SKIP_CONV_EN            0
+#define BB1_SKIP_BN_EN              0
+#define BB1_SKIP_SKIP_EN            1
+#define BB1_SKIP_RELU_EN            1
+#define BB1_SKIP_MAX_POOL_EN        0
+#define BB1_SKIP_AVG_POOL_EN        0
+#define BB1_SKIP_LIN_EN             0
+#define BB1_SKIP_BASE_ADDR_IN       MEM0_BASE_ADDR
+#define BB1_SKIP_BASE_ADDR_OUT      MEM1_BASE_ADDR
+#define BB1_SKIP_BASE_ADDR_ADD      MEM2_BASE_ADDR
+constexpr unsigned BB1_SKIP_WEIGHT_BASE = 0;
+constexpr unsigned BB1_SKIP_WEIGHT_SIZE = 0;
+constexpr unsigned BB1_SKIP_BN_WEIGHT_BASE = 0;
+constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 0;
+constexpr unsigned BB1_SKIP_IN_SIZE = BB1_CONV2_C * BB1_CONV2_H * BB1_CONV2_W;
+constexpr unsigned BB1_SKIP_OUT_SIZE = BB1_SKIP_C * BB1_SKIP_H * BB1_SKIP_W;
 
-// BB2_CONV1
-#define BB2_CONV1_C             64
-#define BB2_CONV1_H             56
-#define BB2_CONV1_W             56
-#define BB2_CONV1_K             3
-#define BB2_CONV1_S             1
-#define BB2_CONV1_PAD           1
-#define BB2_CONV1_CONV_EN       1
-#define BB2_CONV1_BN_EN         1
-#define BB2_CONV1_SKIP_EN       2
-#define BB2_CONV1_RELU_EN       1
-#define BB2_CONV1_MAX_POOL      0
-#define BB2_CONV1_AVG_POOL      0
-#define BB2_CONV1_LIN           0
-#define BB2_CONV1_IN_MEM        1
-#define BB2_CONV1_OUT_MEM       2
-#define BB2_CONV1_SKIP_MEM      3
-// BB2_CONV2
-#define BB2_CONV2_C             64
-#define BB2_CONV2_H             56
-#define BB2_CONV2_W             56
-#define BB2_CONV2_K             3
-#define BB2_CONV2_S             1
-#define BB2_CONV2_PAD           1
-#define BB2_CONV2_CONV_EN       1
-#define BB2_CONV2_BN_EN         1
-#define BB2_CONV2_SKIP_EN       2
-#define BB2_CONV2_RELU_EN       2
-#define BB2_CONV2_MAX_POOL      0
-#define BB2_CONV2_AVG_POOL      0
-#define BB2_CONV2_LIN           0
-#define BB2_CONV2_IN_MEM        2
-#define BB2_CONV2_OUT_MEM       0
-#define BB2_CONV2_SKIP_MEM      3
-// BB2_SKIP
-#define BB2_SKIP_C              64
-#define BB2_SKIP_H              56
-#define BB2_SKIP_W              56
-#define BB2_SKIP_K              0
-#define BB2_SKIP_S              0
-#define BB2_SKIP_PAD            0
-#define BB2_SKIP_CONV_EN        2
-#define BB2_SKIP_BN_EN          2
-#define BB2_SKIP_SKIP_EN        1
-#define BB2_SKIP_RELU_EN        1
-#define BB2_SKIP_MAX_POOL       0
-#define BB2_SKIP_AVG_POOL       0
-#define BB2_SKIP_LIN            0
-#define BB2_SKIP_IN_MEM         0
-#define BB2_SKIP_OUT_MEM        2
-#define BB2_SKIP_SKIP_MEM       1
+// BB2_CONV1 layer cnt 6
+#define BB2_CONV1_C                 64
+#define BB2_CONV1_H                 56
+#define BB2_CONV1_W                 56
+#define BB2_CONV1_K                 3
+#define BB2_CONV1_S                 1
+#define BB2_CONV1_PAD               1
+#define BB2_CONV1_BB_EN             1
+#define BB2_CONV1_CONV_EN           1
+#define BB2_CONV1_BN_EN             1
+#define BB2_CONV1_SKIP_EN           0
+#define BB2_CONV1_RELU_EN           1
+#define BB2_CONV1_MAX_POOL_EN       0
+#define BB2_CONV1_AVG_POOL_EN       0
+#define BB2_CONV1_LIN_EN            0
+#define BB2_CONV1_BASE_ADDR_IN      MEM2_BASE_ADDR
+#define BB2_CONV1_BASE_ADDR_OUT     MEM0_BASE_ADDR
+#define BB2_CONV1_BASE_ADDR_ADD     NOMEM_BASE_ADDR
+constexpr unsigned BB2_CONV1_WEIGHT_BASE = BB1_CONV2_WEIGHT_BASE + BB1_CONV2_WEIGHT_SIZE;
+constexpr unsigned BB2_CONV1_WEIGHT_SIZE = BB1_CONV2_C * BB2_CONV1_C * BB2_CONV1_K * BB2_CONV1_K / WEIGHT_PACK;
+constexpr unsigned BB2_CONV1_BN_WEIGHT_BASE = BB1_CONV2_BN_WEIGHT_BASE + BB1_CONV2_BN_WEIGHT_SIZE;
+constexpr unsigned BB2_CONV1_BN_WEIGHT_SIZE = 3 * BB2_CONV1_C;
+constexpr unsigned BB2_CONV1_IN_SIZE = BB1_SKIP_C * BB1_SKIP_H * BB1_SKIP_W;
+constexpr unsigned BB2_CONV1_OUT_SIZE = BB2_CONV1_C * BB2_CONV1_H * BB2_CONV1_W;
 
-// BB3_CONV1
+// BB2_CONV2 layer cnt 7
+#define BB2_CONV2_C                 64
+#define BB2_CONV2_H                 56
+#define BB2_CONV2_W                 56
+#define BB2_CONV2_K                 3
+#define BB2_CONV2_S                 1
+#define BB2_CONV2_PAD               1
+#define BB2_CONV2_BB_EN             1
+#define BB2_CONV2_CONV_EN           1
+#define BB2_CONV2_BN_EN             1
+#define BB2_CONV2_SKIP_EN           0
+#define BB2_CONV2_RELU_EN           0
+#define BB2_CONV2_MAX_POOL_EN       0
+#define BB2_CONV2_AVG_POOL_EN       0
+#define BB2_CONV2_LIN_EN            0
+#define BB2_CONV2_BASE_ADDR_IN      MEM0_BASE_ADDR
+#define BB2_CONV2_BASE_ADDR_OUT     MEM1_BASE_ADDR
+#define BB2_CONV2_BASE_ADDR_ADD     NOMEM_BASE_ADDR
+constexpr unsigned BB2_CONV2_WEIGHT_BASE = BB2_CONV1_WEIGHT_BASE + BB2_CONV1_WEIGHT_SIZE;
+constexpr unsigned BB2_CONV2_WEIGHT_SIZE = BB2_CONV1_C * BB2_CONV2_C * BB2_CONV2_K * BB2_CONV2_K / WEIGHT_PACK;
+constexpr unsigned BB2_CONV2_BN_WEIGHT_BASE = BB2_CONV1_BN_WEIGHT_BASE + BB2_CONV1_BN_WEIGHT_SIZE;
+constexpr unsigned BB2_CONV2_BN_WEIGHT_SIZE = 3 * BB2_CONV2_C;
+constexpr unsigned BB2_CONV2_IN_SIZE = BB2_CONV1_C * BB2_CONV1_H * BB2_CONV1_W;
+constexpr unsigned BB2_CONV2_OUT_SIZE = BB2_CONV2_C * BB2_CONV2_H * BB2_CONV2_W;
+
+// BB2_SKIP layer cnt 8
+#define BB2_SKIP_C                  64
+#define BB2_SKIP_H                  56
+#define BB2_SKIP_W                  56
+#define BB2_SKIP_K                  0
+#define BB2_SKIP_S                  0
+#define BB2_SKIP_PAD                0
+#define BB2_SKIP_BB_EN              1
+#define BB2_SKIP_CONV_EN            0
+#define BB2_SKIP_BN_EN              0
+#define BB2_SKIP_SKIP_EN            1
+#define BB2_SKIP_RELU_EN            1
+#define BB2_SKIP_MAX_POOL_EN        0
+#define BB2_SKIP_AVG_POOL_EN        0
+#define BB2_SKIP_LIN_EN             0
+#define BB2_SKIP_BASE_ADDR_IN       MEM2_BASE_ADDR
+#define BB2_SKIP_BASE_ADDR_OUT      MEM0_BASE_ADDR
+#define BB2_SKIP_BASE_ADDR_ADD      MEM1_BASE_ADDR
+constexpr unsigned BB2_SKIP_WEIGHT_BASE = 0;
+constexpr unsigned BB2_SKIP_WEIGHT_SIZE = 0;
+constexpr unsigned BB2_SKIP_BN_WEIGHT_BASE = 0;
+constexpr unsigned BB2_SKIP_BN_WEIGHT_SIZE = 0;
+constexpr unsigned BB2_SKIP_IN_SIZE = BB2_CONV2_C * BB2_CONV2_H * BB2_CONV2_W;
+constexpr unsigned BB2_SKIP_OUT_SIZE = BB2_SKIP_C * BB2_SKIP_H * BB2_SKIP_W;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// BB3_CONV1 layer cnt 9
 #define BB3_CONV1_C             128
 #define BB3_CONV1_H             28
 #define BB3_CONV1_W             28
@@ -268,7 +332,7 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB3_CONV1_IN_MEM        2
 #define BB3_CONV1_OUT_MEM       0
 #define BB3_CONV1_SKIP_MEM      3
-// BB3_CONV2
+// BB3_CONV2 layer cnt 10
 #define BB3_CONV2_C             128
 #define BB3_CONV2_H             28
 #define BB3_CONV2_W             28
@@ -285,7 +349,7 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB3_CONV2_IN_MEM        0
 #define BB3_CONV2_OUT_MEM       1
 #define BB3_CONV2_SKIP_MEM      3
-// BB3_SKIP
+// BB3_SKIP PROJ layer cnt 11
 #define BB3_SKIP_C              128
 #define BB3_SKIP_H              28
 #define BB3_SKIP_W              28
@@ -303,7 +367,7 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB3_SKIP_OUT_MEM        0
 #define BB3_SKIP_SKIP_MEM       2
 
-// BB4_CONV1
+// BB4_CONV1 layer cnt 12
 #define BB4_CONV1_C             128
 #define BB4_CONV1_H             28
 #define BB4_CONV1_W             28
@@ -320,7 +384,7 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB4_CONV1_IN_MEM        0
 #define BB4_CONV1_OUT_MEM       1
 #define BB4_CONV1_SKIP_MEM      3
-// BB4_CONV2
+// BB4_CONV2 layer cnt 13
 #define BB4_CONV2_C             128
 #define BB4_CONV2_H             28
 #define BB4_CONV2_W             28
@@ -337,7 +401,7 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB4_CONV2_IN_MEM        1
 #define BB4_CONV2_OUT_MEM       2
 #define BB4_CONV2_SKIP_MEM      3
-// BB4_SKIP
+// BB4_SKIP layer cnt 14
 #define BB4_SKIP_C              128
 #define BB4_SKIP_H              28
 #define BB4_SKIP_W              28
@@ -355,7 +419,7 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB4_SKIP_OUT_MEM        1
 #define BB4_SKIP_SKIP_MEM       0
 
-// BB5_CONV1
+// BB5_CONV1 layer cnt 15
 #define BB5_CONV1_C             256
 #define BB5_CONV1_H             14
 #define BB5_CONV1_W             14
@@ -372,7 +436,7 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB5_CONV1_IN_MEM        1
 #define BB5_CONV1_OUT_MEM       2
 #define BB5_CONV1_SKIP_MEM      3
-// BB5_CONV2
+// BB5_CONV2 layer cnt 16
 #define BB5_CONV2_C             256
 #define BB5_CONV2_H             14
 #define BB5_CONV2_W             14
@@ -389,7 +453,7 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB5_CONV2_IN_MEM        2
 #define BB5_CONV2_OUT_MEM       0
 #define BB5_CONV2_SKIP_MEM      3
-// BB5_SKIP
+// BB5_SKIP PROJ layer cnt 17
 #define BB5_SKIP_C              256
 #define BB5_SKIP_H              14
 #define BB5_SKIP_W              14
@@ -407,7 +471,7 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB5_SKIP_OUT_MEM        2
 #define BB5_SKIP_SKIP_MEM       1
 
-// BB6_CONV1
+// BB6_CONV1 layer cnt 18
 #define BB6_CONV1_C             256
 #define BB6_CONV1_H             14
 #define BB6_CONV1_W             14
@@ -424,7 +488,7 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB6_CONV1_IN_MEM        2
 #define BB6_CONV1_OUT_MEM       0
 #define BB6_CONV1_SKIP_MEM      3
-// BB6_CONV2    
+// BB6_CONV2 layer cnt 19
 #define BB6_CONV2_C             256
 #define BB6_CONV2_H             14
 #define BB6_CONV2_W             14
@@ -441,7 +505,7 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB6_CONV2_IN_MEM        0
 #define BB6_CONV2_OUT_MEM       1
 #define BB6_CONV2_SKIP_MEM      3
-// BB6_SKIP 
+// BB6_SKIP  layer cnt 20
 #if SIM_MODE
 #define BB6_SKIP_C              16
 #else
@@ -463,86 +527,94 @@ constexpr unsigned BB1_SKIP_BN_WEIGHT_SIZE = 4 * BB1_CONV2_C / WEIGHT_PACK;
 #define BB6_SKIP_OUT_MEM        0
 #define BB6_SKIP_SKIP_MEM       2
 
-// BB7_CONV1    
+// BB7_CONV1 layer cnt 21
 #if SIM_MODE
-#define BB7_CONV1_C             32
-#else
-#define BB7_CONV1_C             512
-#endif
-#define BB7_CONV1_H             7
-#define BB7_CONV1_W             7
-#define BB7_CONV1_K             3
-#define BB7_CONV1_S             2
-#define BB7_CONV1_PAD           1
-#define BB7_CONV1_BB_EN         1
-#define BB7_CONV1_CONV_EN       1
-#define BB7_CONV1_BN_EN         1
-#define BB7_CONV1_SKIP_EN       0
-#define BB7_CONV1_RELU_EN       1
-#define BB7_CONV1_MAX_POOL      0
-#define BB7_CONV1_AVG_POOL      0
-#define BB7_CONV1_LIN_EN        0
-#define BB7_CONV1_IN_MEM        0
-#define BB7_CONV1_OUT_MEM       1
-#define BB7_CONV1_SKIP_MEM      3
+#define BB7_CONV1_C                 32
+#else   
+#define BB7_CONV1_C                 512
+#endif  
+#define BB7_CONV1_H                 7
+#define BB7_CONV1_W                 7
+#define BB7_CONV1_K                 3
+#define BB7_CONV1_S                 2
+#define BB7_CONV1_PAD               1
+#define BB7_CONV1_BB_EN             1
+#define BB7_CONV1_CONV_EN           1
+#define BB7_CONV1_BN_EN             1
+#define BB7_CONV1_SKIP_EN           0
+#define BB7_CONV1_RELU_EN           1
+#define BB7_CONV1_MAX_POOL_EN       0
+#define BB7_CONV1_AVG_POOL_EN       0
+#define BB7_CONV1_LIN_EN            0
+#define BB7_CONV1_BASE_ADDR_IN      MEM0_BASE_ADDR
+#define BB7_CONV1_BASE_ADDR_OUT     MEM1_BASE_ADDR
+#define BB7_CONV1_BASE_ADDR_ADD     NOMEM_BASE_ADDR
 constexpr unsigned BB7_CONV1_WEIGHT_BASE = 0;
-constexpr unsigned BB7_CONV1_CONV_WEIGHT_SIZE = BB6_SKIP_C * BB7_CONV1_C * BB7_CONV1_K * BB7_CONV1_K / WEIGHT_PACK;
+constexpr unsigned BB7_CONV1_WEIGHT_SIZE = BB6_SKIP_C * BB7_CONV1_C * BB7_CONV1_K * BB7_CONV1_K / WEIGHT_PACK;
 constexpr unsigned BB7_CONV1_BN_WEIGHT_BASE = 0;
 constexpr unsigned BB7_CONV1_BN_WEIGHT_SIZE = 3 * BB7_CONV1_C;
-// BB7_CONV2    
+constexpr unsigned BB7_CONV1_IN_SIZE = BB6_SKIP_C * BB6_SKIP_H * BB6_SKIP_W;
+constexpr unsigned BB7_CONV1_OUT_SIZE = BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W;
+
+// BB7_CONV2 layer cnt 22
 #if SIM_MODE
-#define BB7_CONV2_C             32
-#else
-#define BB7_CONV2_C             512
-#endif
-#define BB7_CONV2_H             7
-#define BB7_CONV2_W             7
-#define BB7_CONV2_K             3
-#define BB7_CONV2_S             1
-#define BB7_CONV2_PAD           1
-#define BB7_CONV2_BB_EN         1
-#define BB7_CONV2_CONV_EN       1
-#define BB7_CONV2_BN_EN         1
-#define BB7_CONV2_SKIP_EN       0
-#define BB7_CONV2_RELU_EN       0
-#define BB7_CONV2_MAX_POOL      0
-#define BB7_CONV2_AVG_POOL      0
-#define BB7_CONV2_LIN           0
-#define BB7_CONV2_IN_MEM        1
-#define BB7_CONV2_OUT_MEM       2
-#define BB7_CONV2_SKIP_MEM      3
-constexpr unsigned BB7_CONV2_WEIGHT_BASE = BB7_CONV1_WEIGHT_BASE + BB7_CONV1_CONV_WEIGHT_SIZE;
-constexpr unsigned BB7_CONV2_CONV_WEIGHT_SIZE = BB7_CONV1_C * BB7_CONV2_C * BB7_CONV2_K * BB7_CONV2_K / WEIGHT_PACK;
+#define BB7_CONV2_C                 32
+#else   
+#define BB7_CONV2_C                 512
+#endif  
+#define BB7_CONV2_H                 7
+#define BB7_CONV2_W                 7
+#define BB7_CONV2_K                 3
+#define BB7_CONV2_S                 1
+#define BB7_CONV2_PAD               1
+#define BB7_CONV2_BB_EN             1
+#define BB7_CONV2_CONV_EN           1
+#define BB7_CONV2_BN_EN             1
+#define BB7_CONV2_SKIP_EN           0
+#define BB7_CONV2_RELU_EN           0
+#define BB7_CONV2_MAX_POOL_EN       0
+#define BB7_CONV2_AVG_POOL_EN       0
+#define BB7_CONV2_LIN_EN            0
+#define BB7_CONV2_BASE_ADDR_IN      MEM1_BASE_ADDR
+#define BB7_CONV2_BASE_ADDR_OUT     MEM2_BASE_ADDR
+#define BB7_CONV2_BASE_ADDR_ADD     NOMEM_BASE_ADDR
+constexpr unsigned BB7_CONV2_WEIGHT_BASE = BB7_CONV1_WEIGHT_BASE + BB7_CONV1_WEIGHT_SIZE;
+constexpr unsigned BB7_CONV2_WEIGHT_SIZE = BB7_CONV1_C * BB7_CONV2_C * BB7_CONV2_K * BB7_CONV2_K / WEIGHT_PACK;
 constexpr unsigned BB7_CONV2_BN_WEIGHT_BASE = BB7_CONV1_BN_WEIGHT_BASE + BB7_CONV1_BN_WEIGHT_SIZE;
 constexpr unsigned BB7_CONV2_BN_WEIGHT_SIZE = 3 * BB7_CONV2_C;
-// BB7_SKIP 
+constexpr unsigned BB7_CONV2_IN_SIZE = BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W;
+constexpr unsigned BB7_CONV2_OUT_SIZE = BB7_CONV2_C * BB7_CONV2_H * BB7_CONV2_W;
+
+// BB7_SKIP PROJ layer cnt 23
 #if SIM_MODE
-#define BB7_SKIP_C              32
-#else
-#define BB7_SKIP_C              512
-#endif
-#define BB7_SKIP_H              7
-#define BB7_SKIP_W              7
-#define BB7_SKIP_K              1
-#define BB7_SKIP_S              2
-#define BB7_SKIP_PAD            0
-#define BB7_SKIP_BB_EN          1
-#define BB7_SKIP_CONV_EN        1
-#define BB7_SKIP_BN_EN          1
-#define BB7_SKIP_SKIP_EN        1
-#define BB7_SKIP_RELU_EN        1
-#define BB7_SKIP_MAX_POOL       0
-#define BB7_SKIP_AVG_POOL       0
-#define BB7_SKIP_LIN            0
-#define BB7_SKIP_IN_MEM         0
-#define BB7_SKIP_OUT_MEM        1
-#define BB7_SKIP_SKIP_MEM       2
-constexpr unsigned BB7_SKIP_WEIGHT_BASE = BB7_CONV2_WEIGHT_BASE + BB7_CONV2_CONV_WEIGHT_SIZE;
-constexpr unsigned BB7_SKIP_CONV_WEIGHT_SIZE = BB7_CONV2_C * BB7_SKIP_C * BB7_SKIP_K * BB7_SKIP_K / WEIGHT_PACK;
+#define BB7_SKIP_C                  32
+#else   
+#define BB7_SKIP_C                  512
+#endif  
+#define BB7_SKIP_H                  7
+#define BB7_SKIP_W                  7
+#define BB7_SKIP_K                  1
+#define BB7_SKIP_S                  2
+#define BB7_SKIP_PAD                0
+#define BB7_SKIP_BB_EN              1
+#define BB7_SKIP_CONV_EN            1
+#define BB7_SKIP_BN_EN              1
+#define BB7_SKIP_SKIP_EN            1
+#define BB7_SKIP_RELU_EN            1
+#define BB7_SKIP_MAX_POOL_EN        0
+#define BB7_SKIP_AVG_POOL_EN        0
+#define BB7_SKIP_LIN_EN             0
+#define BB7_SKIP_BASE_ADDR_IN       MEM0_BASE_ADDR
+#define BB7_SKIP_BASE_ADDR_OUT      MEM1_BASE_ADDR
+#define BB7_SKIP_BASE_ADDR_ADD      MEM2_BASE_ADDR
+constexpr unsigned BB7_SKIP_WEIGHT_BASE = BB7_CONV2_WEIGHT_BASE + BB7_CONV2_WEIGHT_SIZE;
+constexpr unsigned BB7_SKIP_WEIGHT_SIZE = BB7_CONV2_C * BB7_SKIP_C * BB7_SKIP_K * BB7_SKIP_K / WEIGHT_PACK;
 constexpr unsigned BB7_SKIP_BN_WEIGHT_BASE = BB7_CONV2_BN_WEIGHT_BASE + BB7_CONV2_BN_WEIGHT_SIZE;
 constexpr unsigned BB7_SKIP_BN_WEIGHT_SIZE = 3 * BB7_CONV2_C;
+constexpr unsigned BB7_SKIP_IN_SIZE = BB7_CONV2_C * BB7_CONV2_H * BB7_CONV2_W;
+constexpr unsigned BB7_SKIP_OUT_SIZE = BB7_SKIP_C * BB7_SKIP_H * BB7_SKIP_W;
 
-// BB8_CONV1    
+// BB8_CONV1 layer cnt 24
 #define BB8_CONV1_C             512
 #define BB8_CONV1_H             7
 #define BB8_CONV1_W             7
@@ -631,6 +703,11 @@ constexpr unsigned BB7_SKIP_BN_WEIGHT_SIZE = 3 * BB7_CONV2_C;
 #define LIN_SKIP_MEM            3
 
 // size of mem blocks
+#define MEM0_BASE_ADDR          0
+#define MEM1_BASE_ADDR          MEM0_SIZE
+#define MEM2_BASE_ADDR          MEM0_SIZE + MEM1_SIZE
+#define NOMEM_BASE_ADDR         0
+
 #if SIM_MODE
 constexpr unsigned MEM0_SIZE = 100000;
 constexpr unsigned MEM1_SIZE = 100000;
@@ -644,12 +721,36 @@ constexpr unsigned BN_WEIGHT_MEM_SIZE = 100000;
 constexpr unsigned MEM0_SIZE = CONV1_C  * CONV1_H * CONV1_W / ACT_PACK;
 constexpr unsigned MEM1_SIZE = MAXPOOL_C  * MAXPOOL_H * MAXPOOL_W / ACT_PACK;
 constexpr unsigned MEM2_SIZE = BB1_CONV2_C  * BB1_CONV2_H * BB1_CONV2_W / ACT_PACK;
-constexpr unsigned WEIGHT_MEM_SIZE = 1000000;  // todo: temporary for now
+constexpr unsigned WEIGHT_MEM_SIZE = 20000000;  // todo: temporary for now
 // constexpr unsigned WEIGHT_MEM_SIZE = BB7_SKIP_WEIGHT_BASE;  // todo: temporary for now
-
-constexpr unsigned BN_WEIGHT_MEM_SIZE = 1000000;
+constexpr unsigned BN_WEIGHT_MEM_SIZE = 20000000;
 // constexpr unsigned BN_WEIGHT_MEM_SIZE = BB7_SKIP_BN_WEIGHT_BASE;
-
 #endif
+
+constexpr unsigned MAX_ACT_MEM_SIZE = std::max({MEM0_SIZE, MEM1_SIZE, MEM2_SIZE});
+constexpr unsigned ACT_MEM_SIZE = MEM0_SIZE + MEM1_SIZE + MEM2_SIZE;
+constexpr unsigned MAX_WEIGHT_MEM_SIZE = std::max({
+        CONV1_WEIGHT_SIZE, MAXPOOL_WEIGHT_SIZE, 
+        BB1_CONV1_WEIGHT_SIZE, BB1_CONV2_WEIGHT_SIZE, BB1_SKIP_WEIGHT_SIZE,
+        BB2_CONV1_WEIGHT_SIZE, BB2_CONV2_WEIGHT_SIZE, BB2_SKIP_WEIGHT_SIZE,
+//        BB3_CONV1_WEIGHT_SIZE, BB3_CONV2_WEIGHT_SIZE, BB3_SKIP_WEIGHT_SIZE,
+//        BB4_CONV1_WEIGHT_SIZE, BB4_CONV2_WEIGHT_SIZE, BB4_SKIP_WEIGHT_SIZE,
+//        BB5_CONV1_WEIGHT_SIZE, BB5_CONV2_WEIGHT_SIZE, BB5_SKIP_WEIGHT_SIZE,
+//        BB6_CONV1_WEIGHT_SIZE, BB6_CONV2_WEIGHT_SIZE, BB6_SKIP_WEIGHT_SIZE,
+        BB7_CONV1_WEIGHT_SIZE, BB7_CONV2_WEIGHT_SIZE, BB7_SKIP_WEIGHT_SIZE,
+//        BB8_CONV1_WEIGHT_SIZE, BB8_CONV2_WEIGHT_SIZE, BB8_SKIP_WEIGHT_SIZE
+        });
+constexpr unsigned MAX_BN_WEIGHT_MEM_SIZE = std::max({
+        CONV1_BN_WEIGHT_SIZE, MAXPOOL_BN_WEIGHT_SIZE, 
+        BB1_CONV1_BN_WEIGHT_SIZE, BB1_CONV2_BN_WEIGHT_SIZE, BB1_SKIP_BN_WEIGHT_SIZE,
+        BB2_CONV1_BN_WEIGHT_SIZE, BB2_CONV2_BN_WEIGHT_SIZE, BB2_SKIP_BN_WEIGHT_SIZE,
+//        BB3_CONV1_BN_WEIGHT_SIZE, BB3_CONV2_BN_WEIGHT_SIZE, BB3_SKIP_BN_WEIGHT_SIZE,
+//        BB4_CONV1_BN_WEIGHT_SIZE, BB4_CONV2_BN_WEIGHT_SIZE, BB4_SKIP_BN_WEIGHT_SIZE,
+//        BB5_CONV1_BN_WEIGHT_SIZE, BB5_CONV2_BN_WEIGHT_SIZE, BB5_SKIP_BN_WEIGHT_SIZE,
+//        BB6_CONV1_BN_WEIGHT_SIZE, BB6_CONV2_BN_WEIGHT_SIZE, BB6_SKIP_BN_WEIGHT_SIZE,
+        BB7_CONV1_BN_WEIGHT_SIZE, BB7_CONV2_BN_WEIGHT_SIZE, BB7_SKIP_BN_WEIGHT_SIZE,
+//        BB8_CONV1_BN_WEIGHT_SIZE, BB8_CONV2_BN_WEIGHT_SIZE, BB8_SKIP_BN_WEIGHT_SIZE
+    });
+// todo
 
 #endif

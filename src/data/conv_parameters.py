@@ -274,10 +274,15 @@ with torch.no_grad():
     print((out66-out666).max())
     print((out77-out777).max())
 
-
-    print(out3.flatten()[:10])
-    print(out5.flatten()[:10])
-    print(out7.flatten()[:10])
+    print("\nout3")
+    for idx in range(10):
+        print(np.round(out3.flatten()[idx].item(),5))
+    print("\nout5")
+    for idx in range(10):
+        print(np.round(out5.flatten()[idx].item(),5))
+    print("\nout7")
+    for idx in range(10):
+        print(np.round(out7.flatten()[idx].item(),5))
 
 ##
 np_in1 = np.fromfile("input.bin", dtype=np.int8)

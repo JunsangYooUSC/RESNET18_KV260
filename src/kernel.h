@@ -6,6 +6,8 @@
 #include <ap_int.h>
 #include <hls_vector.h>
 #include <hls_stream.h>
+#include <algorithm>
+
 // Include project headers
 #include "conv_config.h"
 

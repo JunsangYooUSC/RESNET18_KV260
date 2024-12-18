@@ -31,262 +31,6 @@
 #define FILTER_SIZE			(BB6_SKIP_C*BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W)
 #define BN_WEIGHT_SIZE		BB7_CONV1_BN_WEIGHT_SIZE
 
-// Function: golden convolution
-template<typename D_ACT, typename D_FILTER, typename D_MULT, typename D_MAC>
-void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act,
-	unsigned int nky,
-    unsigned int nkx,
-    unsigned int nof,
-    unsigned int nif,
-    unsigned int noy,
-    unsigned int nox,
-	unsigned int stride,
-	unsigned int pad
-) {
-	// create output MAC and initialize to 0
-	D_MAC out_act_mac[nof*noy*nox];
-	for (int idx = 0; idx < nof*noy*nox; idx++) {
-		out_act_mac[idx] = 0;
-	}
-	unsigned int nix = nox*stride;
-	unsigned int niy = noy*stride;
-	for (int cdx = 0; cdx < nof; cdx++) {
-		for (int ndx = 0; ndx < niy; ndx += stride) {
-			for (int mdx = 0; mdx < nix; mdx += stride) {
-				for (int kdx = 0; kdx < nif; kdx++) {
-					for (int hdx = 0; hdx < nky; hdx++) {
-						for (int wdx = 0; wdx < nkx; wdx++) {
-
-							D_ACT in_act_element;
-							// when accessing zero padded index
-							if ( (ndx + hdx < pad) || (ndx + hdx >= niy + pad) || (mdx + wdx < pad) || (mdx + wdx >= nix + pad) ) {
-								in_act_element = 0;
-							}
-							else {
-								// input address calc
-								unsigned int in_addr = kdx * niy * nix;
-								in_addr += (ndx + hdx - pad) * nix + (mdx + wdx - pad);
-								// load input
-								in_act_element = in_act[in_addr];
-								if (in_addr >= nif*niy*nix) {
-									std::cout << "input index out-of-bounds: " << in_addr << std::endl;
-								}
-							}
-
-							// filter address calc
-							unsigned int filter_addr = cdx * nif * nky * nkx;
-							filter_addr += kdx * nky * nkx;
-							filter_addr += hdx * nkx;
-							filter_addr += wdx;
-							// load filter
-							D_FILTER in_fil_element = in_fil[filter_addr];
-							if (filter_addr >= nof*nif*nky*nkx) {
-								std::cout << "filter index out-of-bounds: " << filter_addr << std::endl;
-							}
-
-							// mult
-							D_MULT mult_element = in_act_element * in_fil_element;
-
-							// output address calc
-							unsigned int out_addr = cdx * noy * nox;
-							out_addr += ndx / stride * nox + mdx / stride;
-							if (out_addr >= nof*noy*nox) {
-								std::cout << "output index out-of-bounds: " << out_addr << std::endl;
-							}
-							// load output mac
-							out_act_mac[out_addr] += mult_element;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	for (int idx = 0; idx < nof*noy*nox; idx++) {
-		out_act[idx] = out_act_mac[idx];
-	}
-}
-
-template<typename D_ACT, typename D_FILTER, typename D_MULT, typename D_MAC>
-void convolution_bn_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act, float *bn_weight_mem,
-	unsigned int nky,
-    unsigned int nkx,
-    unsigned int nof,
-    unsigned int nif,
-    unsigned int noy,
-    unsigned int nox,
-	unsigned int stride,
-	unsigned int pad
-) {
-	// create output MAC and initialize to 0
-	D_MAC out_act_mac[nof*noy*nox];
-	for (int idx = 0; idx < nof*noy*nox; idx++) {
-		out_act_mac[idx] = 0;
-	}
-	unsigned int nix = nox*stride;
-	unsigned int niy = noy*stride;
-	for (int kdx = 0; kdx < nif; kdx++) {
-		for (int ndx = 0; ndx < niy; ndx += stride) {
-			for (int mdx = 0; mdx < nix; mdx += stride) {
-				for (int cdx = 0; cdx < nof; cdx++) {
-					for (int hdx = 0; hdx < nky; hdx++) {
-						for (int wdx = 0; wdx < nkx; wdx++) {
-
-							D_ACT in_act_element;
-							// when accessing zero padded index
-							if ( (ndx + hdx < pad) || (ndx + hdx >= niy + pad) || (mdx + wdx < pad) || (mdx + wdx >= nix + pad) ) {
-								in_act_element = 0;
-							}
-							else {
-								// input address calc
-								unsigned int in_addr = kdx * niy * nix;
-								in_addr += (ndx + hdx - pad) * nix + (mdx + wdx - pad);
-								// load input
-								in_act_element = in_act[in_addr];
-								if (in_addr >= nif*niy*nix) {
-									std::cout << "input index out-of-bounds: " << in_addr << std::endl;
-								}
-							}
-
-							// filter address calc
-							unsigned int filter_addr = cdx * nif * nky * nkx;
-							filter_addr += kdx * nky * nkx;
-							filter_addr += hdx * nkx;
-							filter_addr += wdx;
-							// load filter
-							D_FILTER in_fil_element = in_fil[filter_addr];
-							if (filter_addr >= nof*nif*nky*nkx) {
-								std::cout << "filter index out-of-bounds: " << filter_addr << std::endl;
-							}
-
-							// mult
-							D_MULT mult_element = in_act_element * in_fil_element;
-
-							// output address calc
-							unsigned int out_addr = cdx * noy * nox;
-							out_addr += ndx / stride * nox + mdx / stride;
-							if (out_addr >= nof*noy*nox) {
-								std::cout << "output index out-of-bounds: " << out_addr << std::endl;
-							}
-							// load output mac
-							out_act_mac[out_addr] += mult_element;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	for (int f = 0; f < nof; f++) {
-		float mean = bn_weight_mem[f];
-		float mult_factor = bn_weight_mem[f+nof];
-		float beta = bn_weight_mem[f+2*nof];
-		for (int y = 0; y < noy; y++) {
-			for (int x = 0; x < nox; x++) {
-				int idx = f*noy*nox + y*nox + x;
-				float val = (float) out_act_mac[idx];
-				val = (val-mean)*mult_factor+beta;
-				out_act[idx] = val;
-			}
-		}
-	}
-}
-
-template<typename D_ACT, typename D_FILTER, typename D_MULT, typename D_MAC>
-void convolution_bn_skip_relu_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act, float *bn_weight_mem, D_ACT *add_act,
-	unsigned int nky,
-    unsigned int nkx,
-    unsigned int nof,
-    unsigned int nif,
-    unsigned int noy,
-    unsigned int nox,
-	unsigned int stride,
-	unsigned int pad
-) {
-	// create output MAC and initialize to 0
-	D_MAC out_act_mac[nof*noy*nox];
-	float out_vals[nof*noy*nox];
-	for (int idx = 0; idx < nof*noy*nox; idx++) {
-		out_act_mac[idx] = 0;
-	}
-	unsigned int nix = nox*stride;
-	unsigned int niy = noy*stride;
-	for (int kdx = 0; kdx < nif; kdx++) {
-		for (int ndx = 0; ndx < niy; ndx += stride) {
-			for (int mdx = 0; mdx < nix; mdx += stride) {
-				for (int cdx = 0; cdx < nof; cdx++) {
-					for (int hdx = 0; hdx < nky; hdx++) {
-						for (int wdx = 0; wdx < nkx; wdx++) {
-
-							D_ACT in_act_element;
-							// when accessing zero padded index
-							if ( (ndx + hdx < pad) || (ndx + hdx >= niy + pad) || (mdx + wdx < pad) || (mdx + wdx >= nix + pad) ) {
-								in_act_element = 0;
-							}
-							else {
-								// input address calc
-								unsigned int in_addr = kdx * niy * nix;
-								in_addr += (ndx + hdx - pad) * nix + (mdx + wdx - pad);
-								// load input
-								in_act_element = in_act[in_addr];
-								if (in_addr >= nif*niy*nix) {
-									std::cout << "input index out-of-bounds: " << in_addr << std::endl;
-								}
-							}
-
-							// filter address calc
-							unsigned int filter_addr = cdx * nif * nky * nkx;
-							filter_addr += kdx * nky * nkx;
-							filter_addr += hdx * nkx;
-							filter_addr += wdx;
-							// load filter
-							D_FILTER in_fil_element = in_fil[filter_addr];
-							if (filter_addr >= nof*nif*nky*nkx) {
-								std::cout << "filter index out-of-bounds: " << filter_addr << std::endl;
-							}
-
-							// mult
-							D_MULT mult_element = in_act_element * in_fil_element;
-
-							// output address calc
-							unsigned int out_addr = cdx * noy * nox;
-							out_addr += ndx / stride * nox + mdx / stride;
-							if (out_addr >= nof*noy*nox) {
-								std::cout << "output index out-of-bounds: " << out_addr << std::endl;
-							}
-							// load output mac
-							out_act_mac[out_addr] += mult_element;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	for (int f = 0; f < nof; f++) {
-		float mean = bn_weight_mem[f];
-		float mult_factor = bn_weight_mem[f+nof];
-		float beta = bn_weight_mem[f+2*nof];
-		for (int y = 0; y < noy; y++) {
-			for (int x = 0; x < nox; x++) {
-				int idx = f*noy*nox + y*nox + x;
-				float val = (float) out_act_mac[idx];
-				val = (val-mean)*mult_factor+beta;
-				out_vals[idx] = val;
-			}
-		}
-	}
-	for (int f = 0; f < nof; f++) {
-		for (int y = 0; y < noy; y++) {
-			for (int x = 0; x < nox; x++) {
-				int idx = f*noy*nox + y*nox + x;
-				out_vals[idx] += add_act[idx];
-				out_act[idx] = (out_vals[idx] > 0) ? out_vals[idx] : (D_ACT) 0;
-			}
-		}
-	}
-}
-
 int main(){
 	// Print configuration information
 #if CHECK_CONFIG
@@ -294,27 +38,221 @@ int main(){
 	print_data_types();
 	// Assertion to check the configuration
 #endif
-	// DTYPE_FIL *weight_mem;		// todo: weight packing
-	// float *bn_weight_mem;
-
-	DTYPE_ACT act_mem[MEM0_SIZE+MEM1_SIZE+MEM2_SIZE];
+	// kernel IO
+	DTYPE_ACT act_in_host[MAX_ACT_MEM_SIZE];
+	DTYPE_ACT act_out_host[MAX_ACT_MEM_SIZE];
+	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_in_host[idx] = 0;
+	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_out_host[idx] = 0;
+	unsigned *start_layer;
+	unsigned *end_layer;
+	*start_layer = 21;
+	*end_layer = 23;
+	// kernel offchip memory
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
 	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
-	for (int idx = 0; idx < MEM0_SIZE+MEM1_SIZE+MEM2_SIZE; idx++) act_mem[idx] = 0;
 	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem[idx] = 0;
 	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem[idx] = 0;
+
+	// host memory
+	float act_host_float[ACT_MEM_SIZE];
+	float weight_host_float[MAX_WEIGHT_MEM_SIZE];
+	float bn_weight_host_float[MAX_BN_WEIGHT_MEM_SIZE];
+	for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_host_float[idx] = 0;
+	for (int idx = 0; idx < MAX_WEIGHT_MEM_SIZE; idx++) weight_host_float[idx] = 0;
+	for (int idx = 0; idx < MAX_BN_WEIGHT_MEM_SIZE; idx++) bn_weight_host_float[idx] = 0;
+
+	// layer configuration for validation
+	std::string fname;
+
+	// mimic controller 
+	unsigned *layer_cnt;
+	unsigned *nif;
+	unsigned *nof;
+	unsigned *noy;
+	unsigned *nox;
+	unsigned *nkx;
+	unsigned *nky;
+	unsigned *stride;
+	unsigned *pad;
+	bool *bb_en;
+	bool *conv_en;
+	bool *bn_en;
+	bool *skip_en;
+	bool *relu_en;
+	bool *max_pool_en;
+	bool *avg_pool_en;
+	bool *lin_en;
+	unsigned *base_addr_in;
+	unsigned *base_addr_out;
+	unsigned *base_addr_add;
+	unsigned *weight_base;
+	unsigned *weight_size;
+	unsigned *bn_weight_base;
+	unsigned *bn_weight_size;
+	unsigned *in_size;
+	unsigned *out_size;
+
+    for (int *layer_cnt = *start_layer; *layer_cnt <= *end_layer; *layer_cnt++) {
+        controller (
+            *layer_cnt,
+            *nif,
+            *nof,
+            *noy,
+            *nox,
+            *nkx,
+            *nky,
+            *stride,
+            *pad,
+            *bb_en,
+            *conv_en,
+            *bn_en,
+            *skip_en,
+            *relu_en,
+            *max_pool_en,
+            *avg_pool_en,
+            *lin_en,
+            *base_addr_in,
+            *base_addr_out,
+            *base_addr_add,
+            *weight_base,
+            *weight_size,
+            *bn_weight_base,
+            *bn_weight_size,
+            *in_size,
+            *out_size
+        );
+		if (*layer_cnt == *start_layer){
+			// load input
+			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/input.bin";
+			read_bin_fixed<DTYPE_ACT>(fname, act_mem, *base_addr_in, *in_size);
+			// copy for host validation
+			for (int idx = 0; idx < *in_size; idx++) {
+				act_host_float[*base_addr_in+idx] = act_mem[*base_addr_in+idx];
+			}
+		}
+		// BB7_CONV1 layer cnt 21
+		if (*layer_cnt == 21) {
+			// load weight
+			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight1.bin";
+			read_bin_fixed<DTYPE_FIL>(fname, weight_mem, *weight_base, *weight_size);
+			// load bn_weight
+			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight1.bin";
+			read_bin_float(fname, bn_weight_mem, *bn_weight_base, *bn_weight_size);
+			// copy weight for host validation
+			for (int idx = 0; idx < *weight_size; idx++) {
+				weight_host_float[idx] = weight_mem[*weight_base+idx];
+			}
+			// copy bn_weight for host validation
+			for (int idx = 0; idx < *bn_weight_size; idx++) {
+				bn_weight_host_float[idx] = bn_weight_mem[*bn_weight_base+idx];
+			}
+			// host calculation
+			// conv, bn
+			convolution_bn_golden<float, float, float, float>(
+					act_host_float+*base_addr_in, 
+					weight_host_float, 
+					act_host_float+*base_addr_out, 
+					bn_weight_host_float,
+					*nky, *nkx, *nof, *nif, *noy, *nox, *stride, *pad);
+			// relu
+			for (int idx = 0; idx < *out_size; idx++) {
+				act_host_float[*base_addr_out+idx] = (act_host_float[*base_addr_out+idx] > 0) ? act_host_float[*base_addr_out+idx] : 0;
+			}
+		}
+		// BB7_CONV2 layer cnt 22
+		if (*layer_cnt == 22) {
+			// load weight
+			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight2.bin";
+			read_bin_fixed<DTYPE_FIL>(fname, weight_mem, *weight_base, *weight_size);
+			// load bn_weight
+			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight2.bin";
+			read_bin_float(fname, bn_weight_mem, *bn_weight_base, *bn_weight_size);
+			// copy weight for host validation
+			for (int idx = 0; idx < *weight_size; idx++) {
+				weight_host_float[idx] = weight_mem[*weight_base+idx];
+			}
+			// copy bn_weight for host validation
+			for (int idx = 0; idx < *bn_weight_size; idx++) {
+				bn_weight_host_float[idx] = bn_weight_mem[*bn_weight_base+idx];
+			}
+			// host calculation
+			// conv, bn
+			convolution_bn_golden<float, float, float, float>(
+					act_host_float+*base_addr_in, 
+					weight_host_float, 
+					act_host_float+*base_addr_out, 
+					bn_weight_host_float,
+					*nky, *nkx, *nof, *nif, *noy, *nox, *stride, *pad);
+		}
+		// BB7_SKIP layer cnt 23
+		if (*layer_cnt == 23) {
+			// load weight
+			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight3.bin";
+			read_bin_fixed<DTYPE_FIL>(fname, weight_mem, *weight_base, *weight_size);
+			// load bn_weight
+			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight3.bin";
+			read_bin_float(fname, bn_weight_mem, *bn_weight_base, *bn_weight_size);
+			// copy weight for host validation
+			for (int idx = 0; idx < *weight_size; idx++) {
+				weight_host_float[idx] = weight_mem[*weight_base+idx];
+			}
+			// copy bn_weight for host validation
+			for (int idx = 0; idx < *bn_weight_size; idx++) {
+				bn_weight_host_float[idx] = bn_weight_mem[*bn_weight_base+idx];
+			}
+			// host calculation
+			// conv, bn
+			convolution_bn_skip_relu_golden<float, float, float, float>(
+					act_host_float+*base_addr_in, 
+					weight_host_float, 
+					act_host_float+*base_addr_out, 
+					bn_weight_host_float,
+					act_host_float+*base_addr_add,
+					*nky, *nkx, *nof, *nif, *noy, *nox, *stride, *pad);
+		}
+		
+		// for debugging
+		std::cout << "layer_cnt: " << *layer_cnt << std::endl;
+		std::cout << "nif" << *nif << std::endl;
+		std::cout << "nof" << *nof << std::endl;
+		std::cout << "noy" << *noy << std::endl;
+		std::cout << "nox" << *nox << std::endl;
+		std::cout << "nkx" << *nkx << std::endl;
+		std::cout << "nky" << *nky << std::endl;
+		std::cout << "stride" << *stride << std::endl;
+		std::cout << "pad" << *pad << std::endl;
+		std::cout << "bb_en" << *bb_en << std::endl;
+		std::cout << "conv_en" << *conv_en << std::endl;
+		std::cout << "bn_en" << *bn_en << std::endl;
+		std::cout << "skip_en" << *skip_en << std::endl;
+		std::cout << "relu_en" << *relu_en << std::endl;
+		std::cout << "max_pool_en" << *max_pool_en << std::endl;
+		std::cout << "avg_pool_en" << *avg_pool_en << std::endl;
+		std::cout << "lin_en" << *lin_en << std::endl;
+		std::cout << "base_addr_in" << *base_addr_in << std::endl;
+		std::cout << "base_addr_out" << *base_addr_out << std::endl;
+		std::cout << "base_addr_add" << *base_addr_add << std::endl;
+		std::cout << "weight_base" << *weight_base << std::endl;
+		std::cout << "weight_size" << *weight_size << std::endl;
+		std::cout << "bn_weight_base" << *bn_weight_base << std::endl;
+		std::cout << "bn_weight_size" << *bn_weight_size << std::endl;
+		std::cout << "in_size" << *in_size << std::endl;
+		std::cout << "out_size" << *out_size << std::endl;
+		
+	}
+
+	// kernel calculation
+	conv_kernel(act_mem, weight_mem, bn_weight_mem, act_mem+MEM0_SIZE);
+
+	// compare host and kernel
+	compare_result<DTYPE_ACT, float, MAX_ACT_MEM_SIZE>(act_out_host, act_host_float+*base_addr_out);
 	
+/*
 	// fill data
-	std::string fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/input.bin";
-	read_bin_fixed<DTYPE_ACT>(fname, act_mem, 0, INPUT_SIZE);
-	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight1.bin";
-	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV1_WEIGHT_BASE, BB7_CONV1_CONV_WEIGHT_SIZE);
 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight2.bin";
 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_CONV2_WEIGHT_BASE, BB7_CONV2_CONV_WEIGHT_SIZE);
 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight3.bin";
 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, BB7_SKIP_WEIGHT_BASE, BB7_SKIP_CONV_WEIGHT_SIZE);
-	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight1.bin";
-	read_bin_float(fname, bn_weight_mem, BB7_CONV1_BN_WEIGHT_BASE, BB7_CONV1_BN_WEIGHT_SIZE);
 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight2.bin";
 	read_bin_float(fname, bn_weight_mem, BB7_CONV2_BN_WEIGHT_BASE, BB7_CONV2_BN_WEIGHT_SIZE);
 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight3.bin";
@@ -380,4 +318,5 @@ int main(){
 	for (int idx = 0; idx < 10; idx++) {
 		std::cout << "output[" << idx << "]: " << act_out_host[idx] << std::endl;
 	}
+	*/
 }
