@@ -230,7 +230,6 @@ void store_output_fifo(
                         for (int x = 0; x < POX; x++) {
                             unsigned int addr = (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
                             act_mem[base_addr+addr] = out_fifo_arr.read();
-                            std::cout << "addr: " << addr << std::endl;
                         }
                     }
                 }
