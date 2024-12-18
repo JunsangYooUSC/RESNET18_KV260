@@ -358,7 +358,7 @@ int main(){
 			act_host_float+MEM0_SIZE, 
 			bn_weight_host_float+BB7_CONV1_BN_WEIGHT_BASE,
 			BB7_CONV1_K, BB7_CONV1_K, BB7_CONV1_C, BB6_SKIP_C, BB7_CONV1_H, BB7_CONV1_W, BB7_CONV1_S, BB7_CONV1_PAD);
-	for (idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W; idx++) {
+	for (int idx = 0; idx < BB7_CONV1_C*BB7_CONV1_H*BB7_CONV1_W; idx++) {
 		act_host_float[MEM0_SIZE+idx] = (act_host_float[MEM0_SIZE+idx] > 0) ? act_host_float[MEM0_SIZE+idx] : (DTYPE_ACT) 0;
 	}
 	convolution_bn_golden<float, float, float, float>(
