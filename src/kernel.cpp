@@ -208,7 +208,7 @@ void PE(
         }
     }
     std::cout << "PE cnt: " << cnt << std::endl;
-    std::cout    << "PE output cnt: " << cnt1 << std::endl;
+    std::cout << "PE output cnt: " << cnt1 << std::endl;
 }
 
 void store_output_fifo(
@@ -324,14 +324,14 @@ void conv_kernel(
         }
     }
 
-    // load_input(act_mem, load_input_fifo, 0,
-    //         nky, nkx, nof, nif, noy, nox, stride, pad);
-    // load_weight(weight_mem, load_weight_fifo, 0,
-    //         nky, nkx, nof, nif, noy, nox);
-    // PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
-    //         nky, nkx, nof, nif, noy, nox);
-    // store_output_fifo(act_mem, pe_out_fifo, MEM0_SIZE, 
-    //         nky, nkx, nof, nif, noy, nox);
+    load_input(act_mem, load_input_fifo, 0,
+            nky, nkx, nof, nif, noy, nox, stride, pad);
+    load_weight(weight_mem, load_weight_fifo, 0,
+            nky, nkx, nof, nif, noy, nox);
+    PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
+            nky, nkx, nof, nif, noy, nox);
+    store_output_fifo(act_mem, pe_out_fifo, MEM0_SIZE, 
+            nky, nkx, nof, nif, noy, nox);
     (*result2) = 1;
 }
 
