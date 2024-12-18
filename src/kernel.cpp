@@ -132,7 +132,7 @@ void load_weight(
                                 for (int i = 0; i < nky; i++) {
                                     for (int j = 0; j < nkx; j++) {
                                         unsigned int addr = (f_out+f)*nif*nky*nkx + f_in*nky*nkx + i*nky + j;
-                                        load_weight_fifo.write(weight_mem[addr]);
+                                        load_weight_fifo.write(weight_mem[base_addr+addr]);
                                     }
                                 }
                             }
@@ -246,9 +246,9 @@ void batch_norm(
             for (int x0 = 0; x0 < nox; x0+=POX) {
                 // parallel
                 for (int f = 0; f < POF; f++) {
-                    mean = bn_weight_mem[(f_out+f)];
-                    mult_factor = bn_weight_mem[nof+(f_out+f)];
-                    beta = bn_weight_mem[nof*2+(f_out+f)];
+                    mean = bn_weight_mem[bn_weight_base_addr+(f_out+f)];
+                    mult_factor = bn_weight_mem[bn_weight_base_addr+nof+(f_out+f)];
+                    beta = bn_weight_mem[bn_weight_base_addr+nof*2+(f_out+f)];
                     for (int y = 0; y < POY; y++) {
                         for (int x = 0; x < POX; x++) {
                             float val;
