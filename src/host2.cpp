@@ -240,7 +240,7 @@ int main(){
 	}
 
 	// kernel calculation
-	conv_kernel(act_mem, weight_mem, bn_weight_mem, act_mem+MEM0_SIZE);
+	conv_kernel(act_in_host, act_out_host, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 
 	// compare host and kernel
 	compare_result<DTYPE_ACT, float, MAX_ACT_MEM_SIZE>(act_out_host, act_host_float+base_addr_out);
