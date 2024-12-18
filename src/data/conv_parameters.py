@@ -5,6 +5,7 @@ import torchvision.models as models
 from torch import nn
 import torchvision.transforms as transforms
 from torch.utils.data import random_split, DataLoader
+import numpy as np
 # use GPU if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
@@ -103,55 +104,6 @@ print(f"diff min: {diff.min()}")
 print(f"diff mean: {diff.mean()}")
 print(f"diff std: {diff.std()}")
 
-##
-import torch
-import numpy as np
-
-def save_conv_parameters(layer, weight_bits, weight_int, prefix):
-    mult = 2**(weight_bits-weight_int)
-    if hasattr(layer, 'weight') and layer.weight is not None:
-        data = np.int8(layer.weight.data*mult)
-        data.tofile(f"{prefix}_weights.bin")
-
-
-def save_bn_parameters(layer, prefix):
-    if hasattr(layer, 'weight') and layer.weight is not None:
-        data = np.float32(layer.weight.data)
-        data.tofile(f"{prefix}_gamma.bin")
-    if hasattr(layer, 'bias') and layer.bias is not None:
-        data = np.float32(layer.bias.data)
-        data.tofile(f"{prefix}_beta.bin")
-    if hasattr(layer, 'running_mean'):
-        data = np.float32(layer.running_mean)
-        data.tofile(f"{prefix}_running_mean.bin")
-    if hasattr(layer, 'running_var'):
-        data = 1/np.sqrt(np.float32(layer.running_var)+layer.eps)
-        data.tofile(f"{prefix}_running_var.bin")
-
-
-# Save model.layer4[0] parameters
-layer4_0 = model.layer4[0]
-
-# conv1 weights
-save_conv_parameters(layer4_0.conv1, weight_bits, weight_int, "data/layer4_0_conv1")
-
-# bn1 parameters
-save_bn_parameters(layer4_0.bn1, "data/layer4_0_bn1")
-
-# conv2 weights
-save_conv_parameters(layer4_0.conv2, weight_bits, weight_int, "data/layer4_0_conv2")
-
-# bn2 parameters
-save_bn_parameters(layer4_0.bn2, "data/layer4_0_bn2")
-
-# conv3 weights
-save_conv_parameters(layer4_0.downsample[0], weight_bits, weight_int, "data/layer4_0_conv3")
-
-# bn3 parameters
-save_bn_parameters(layer4_0.downsample[1], "data/layer4_0_bn3")
-
-##
-weight1 = np.fromfile('data/layer4_0_conv1_weights.bin', dtype=np.int8)
 
 
 ## small size
@@ -193,7 +145,7 @@ bn_hw_weight1[1] = bn_weight1[2]/np.sqrt(bn_weight1[1]+1e-5)
 bn_hw_weight2[1] = bn_weight2[2]/np.sqrt(bn_weight2[1]+1e-5)
 bn_hw_weight3[1] = bn_weight3[2]/np.sqrt(bn_weight3[1]+1e-5)
 
-sim_mode = 0
+sim_mode = 1
 if (sim_mode):
     input_bits = 16
     input_int = 8
@@ -204,7 +156,7 @@ else:
     input_bits = 8
     input_int = 3
     weight_bits = 8
-    weight_int = 1
+    weight_int = 2
     dtype = np.int8
 
 input = quantize_np(input, input_bits, input_int)
