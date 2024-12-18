@@ -223,6 +223,7 @@ void store_output_fifo(
     unsigned int nox
 ) {
     int cnt = 0;
+    int cnt1 = 0;
     for (int f_out = 0; f_out < nof; f_out += POF) {
         for (int y0 = 0; y0 < noy; y0 += POY) {
             for (int x0 = 0; x0 < nox; x0 += POX) {
@@ -232,6 +233,7 @@ void store_output_fifo(
                             for (int x = 0; x < POX; x++) {
                                 for (int i = 0; i < nky; i++) {
                                     for (int j = 0; j < nkx; j++) {
+                                        cnt++;
                                     }
                                 }
                             }
@@ -243,7 +245,7 @@ void store_output_fifo(
                         for (int x = 0; x < POX; x++) {
                             unsigned int addr = (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
                             act_mem[base_addr+addr] = out_fifo_arr.read();
-                            cnt++;
+                            cnt1++;
                         }
                     }
                 }
@@ -251,6 +253,7 @@ void store_output_fifo(
         }
     }
     std::cout << "store cnt: " << cnt << std::endl;
+    std::cout << "store cnt1: " << cnt1 << std::endl;
 }
 
 void conv_kernel(
