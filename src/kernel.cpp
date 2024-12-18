@@ -1008,7 +1008,7 @@ void conv_kernel(
     unsigned in_size = 0;
     unsigned out_size = 0;
 
-    for (layer_cnt = start_layer; layer_cnt <= end_layer; layer_cnt++) {
+    for (layer_cnt = *start_layer; layer_cnt <= *end_layer; layer_cnt++) {
         controller (
             &layer_cnt,
             &nif,
