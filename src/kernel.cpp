@@ -186,7 +186,6 @@ void PE(
                                         DTYPE_ACT act_in = load_input_fifo.read();
                                         DTYPE_FIL fil_in = load_weight_fifo.read();
                                         DTYPE_MUL mul_val = act_in * fil_in;
-                                        std::cout << "mul_val: " << mul_val << std::endl;
                                         mac_vals[f][y][x] += mul_val;
                                         cnt++;
                                     }
@@ -200,6 +199,7 @@ void PE(
                     for (int y = 0; y < POY; y++) {
                         for (int x = 0; x < POX; x++) {
                             unsigned int addr = (f_out+f)*noy*nox + y*nox + x;
+                            std::cout << "mac_vals[f][y][x]: " << mac_vals[f][y][x] << std::endl;                            
                             pe_out_fifo.write(mac_vals[f][y][x]);
                             cnt1++;
                         }
