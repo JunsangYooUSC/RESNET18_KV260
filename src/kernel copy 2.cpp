@@ -276,13 +276,13 @@ void store_output_fifo(
 // }
 
 void conv_kernel(
-    DTYPE_ACT *act_mem_host,
+    DTYPE_ACT *act_mem,
     DTYPE_FIL *weight_mem,
     float *bn_weight_mem,
     int *result1,
     int *result2
 ) {
-    DTYPE_ACT act_mem[MEM0_SIZE+MEM1_SIZE+MEM2_SIZE];
+
     unsigned nif;
     unsigned nof;
     unsigned noy;
@@ -351,6 +351,7 @@ void conv_kernel(
     #pragma HLS BIND_STORAGE variable=act_mem type=ram_2p impl=uram
     #pragma HLS ARRAY_PARTITION variable=act_mem block factor=8
 
+
     // fifo
     hls::stream<DTYPE_ACT> load_input_fifo;
     #pragma HLS STREAM variable=load_input_fifo depth=FIFO_ARR_DEPTH
@@ -359,11 +360,6 @@ void conv_kernel(
     hls::stream<float> pe_out_fifo;
     #pragma HLS STREAM variable=pe_out_fifo depth=FIFO_ARR_DEPTH
 
-    // load input
-    for (int idx = 0; idx < BB6_SKIP_C*BB7_CONV1_H*BB7_CONV1_W*BB7_CONV1_S*BB7_CONV1_S; idx++){
-        act_mem[idx] = act_mem_host[idx];
-    }
-    
     // load input check
     // load_input(act_mem, load_input_fifo, 0,
     //         nky, nkx, nof, nif, noy, nox, stride, pad);
