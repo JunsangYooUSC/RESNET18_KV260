@@ -42,7 +42,7 @@
 #define MAX_PAD             3
 
 #define WEIGHT_PACK         1       // change_to: 8
-#define ACT_PACK            1       // change to: 7?
+#define ACT_PACK            7       // change to: 7?
 
 // Bit widths
 #if SIM_MODE
