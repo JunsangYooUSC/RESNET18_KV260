@@ -199,7 +199,7 @@ void PE(
                     for (int y = 0; y < POY; y++) {
                         for (int x = 0; x < POX; x++) {
                             unsigned int addr = (f_out+f)*noy*nox + y*nox + x;
-                            load_weight_fifo.write(mac_vals[f][y][x]);
+                            pe_out_fifo.write(mac_vals[f][y][x]);
                             cnt1++;
                         }
                     }
@@ -307,9 +307,9 @@ void conv_kernel(
 
     // interface
     #pragma HLS INTERFACE s_axilite port=return bundle=control
-    #pragma HLS INTERFACE mode=m_axi port=act_mem offset=slave bundle=gmem0 depth = 500000
-    #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0 depth = 500000
-    #pragma HLS INTERFACE mode=m_axi port=bn_weight_mem offset=slave bundle=gmem0 depth = 500000
+    #pragma HLS INTERFACE mode=m_axi port=act_mem offset=slave bundle=gmem0 depth = 10000000
+    #pragma HLS INTERFACE mode=m_axi port=weight_mem offset=slave bundle=gmem0 depth = 10000000
+    #pragma HLS INTERFACE mode=m_axi port=bn_weight_mem offset=slave bundle=gmem0 depth = 10000000
     #pragma HLS INTERFACE mode=m_axi port=result1 offset=slave bundle=gmem0 depth = 1
     #pragma HLS INTERFACE mode=m_axi port=result2 offset=slave bundle=gmem0 depth = 1
     #pragma HLS INTERFACE mode=s_axilite port=act_mem bundle=control
