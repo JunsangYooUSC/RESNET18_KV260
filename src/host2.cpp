@@ -50,10 +50,10 @@ void convolution_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out_act,
 	}
 	unsigned int nix = nox*stride;
 	unsigned int niy = noy*stride;
-	for (int kdx = 0; kdx < nif; kdx++) {
+	for (int cdx = 0; cdx < nof; cdx++) {
 		for (int ndx = 0; ndx < niy; ndx += stride) {
 			for (int mdx = 0; mdx < nix; mdx += stride) {
-				for (int cdx = 0; cdx < nof; cdx++) {
+				for (int kdx = 0; kdx < nif; kdx++) {
 					for (int hdx = 0; hdx < nky; hdx++) {
 						for (int wdx = 0; wdx < nkx; wdx++) {
 
