@@ -194,9 +194,9 @@ int main(){
 			// conv, bn
 			convolution_bn_golden<float, float, float, float>(
 					act_in_host+base_addr_in, 
-					weight_mem, 
+					weight_mem+weight_base, 
 					act_out_host+base_addr_out, 
-					bn_weight_mem,
+					bn_weight_mem+bn_weight_base,
 					nky, nkx, nof, nif, noy, nox, stride, pad);
 			// relu
 			for (int idx = 0; idx < out_size; idx++) {
