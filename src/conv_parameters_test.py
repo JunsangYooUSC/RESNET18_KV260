@@ -330,7 +330,7 @@ a = quantized_model.conv1(x)
 b = quantized_model.bn1(a)
 c = quantized_model.relu(b)
 d = quantized_model.maxpool(c)
-e = quantized_model.layer1(d)
+e = quantized_model.layer1(d)   # idx 4
 f = quantized_model.layer2(e)
 g = quantized_model.layer3(f)
 h = quantized_model.layer4(g)
@@ -340,7 +340,7 @@ for idx in range(20):
         print(idx*5+jdx, np.round(h.flatten()[idx*5+jdx].item(),5))
 
 ##
-y = torch.rand(h.shape)-0.5
+y = (torch.rand(h.shape)-0.5)*2
 y = fixed_point_quantize(y, 8, 3)
 conv_weights.tofile("conv_all_params.bin")
 bn_params.tofile("bn_all_params.bin")
