@@ -299,6 +299,14 @@ print(f"input: {input.shape}")
 print(f"input_get: {input_get.shape}")
 
 
+quantized_model.eval()
+x = fixed_point_quantize(x, 8, 3)
+a = quantized_model.conv1(x)
+b = quantized_model.bn1(a)
+c = quantized_model.relu(b)
+d = quantized_model.maxpool(c)
+cc = quantized_model.layer1[0].conv1(d)
+
 
 ##
 import torch
@@ -324,7 +332,7 @@ total_layers = count_layers_excluding_bn_relu(quantized_model)
 print(f"Total number of layers in the model (excluding BatchNorm and ReLU): {total_layers}")
 
 ##
-quantized_model.eval()
+
 x = fixed_point_quantize(x, 8, 3)
 a = quantized_model.conv1(x)
 b = quantized_model.bn1(a)
@@ -342,20 +350,18 @@ h = quantized_model.layer4[0](g)
 for idx in range(20):
     for jdx in range(5):
         print(idx*5+jdx, np.round(h.flatten()[idx*5+jdx].item(),5))
+
 ##
-with torch.no_grad():
-    input = np.int8(d*(2**(8-input_int_bits))).flatten()
-    input.tofile("input.bin")
-    output = np.int8(e*(2**(8-input_int_bits))).flatten()
-    np.savetxt("output.txt", c.flatten(), fmt="%.5f", delimiter=",")
-##
-y = (torch.rand(h.shape)-0.5)*2
+y = (torch.rand(g.shape)-0.5)*2
 y = fixed_point_quantize(y, 8, 3)
 conv_weights.tofile("conv_all_params.bin")
 bn_params.tofile("bn_all_params.bin")
 input = np.int8(y*(2**(8-input_int_bits))).flatten()
 input.tofile("input.bin")
 
-quantized_model.eval()
-z = quantized_model.avgpool(y)
-zz = quantized_model.fc(z.flatten())
+z = quantized_model.layer4[0](y)
+
+##
+zz = np.fromfile("kernel_out.bin", np.int8)/2**5
+z = z = z.cpu().detach()
+rmse = np.sqrt((z.flatten()-zz)**2).mean()
