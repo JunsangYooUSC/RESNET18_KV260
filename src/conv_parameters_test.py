@@ -149,9 +149,7 @@ class QuantizedConv2d(nn.Conv2d):
         quantized_weights = fixed_point_quantize(original_weights, self.total_bits, self.weight_int_bits)
         output = F.conv2d(quantized_input, quantized_weights, self.bias, self.stride,
                           self.padding, self.dilation, self.groups)
-        # quantize output
-        quantized_output = fixed_point_quantize(output, self.total_bits)
-        return quantized_output
+        return output
 
 ## quantize conv
 def quantize_conv2d(model, total_bits, weight_int_bits, input_int_bits):
@@ -325,8 +323,9 @@ def count_layers_excluding_bn_relu(model):
 total_layers = count_layers_excluding_bn_relu(quantized_model)
 print(f"Total number of layers in the model (excluding BatchNorm and ReLU): {total_layers}")
 
-
-
+##
+quantized_model(x)
+model(x)
 
 
 
