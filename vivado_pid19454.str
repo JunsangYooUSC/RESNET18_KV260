@@ -1166,3 +1166,4 @@ selectMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // aj
 // WARNING: HEventQueue.dispatchEvent() is taking  1370 ms.
 // WARNING: HEventQueue.dispatchEvent() is taking  1245 ms.
 // HMemoryUtils.trashcanNow. Engine heap size: 2,654 MB. GUI used memory: 182 MB. Current time: 12/19/24, 9:28:25 AM PST
+// HMemoryUtils.trashcanNow. Engine heap size: 2,654 MB. GUI used memory: 180 MB. Current time: 12/19/24, 9:58:26 AM PST
