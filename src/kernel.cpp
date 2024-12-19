@@ -1303,16 +1303,16 @@ void conv_kernel(
             &out_size
         );
         // initial input
-        if (layer_cnt == *start_layer) {
-            // load input
-            for (int idx = 0; idx < in_size/ACT_PACK; idx++){
-                DTYPE_MEM_ACT pack;
-                for (int jdx = 0; jdx < ACT_PACK; jdx++) {
-                    pack.range(W_ACT*(jdx+1)-1, W_ACT*jdx) = act_in_host[idx*ACT_PACK+jdx];
-                }
-                act_mem[base_addr_in+idx] = pack;
-            }
-        }
+        //if (layer_cnt == *start_layer) {
+        //    // load input
+        //    for (int idx = 0; idx < in_size/ACT_PACK; idx++){
+        //        DTYPE_MEM_ACT pack;
+        //        for (int jdx = 0; jdx < ACT_PACK; jdx++) {
+        //            pack.range(W_ACT*(jdx+1)-1, W_ACT*jdx) = act_in_host[idx*ACT_PACK+jdx];
+        //        }
+        //        act_mem[base_addr_in+idx] = pack;
+        //    }
+        //}
     }
 //
 //        // conv
