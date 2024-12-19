@@ -43,8 +43,8 @@ int main(){
 	DTYPE_ACT act_out_host[MAX_ACT_MEM_SIZE];
 	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_in_host[idx] = 0;
 	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_out_host[idx] = 0;
-	unsigned start_layer = 21;
-	unsigned end_layer = 23;
+	unsigned start_layer = 0;
+	unsigned end_layer = 0;
 	// kernel offchip memory
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
 	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
