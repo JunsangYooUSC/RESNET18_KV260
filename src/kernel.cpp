@@ -1314,31 +1314,31 @@ void conv_kernel(
             }
         }
 
-        // conv
-        load_input(act_mem, load_input_fifo, base_addr_in,
-                nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
-        load_weight(weight_mem, load_weight_fifo, weight_base,
-                nky, nkx, nof, nif, noy, nox, bb_en, conv_en);
-        PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
-                nky, nkx, nof, nif, noy, nox, bb_en, conv_en);
-        batch_norm(bn_weight_mem, pe_out_fifo, bn_out_fifo, bn_weight_base,
-                nof, noy, nox, bb_en, bn_en);
-        skip_conn(act_mem, bn_out_fifo, skip_out_fifo, base_addr_add,
-                nof, noy, nox, bb_en, skip_en, relu_en);
-        store_output(act_mem, skip_out_fifo, base_addr_out, 
-                nky, nkx, nof, nif, noy, nox, bb_en);
-                
-        // max pool
-        max_pool(act_mem, base_addr_in, base_addr_out, 
-                nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
-        
-        // avg pool
-        avg_pool(act_mem, base_addr_in, base_addr_out, 
-                nky, nkx, nof, nif, noy, nox, stride, pad, avg_pool_en);
-
-        // fc
-        fc(act_mem, bn_weight_mem, base_addr_in, base_addr_out, bn_weight_base,
-                nof, nif, fc_en);
+//        // conv
+//        load_input(act_mem, load_input_fifo, base_addr_in,
+//                nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
+//        load_weight(weight_mem, load_weight_fifo, weight_base,
+//                nky, nkx, nof, nif, noy, nox, bb_en, conv_en);
+//        PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
+//                nky, nkx, nof, nif, noy, nox, bb_en, conv_en);
+//        batch_norm(bn_weight_mem, pe_out_fifo, bn_out_fifo, bn_weight_base,
+//                nof, noy, nox, bb_en, bn_en);
+//        skip_conn(act_mem, bn_out_fifo, skip_out_fifo, base_addr_add,
+//                nof, noy, nox, bb_en, skip_en, relu_en);
+//        store_output(act_mem, skip_out_fifo, base_addr_out, 
+//                nky, nkx, nof, nif, noy, nox, bb_en);
+//                
+//        // max pool
+//        max_pool(act_mem, base_addr_in, base_addr_out, 
+//                nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
+//        
+//        // avg pool
+//        avg_pool(act_mem, base_addr_in, base_addr_out, 
+//                nky, nkx, nof, nif, noy, nox, stride, pad, avg_pool_en);
+//
+//        // fc
+//        fc(act_mem, bn_weight_mem, base_addr_in, base_addr_out, bn_weight_base,
+//                nof, nif, fc_en);
 
         // output back to host
         if (layer_cnt == *end_layer) {
