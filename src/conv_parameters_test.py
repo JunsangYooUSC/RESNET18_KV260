@@ -178,7 +178,7 @@ def quantize_conv2d(model, total_bits, weight_int_bits, input_int_bits):
 
 ##
 import copy
-quantized_model = copy.deepcopy(model)
+quantized_model = copy.deepcopy(model.base_model)
 
 weight_int_bits = 2
 input_int_bits = 3
@@ -324,12 +324,17 @@ total_layers = count_layers_excluding_bn_relu(quantized_model)
 print(f"Total number of layers in the model (excluding BatchNorm and ReLU): {total_layers}")
 
 ##
-quantized_model(x)
-model(x)
-
-
-
-
+quantized_model.eval()
+a = quantized_model.conv1(x)
+b = quantized_model.bn1(a)
+c = quantized_model.relu(b)
+d = quantized_model.maxpool(c)
+e = quantized_model.layer1[0].conv1(d)
+f = quantized_model.layer1[0].bn1(e)
+g = quantized_model.layer1[0].relu(f)
+for idx in range(20):
+    for jdx in range(5):
+        print(idx*5+jdx, np.round(d.flatten()[idx*5+jdx].item(),5))
 
 
 
