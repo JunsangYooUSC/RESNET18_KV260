@@ -157,36 +157,36 @@ int main(){
             &in_size,
             &out_size
         );
-		// for debugging
-		std::cout << "****************************************" << std::endl;
-		std::cout << "layer_cnt: " << layer_cnt << std::endl;
-		std::cout << "nif: " << nif << std::endl;
-		std::cout << "nof: " << nof << std::endl;
-		std::cout << "noy: " << noy << std::endl;
-		std::cout << "nox: " << nox << std::endl;
-		std::cout << "nkx: " << nkx << std::endl;
-		std::cout << "nky: " << nky << std::endl;
-		std::cout << "stride: " << stride << std::endl;
-		std::cout << "pad: " << pad << std::endl;
-		std::cout << "bb_en: " << bb_en << std::endl;
-		std::cout << "conv_en: " << conv_en << std::endl;
-		std::cout << "bn_en: " << bn_en << std::endl;
-		std::cout << "skip_en: " << skip_en << std::endl;
-		std::cout << "relu_en: " << relu_en << std::endl;
-		std::cout << "max_pool_en: " << max_pool_en << std::endl;
-		std::cout << "avg_pool_en: " << avg_pool_en << std::endl;
-		std::cout << "fc_en: " << fc_en << std::endl;
-		std::cout << "base_addr_in: " << base_addr_in << std::endl;
-		std::cout << "base_addr_out: " << base_addr_out << std::endl;
-		std::cout << "base_addr_add: " << base_addr_add << std::endl;
-		std::cout << "weight_base: " << weight_base << std::endl;
-		std::cout << "weight_size: " << weight_size << std::endl;
-		std::cout << "bn_weight_base: " << bn_weight_base << std::endl;
-		std::cout << "bn_weight_size: " << bn_weight_size << std::endl;
-		std::cout << "in_size: " << in_size << std::endl;
-		std::cout << "out_size: " << out_size << std::endl;
-		std::cout << "****************************************" << std::endl;
-		std::cout << std::endl;
+		// // for debugging
+		// std::cout << "****************************************" << std::endl;
+		// std::cout << "layer_cnt: " << layer_cnt << std::endl;
+		// std::cout << "nif: " << nif << std::endl;
+		// std::cout << "nof: " << nof << std::endl;
+		// std::cout << "noy: " << noy << std::endl;
+		// std::cout << "nox: " << nox << std::endl;
+		// std::cout << "nkx: " << nkx << std::endl;
+		// std::cout << "nky: " << nky << std::endl;
+		// std::cout << "stride: " << stride << std::endl;
+		// std::cout << "pad: " << pad << std::endl;
+		// std::cout << "bb_en: " << bb_en << std::endl;
+		// std::cout << "conv_en: " << conv_en << std::endl;
+		// std::cout << "bn_en: " << bn_en << std::endl;
+		// std::cout << "skip_en: " << skip_en << std::endl;
+		// std::cout << "relu_en: " << relu_en << std::endl;
+		// std::cout << "max_pool_en: " << max_pool_en << std::endl;
+		// std::cout << "avg_pool_en: " << avg_pool_en << std::endl;
+		// std::cout << "fc_en: " << fc_en << std::endl;
+		// std::cout << "base_addr_in: " << base_addr_in << std::endl;
+		// std::cout << "base_addr_out: " << base_addr_out << std::endl;
+		// std::cout << "base_addr_add: " << base_addr_add << std::endl;
+		// std::cout << "weight_base: " << weight_base << std::endl;
+		// std::cout << "weight_size: " << weight_size << std::endl;
+		// std::cout << "bn_weight_base: " << bn_weight_base << std::endl;
+		// std::cout << "bn_weight_size: " << bn_weight_size << std::endl;
+		// std::cout << "in_size: " << in_size << std::endl;
+		// std::cout << "out_size: " << out_size << std::endl;
+		// std::cout << "****************************************" << std::endl;
+		// std::cout << std::endl;
 		if (layer_cnt == start_layer) {
 			// load input
 			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/input.bin";
@@ -288,12 +288,6 @@ int main(){
 			save_to_bin(act_out_host, out_size, "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/kernel_out.bin");
 		}
 	}
-	std::cout << "WEIGHT_MEM_SIZE: " << WEIGHT_MEM_SIZE << std::endl;
-	std::cout << "BN_WEIGHT_MEM_SIZE: " << BN_WEIGHT_MEM_SIZE << std::endl;
-	std::cout << "ACT_MEM_SIZE: " << ACT_MEM_SIZE << std::endl;
-	std::cout << "MEM0_SIZE: " << MEM0_SIZE << std::endl;
-	std::cout << "MEM1_SIZE: " << MEM1_SIZE << std::endl;
-	std::cout << "MEM2_SIZE: " << MEM2_SIZE << std::endl;
 
 	// mimic controller
 //    for (layer_cnt = start_layer; layer_cnt <= end_layer; layer_cnt++) {
