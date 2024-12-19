@@ -196,14 +196,14 @@ int main(){
 		if (layer_cnt == 0) {
 			// conv, bn
 			convolution_bn_golden<float, float, float, float>(
-					act_in_host+base_addr_in, 
+					act_host_float+base_addr_in, 
 					weight_host_float+weight_base, 
-					act_out_host+base_addr_out, 
+					act_host_float+base_addr_out, 
 					bn_weight_host_float+bn_weight_base,
 					nky, nkx, nof, nif, noy, nox, stride, pad);
 			// relu
 			for (int idx = 0; idx < out_size; idx++) {
-				act_out_host[base_addr_out+idx] = (act_out_host[base_addr_out+idx] > 0) ? act_out_host[base_addr_out+idx] : 0;
+				act_host_float[base_addr_out+idx] = (act_host_float[base_addr_out+idx] > 0) ? act_host_float[base_addr_out+idx] : 0;
 			}
 		}
 
