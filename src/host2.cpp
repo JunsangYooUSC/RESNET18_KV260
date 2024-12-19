@@ -78,13 +78,13 @@ int main(){
 	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem[idx] = 0;
 	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem[idx] = 0;
 
-	// host memory
-	float act_host_float[ACT_MEM_SIZE];
-	float weight_host_float[MAX_WEIGHT_MEM_SIZE];
-	float bn_weight_host_float[MAX_BN_WEIGHT_MEM_SIZE];
-	for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_host_float[idx] = 0;
-	for (int idx = 0; idx < MAX_WEIGHT_MEM_SIZE; idx++) weight_host_float[idx] = 0;
-	for (int idx = 0; idx < MAX_BN_WEIGHT_MEM_SIZE; idx++) bn_weight_host_float[idx] = 0;
+	// // host memory
+	// float act_host_float[ACT_MEM_SIZE];
+	// float weight_host_float[MAX_WEIGHT_MEM_SIZE];
+	// float bn_weight_host_float[MAX_BN_WEIGHT_MEM_SIZE];
+	// for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_host_float[idx] = 0;
+	// for (int idx = 0; idx < MAX_WEIGHT_MEM_SIZE; idx++) weight_host_float[idx] = 0;
+	// for (int idx = 0; idx < MAX_BN_WEIGHT_MEM_SIZE; idx++) bn_weight_host_float[idx] = 0;
 
 	// layer configuration for validation
 	std::string fname;
