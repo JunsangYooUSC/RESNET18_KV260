@@ -159,6 +159,7 @@ int main(){
 				base_addr_out,
 				nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
 		}
+		
 
 		// BB7_CONV1 layer cnt 21
 		if (layer_cnt == 21) {

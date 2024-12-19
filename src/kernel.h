@@ -102,4 +102,47 @@ void PE(
     unsigned int nox
 );
 
+void max_pool(
+    DTYPE_ACT *act_mem,
+    unsigned int in_base_addr,
+    unsigned int out_base_addr,
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int stride,
+    unsigned int pad
+    unsigned int max_pool_en
+);
+
+void avg_pool(
+    DTYPE_ACT *act_mem,
+    unsigned int in_base_addr,
+    unsigned int out_base_addr,
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int stride,
+    unsigned int pad,
+    unsigned int avg_pool_en
+);
+
+void fc(
+    DTYPE_ACT *act_mem,
+    float *bn_weight_mem,
+    unsigned int in_base_addr,
+    unsigned int out_base_addr,
+    unsigned int bn_weight_base_addr,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int fc_en
+);
+
+
+
 #endif
