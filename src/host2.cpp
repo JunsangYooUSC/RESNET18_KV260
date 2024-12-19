@@ -184,14 +184,14 @@ int main(){
 	std::cout << "MEM0_SIZE: " << MEM0_SIZE << std::endl;
 	std::cout << "MEM1_SIZE: " << MEM1_SIZE << std::endl;
 	std::cout << "MEM2_SIZE: " << MEM2_SIZE << std::endl;
-	// load input
-	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/input.bin";
-	read_bin_fixed<DTYPE_ACT>(fname, act_in_host, base_addr_in, in_size);
-	// load weight and bn_weight as a whole
-	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/conv_all_params.bin";
-	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, WEIGHT_MEM_SIZE);
-	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/bn_all_params.bin";
-	read_bin_float(fname, bn_weight_mem, bn_weight_base, BN_WEIGHT_MEM_SIZE);
+	// // load input
+	// fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/input.bin";
+	// read_bin_fixed<DTYPE_ACT>(fname, act_in_host, base_addr_in, in_size);
+	// // load weight and bn_weight as a whole
+	// fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/conv_all_params.bin";
+	// read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, WEIGHT_MEM_SIZE);
+	// fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/bn_all_params.bin";
+	// read_bin_float(fname, bn_weight_mem, bn_weight_base, BN_WEIGHT_MEM_SIZE);
 
 	// mimic controller
 //    for (layer_cnt = start_layer; layer_cnt <= end_layer; layer_cnt++) {
