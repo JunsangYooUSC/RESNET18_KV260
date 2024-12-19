@@ -269,7 +269,7 @@ int main(){
 		if (layer_cnt == 26) {
 			// avg_pool
 			avg_pool_golden<float>(act_host_float, base_addr_in, base_addr_out, 
-					nky, nkx, nof, nif, noy, nox, stride pad);
+					nky, nkx, nof, nif, noy, nox, stride, pad);
 		}
 		// FC layer cnt 27
 		if (layer_cnt == 27) {
