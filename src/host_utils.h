@@ -69,7 +69,7 @@ void gen_rand(DTYPE *arr, unsigned LEN, float min_val=-0.5, float max_val=0.5, u
 
 // compare_result: compare values of two datatypes
 template<typename DTYPE1, typename DTYPE2>
-void compare_result(DTYPE1 *mat1, DTYPE2 *mat2, unsigned int len, float tolerance = 0.2) {
+void compare_result(DTYPE1 *mat1, DTYPE2 *mat2, unsigned int len, float tolerance = 0.05) {
     bool mismatch_flag = false;
     bool diff_flag;
     int cnt = 0;
