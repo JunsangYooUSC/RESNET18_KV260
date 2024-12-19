@@ -195,6 +195,7 @@ int main(){
 			}
 		}
 	}
+	
 	std::cout << "WEIGHT_MEM_SIZE: " << WEIGHT_MEM_SIZE << std::endl;
 	std::cout << "BN_WEIGHT_MEM_SIZE: " << BN_WEIGHT_MEM_SIZE << std::endl;
 	std::cout << "ACT_MEM_SIZE: " << ACT_MEM_SIZE << std::endl;
