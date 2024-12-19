@@ -347,7 +347,7 @@ constexpr unsigned BB3_CONV2_IN_SIZE = BB3_CONV1_C * BB3_CONV1_H * BB3_CONV1_W;
 constexpr unsigned BB3_CONV2_OUT_SIZE = BB3_CONV2_C * BB3_CONV2_H * BB3_CONV2_W;
 
 // BB3_SKIP layer (PROJ) cnt 10
-#define BB3_SKIP_C                  2
+#define BB3_SKIP_C                  4
 #define BB3_SKIP_H                  28
 #define BB3_SKIP_W                  28
 #define BB3_SKIP_K                  1
@@ -497,7 +497,7 @@ constexpr unsigned BB5_CONV2_IN_SIZE = BB5_CONV1_C * BB5_CONV1_H * BB5_CONV1_W;
 constexpr unsigned BB5_CONV2_OUT_SIZE = BB5_CONV2_C * BB5_CONV2_H * BB5_CONV2_W;
 
 // BB5_SKIP layer (PROJ) cnt 16
-#define BB5_SKIP_C                  4
+#define BB5_SKIP_C                  8
 #define BB5_SKIP_H                  14
 #define BB5_SKIP_W                  14
 #define BB5_SKIP_K                  1
@@ -647,7 +647,7 @@ constexpr unsigned BB7_CONV2_IN_SIZE = BB7_CONV1_C * BB7_CONV1_H * BB7_CONV1_W;
 constexpr unsigned BB7_CONV2_OUT_SIZE = BB7_CONV2_C * BB7_CONV2_H * BB7_CONV2_W;
 
 // BB7_SKIP layer (PROJ) cnt 22
-#define BB7_SKIP_C                  8
+#define BB7_SKIP_C                  16
 #define BB7_SKIP_H                  7
 #define BB7_SKIP_W                  7
 #define BB7_SKIP_K                  1
