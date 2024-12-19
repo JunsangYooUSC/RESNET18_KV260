@@ -187,6 +187,13 @@ int main(){
 			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/bn_all_params.bin";
 			read_bin_float(fname, bn_weight_mem, bn_weight_base, BN_WEIGHT_MEM_SIZE);
 		}
+		if (layer_cnt == end_layer){
+			// kernel calculation
+			conv_kernel(act_in_host, act_out_host, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+			for (int idx = 0; idx < out_size; idx++) {
+				std::cout << "idx: " << idx << "  kernel out: " << act_out_host[idx] << std::endl;
+			}
+		}
 	}
 	std::cout << "WEIGHT_MEM_SIZE: " << WEIGHT_MEM_SIZE << std::endl;
 	std::cout << "BN_WEIGHT_MEM_SIZE: " << BN_WEIGHT_MEM_SIZE << std::endl;
@@ -194,11 +201,6 @@ int main(){
 	std::cout << "MEM0_SIZE: " << MEM0_SIZE << std::endl;
 	std::cout << "MEM1_SIZE: " << MEM1_SIZE << std::endl;
 	std::cout << "MEM2_SIZE: " << MEM2_SIZE << std::endl;
-	// kernel calculation
-	conv_kernel(act_in_host, act_out_host, weight_mem, bn_weight_mem, &start_layer, &end_layer);
-	for (int idx = 0; idx < out_size; idx++) {
-		std::cout << "idx: " << idx << "  kernel out: " << act_out_host[idx] << std::endl;
-	}
 
 	// mimic controller
 //    for (layer_cnt = start_layer; layer_cnt <= end_layer; layer_cnt++) {
