@@ -1325,7 +1325,7 @@ void conv_kernel(
                 nky, nkx, nof, nif, noy, nox, stride, pad, avg_pool_en);
 
         // fc
-        fc(act_mem, bn_weight_mem, base_addr_in, base_addr_out, bn_weight_base_addr,
+        fc(act_mem, bn_weight_mem, base_addr_in, base_addr_out, bn_weight_base,
                 nof, nif, fc_en);
 
         // output back to host
