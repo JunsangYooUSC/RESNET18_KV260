@@ -1294,13 +1294,13 @@ void conv_kernel(
             &out_size
         );
 
-        // initial input
-        if (layer_cnt == *start_layer) {
-            // load input
-            for (int idx = 0; idx < in_size; idx++){
-                act_mem[base_addr_in+idx] = act_in_host[idx];
-            }
-        }
+        //// initial input
+        //if (layer_cnt == *start_layer) {
+        //    // load input
+        //    for (int idx = 0; idx < in_size; idx++){
+        //        act_mem[base_addr_in+idx] = act_in_host[idx];
+        //    }
+        //}
 
 //        // conv
 //        load_input(act_mem, load_input_fifo, base_addr_in,
