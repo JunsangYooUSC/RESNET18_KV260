@@ -1294,27 +1294,27 @@ void conv_kernel(
             &out_size
         );
 
-        // initial input
-        if (layer_cnt == *start_layer) {
-            // load input
-            for (int idx = 0; idx < in_size; idx++){
-                act_mem[base_addr_in+idx] = act_in_host[idx];
-            }
-        }
+        //// initial input
+        //if (layer_cnt == *start_layer) {
+        //    // load input
+        //    for (int idx = 0; idx < in_size; idx++){
+        //        act_mem[base_addr_in+idx] = act_in_host[idx];
+        //    }
+        //}
 
-        // conv
-        load_input(act_mem, load_input_fifo, base_addr_in,
-                nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
-        load_weight(weight_mem, load_weight_fifo, weight_base,
-                nky, nkx, nof, nif, noy, nox, bb_en, conv_en);
-        PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
-                nky, nkx, nof, nif, noy, nox, bb_en, conv_en);
-        batch_norm(bn_weight_mem, pe_out_fifo, bn_out_fifo, bn_weight_base,
-                nof, noy, nox, bb_en, bn_en);
-        skip_conn(act_mem, bn_out_fifo, skip_out_fifo, base_addr_add,
-                nof, noy, nox, bb_en, skip_en, relu_en);
-        store_output(act_mem, skip_out_fifo, base_addr_out, 
-                nky, nkx, nof, nif, noy, nox);
+//        // conv
+//        load_input(act_mem, load_input_fifo, base_addr_in,
+//                nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
+//        load_weight(weight_mem, load_weight_fifo, weight_base,
+//                nky, nkx, nof, nif, noy, nox, bb_en, conv_en);
+//        PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
+//                nky, nkx, nof, nif, noy, nox, bb_en, conv_en);
+//        batch_norm(bn_weight_mem, pe_out_fifo, bn_out_fifo, bn_weight_base,
+//                nof, noy, nox, bb_en, bn_en);
+//        skip_conn(act_mem, bn_out_fifo, skip_out_fifo, base_addr_add,
+//                nof, noy, nox, bb_en, skip_en, relu_en);
+//        store_output(act_mem, skip_out_fifo, base_addr_out, 
+//                nky, nkx, nof, nif, noy, nox);
                 
 //        // max pool
 //        max_pool(act_mem, base_addr_in, base_addr_out, 
