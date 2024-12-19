@@ -50,8 +50,8 @@ void load_input(
                         for (int y = 0; y < POY; y++) {
                             for (int x = 0; x < POX; x++) {
                                 DTYPE_ACT in_val;
-                                unsigned addr = base_addr+(f_out+f)*noy*nox + (y0+y)*nox + x0+x;
-                                in_val = act_mem[addr/ACT_PACK].range((addr%ACT_PACK+1)*W_ACT-1, (addr%ACT_PACK)*W_ACT);
+                                unsigned addr = (f_out+f)*noy*nox + (y0+y)*nox + x0+x;
+                                in_val = act_mem[base_addr+addr/ACT_PACK].range((addr%ACT_PACK+1)*W_ACT-1, (addr%ACT_PACK)*W_ACT);
                                 load_input_fifo.write(in_val);
                             }
                         }
@@ -77,7 +77,7 @@ void load_input(
                                             else {
                                                 // unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad);
                                                 unsigned addr = f_in*noy*stride*nox*stride + (y0+y+i-pad)*nox*stride + (x0+x+j-pad);
-                                                in_val = act_mem[addr/ACT_PACK].range((addr%ACT_PACK+1)*W_ACT-1, (addr%ACT_PACK)*W_ACT);
+                                                in_val = act_mem[base_addr+addr/ACT_PACK].range((addr%ACT_PACK+1)*W_ACT-1, (addr%ACT_PACK)*W_ACT);
                                             }
                                             load_input_fifo.write(in_val);
                                         }
@@ -224,8 +224,8 @@ void store_output(
                     for (int y = 0; y < POY; y++) {
                         for (int x = 0; x < POX; x++) {
                             DTYPE_MEM_ACT pack;
-                            unsigned int addr = base_addr+(f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
-                            act_mem[addr/ACT_PACK].range((addr%ACT_PACK+1)*W_ACT-1, (addr%ACT_PACK)*W_ACT) = out_fifo.read();
+                            unsigned int addr = (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
+                            act_mem[base_addr+addr/ACT_PACK].range((addr%ACT_PACK+1)*W_ACT-1, (addr%ACT_PACK)*W_ACT) = out_fifo.read();
                         }
                     }
                 }
@@ -298,8 +298,8 @@ void skip_conn(
                         for (int x = 0; x < POX; x++) {
                             float val = in_fifo.read();
                             if (skip_en) {
-                                unsigned add_addr = _addr + (f_out+f)*noy*nox + (y0+y)*nox + x0+x;
-                                DTYPE_ACT add_val = act_mem[add_addr/ACT_PACK].range((add_addr%ACT_PACK+1)*W_ACT-1, (add_addr%ACT_PACK)*W_ACT);
+                                unsigned add_addr = (f_out+f)*noy*nox + (y0+y)*nox + x0+x;
+                                DTYPE_ACT add_val = act_mem[base_addr+add_addr/ACT_PACK].range((add_addr%ACT_PACK+1)*W_ACT-1, (add_addr%ACT_PACK)*W_ACT);
                                 val = val + (float)add_val;
                             }
                             if (relu_en) {
@@ -344,8 +344,8 @@ void max_pool(
                             in_val = 0;
                         }
                         else {
-                            unsigned in_addr = in_base_addr + f*noy*stride*nox*stride + (y*stride+i-pad)*nox*stride + (x*stride+j-pad);
-                            in_val = act_mem[in_addr/ACT_PACK].range((in_addr%ACT_PACK+1)*W_ACT-1, (in_addr%ACT_PACK)*W_ACT);
+                            unsigned in_addr = f*noy*stride*nox*stride + (y*stride+i-pad)*nox*stride + (x*stride+j-pad);
+                            in_val = act_mem[in_base_addr + in_addr/ACT_PACK].range((in_addr%ACT_PACK+1)*W_ACT-1, (in_addr%ACT_PACK)*W_ACT);
                         }
                         max_pool_kernel[i * MAX_POOL_K + j] = in_val;
                     }
@@ -356,8 +356,8 @@ void max_pool(
                         max = max_pool_kernel[idx];
                     }
                 }
-                unsigned out_addr = out_base_addr + f*noy*nox + y*nox + x;
-                act_mem[out_addr/ACT_PACK].range((out_addr%ACT_PACK+1)*W_ACT-1, (out_addr%ACT_PACK)*W_ACT) = max;
+                unsigned out_addr = f*noy*nox + y*nox + x;
+                act_mem[out_base_addr + out_addr/ACT_PACK].range((out_addr%ACT_PACK+1)*W_ACT-1, (out_addr%ACT_PACK)*W_ACT) = max;
             }
         }
     }
@@ -383,11 +383,11 @@ void avg_pool(
         float sum = 0;
         for (int y = 0; y < noy; y++) {
             for (int x = 0; x < nox; x++) {
-                unsigned in_addr = in_base_addr + f*noy*nox + y*nox + x;
-                sum = sum + (float) act_mem[in_addr/ACT_PACK].range((in_addr%ACT_PACK+1)*W_ACT-1, (in_addr%ACT_PACK)*W_ACT);
+                unsigned in_addr = f*noy*nox + y*nox + x;
+                sum = sum + (float) act_mem[in_base_addr + in_addr/ACT_PACK].range((in_addr%ACT_PACK+1)*W_ACT-1, (in_addr%ACT_PACK)*W_ACT);
             }
         }
-        act_mem[(out_base_addr+f)/ACT_PACK].range(((in_addr%ACT_PACK+1)*W_ACT-1, (in_addr%ACT_PACK)*W_ACT)) = sum / (noy * nox);
+        act_mem[out_base_addr+f/ACT_PACK].range(((in_addr%ACT_PACK+1)*W_ACT-1, (in_addr%ACT_PACK)*W_ACT)) = sum / (noy * nox);
     }
 }
 
@@ -406,10 +406,10 @@ void fc(
     for (int f_out = 0; f_out < nof; f_out++) {
         float sum = 0;
         for (int f_in = 0; f_in < nif; f_in++) {
-            unsigned weight_addr = in_base_addr + f_out*nif + f_in;
-            sum = ((float) act_mem[f_in%ACT_PACK].range(((f_in%ACT_PACK+1)*W_ACT-1, (f_in%ACT_PACK)*W_ACT)))) * bn_weight_mem[bn_weight_base_addr + weight_addr];
+            unsigned weight_addr = f_out*nif + f_in;
+            sum = ((float) act_mem[in_base_addr + f_in%ACT_PACK].range(((f_in%ACT_PACK+1)*W_ACT-1, (f_in%ACT_PACK)*W_ACT)))) * bn_weight_mem[bn_weight_base_addr + weight_addr];
         }
-        act_mem[f_out%ACT_PACK].range() = sum + (float) bn_weight_mem[bn_weight_base_addr + AVG_POOL_C*FC_C + f_out];
+        act_mem[out_base_addr+f_out%ACT_PACK].range() = sum + (float) bn_weight_mem[bn_weight_base_addr + AVG_POOL_C*FC_C + f_out];
     }
 }
 
