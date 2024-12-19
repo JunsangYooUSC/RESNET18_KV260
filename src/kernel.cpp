@@ -387,7 +387,7 @@ void avg_pool(
                 sum = sum + (float) act_mem[in_base_addr + in_addr/ACT_PACK].range((in_addr%ACT_PACK+1)*W_ACT-1, (in_addr%ACT_PACK)*W_ACT);
             }
         }
-        act_mem[out_base_addr+f/ACT_PACK].range(((f%ACT_PACK+1)*W_ACT-1, (f%ACT_PACK)*W_ACT)) = sum / (noy * nox);
+        act_mem[out_base_addr+f/ACT_PACK].range(((f%ACT_PACK+1)*W_ACT-1, (f%ACT_PACK)*W_ACT)) = (DTYPE_ACT) (sum / (noy * nox));
     }
 }
 
