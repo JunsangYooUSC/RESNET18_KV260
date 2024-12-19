@@ -318,7 +318,7 @@ void max_pool(
     unsigned int noy,
     unsigned int nox,
     unsigned int stride,
-    unsigned int pad
+    unsigned int pad,
     unsigned int max_pool_en
 ) {
     if (!max_pool_en) return;
@@ -375,7 +375,7 @@ void avg_pool(
         for (int y = 0; y < noy; y++) {
             for (int x = 0; x < nox; x++) {
                 unsigned in_addr = f*noy*nox + y*nox + x;
-                sum += act_mem[in_base_addr+in_addr];
+                sum = sum + (float) act_mem[in_base_addr+in_addr];
             }
         }
         act_mem[out_base_addr+f] = sum / (noy * nox);
