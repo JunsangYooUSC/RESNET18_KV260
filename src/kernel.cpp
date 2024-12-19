@@ -648,7 +648,7 @@ void controller (
         *in_size            = BB2_SKIP_IN_SIZE;
         *out_size           = BB2_SKIP_OUT_SIZE;
     }
-    else if(layer_cnt == 8) {
+    else if(*layer_cnt == 8) {
         *nif                = BB2_SKIP_C;
         *nof                = BB3_CONV1_C;
         *noy                = BB3_CONV1_H;
@@ -675,7 +675,7 @@ void controller (
         *in_size            = BB3_CONV1_IN_SIZE;
         *out_size           = BB3_CONV1_OUT_SIZE;
     }
-    else if(layer_cnt == 9) {
+    else if(*layer_cnt == 9) {
         *nif                = BB3_CONV1_C;
         *nof                = BB3_CONV2_C;
         *noy                = BB3_CONV2_H;
@@ -702,7 +702,7 @@ void controller (
         *in_size            = BB3_CONV2_IN_SIZE;
         *out_size           = BB3_CONV2_OUT_SIZE;
     }
-    else if(layer_cnt == 10) {
+    else if(*layer_cnt == 10) {
         *nif                = BB3_CONV2_C;
         *nof                = BB3_SKIP_C;
         *noy                = BB3_SKIP_H;
@@ -729,7 +729,7 @@ void controller (
         *in_size            = BB3_SKIP_IN_SIZE;
         *out_size           = BB3_SKIP_OUT_SIZE;
     }
-    else if(layer_cnt == 11) {
+    else if(*layer_cnt == 11) {
         *nif                = BB3_SKIP_C;
         *nof                = BB4_CONV1_C;
         *noy                = BB4_CONV1_H;
@@ -756,7 +756,7 @@ void controller (
         *in_size            = BB4_CONV1_IN_SIZE;
         *out_size           = BB4_CONV1_OUT_SIZE;
     }
-    else if(layer_cnt == 12) {
+    else if(*layer_cnt == 12) {
         *nif                = BB4_CONV1_C;
         *nof                = BB4_CONV2_C;
         *noy                = BB4_CONV2_H;
@@ -783,7 +783,7 @@ void controller (
         *in_size            = BB4_CONV2_IN_SIZE;
         *out_size           = BB4_CONV2_OUT_SIZE;
     }
-    else if(layer_cnt == 13) {
+    else if(*layer_cnt == 13) {
         *nif                = BB4_CONV2_C;
         *nof                = BB4_SKIP_C;
         *noy                = BB4_SKIP_H;
@@ -810,7 +810,7 @@ void controller (
         *in_size            = BB4_SKIP_IN_SIZE;
         *out_size           = BB4_SKIP_OUT_SIZE;
     }
-    else if(layer_cnt == 14) {
+    else if(*layer_cnt == 14) {
         *nif                = BB4_SKIP_C;
         *nof                = BB5_CONV1_C;
         *noy                = BB5_CONV1_H;
@@ -837,7 +837,7 @@ void controller (
         *in_size            = BB5_CONV1_IN_SIZE;
         *out_size           = BB5_CONV1_OUT_SIZE;
     }
-    else if(layer_cnt == 15) {
+    else if(*layer_cnt == 15) {
         *nif                = BB5_CONV1_C;
         *nof                = BB5_CONV2_C;
         *noy                = BB5_CONV2_H;
@@ -864,7 +864,7 @@ void controller (
         *in_size            = BB5_CONV2_IN_SIZE;
         *out_size           = BB5_CONV2_OUT_SIZE;
     }
-    else if(layer_cnt == 16) {
+    else if(*layer_cnt == 16) {
         *nif                = BB5_CONV2_C;
         *nof                = BB5_SKIP_C;
         *noy                = BB5_SKIP_H;
@@ -891,7 +891,7 @@ void controller (
         *in_size            = BB5_SKIP_IN_SIZE;
         *out_size           = BB5_SKIP_OUT_SIZE;
     }
-    else if(layer_cnt == 17) {
+    else if(*layer_cnt == 17) {
         *nif                = BB5_SKIP_C;
         *nof                = BB6_CONV1_C;
         *noy                = BB6_CONV1_H;
@@ -918,7 +918,7 @@ void controller (
         *in_size            = BB6_CONV1_IN_SIZE;
         *out_size           = BB6_CONV1_OUT_SIZE;
     }
-    else if(layer_cnt == 18) {
+    else if(*layer_cnt == 18) {
         *nif                = BB6_CONV1_C;
         *nof                = BB6_CONV2_C;
         *noy                = BB6_CONV2_H;
