@@ -93,9 +93,9 @@ int main(){
 
 	// load weight and bn_weight as a whole
 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/conv_all_params.bin";
-	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, WEIGHT_MEM_SIZE);
+	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, 0, WEIGHT_MEM_SIZE);
 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/bn_all_params.bin";
-	read_bin_float(fname, bn_weight_mem, bn_weight_base, BN_WEIGHT_MEM_SIZE);
+	read_bin_float(fname, bn_weight_mem, 0, BN_WEIGHT_MEM_SIZE);
 	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_host_float[idx] = weight_mem[idx];
 	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_host_float[idx] = bn_weight_mem[idx];
 
