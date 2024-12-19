@@ -38,7 +38,8 @@ import torch.nn as nn
 from torchvision.models import resnet18
 
 class ModifiedResNet18(nn.Module):
-    def __init__(self, input_channels=3, input_size=224):
+    # def __init__(self, input_channels=3, input_size=224):
+    def __init__(self, input_channels=1, input_size=224):
         """
         Initialize the modified ResNet-18 model with reduced channel sizes.
 
@@ -110,6 +111,7 @@ class ModifiedResNet18(nn.Module):
 # Example usage:
 # Define the input channels and size
 input_channels = 3  # Standard input channels for images
+input_channels = 1  # Standard input channels for images
 input_size = 224  # Standard input size for ResNet
 
 # Initialize the model
@@ -300,7 +302,28 @@ print(f"input_get: {input_get.shape}")
 
 
 
+##
+import torch
+import torch.nn as nn
+from torchvision.models import resnet18
 
+def count_layers_excluding_bn_relu(model):
+    """
+    Counts the total number of layers in a PyTorch model, excluding BatchNorm and ReLU layers.
+
+    Args:
+        model (nn.Module): The PyTorch model.
+
+    Returns:
+        int: Total number of layers excluding BatchNorm and ReLU layers.
+    """
+    exclude_types = (nn.BatchNorm2d, nn.BatchNorm1d, nn.ReLU, nn.ReLU6)
+    total_layers = sum(1 for layer in model.modules() if not isinstance(layer, exclude_types))
+    return total_layers
+
+# Example usage with ResNet18
+total_layers = count_layers_excluding_bn_relu(quantized_model)
+print(f"Total number of layers in the model (excluding BatchNorm and ReLU): {total_layers}")
 
 
 
