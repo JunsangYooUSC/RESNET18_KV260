@@ -102,7 +102,7 @@ void max_pool(
     unsigned int noy,
     unsigned int nox,
     unsigned int stride,
-    unsigned int pad
+    unsigned int pad,
     unsigned int max_pool_en
 );
 
