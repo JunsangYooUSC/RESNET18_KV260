@@ -402,7 +402,7 @@ void fc(
             unsigned weight_addr = f_out*nif + f_in;
             sum = ((float) act_mem[in_base_addr + f_in]) * bn_weight_mem[bn_weight_base_addr + weight_addr];
         }
-        act_mem[f_out] = sum + (float) act_mem[bn_weight_base_addr + AVG_POOL_C*FC_C + f_out];
+        act_mem[f_out] = sum + (float) bn_weight_mem[bn_weight_base_addr + AVG_POOL_C*FC_C + f_out];
     }
 }
 
