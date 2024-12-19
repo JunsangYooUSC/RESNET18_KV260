@@ -387,7 +387,7 @@ void avg_pool(
                 sum = sum + (float) act_mem[in_base_addr + in_addr/ACT_PACK].range((in_addr%ACT_PACK+1)*W_ACT-1, (in_addr%ACT_PACK)*W_ACT);
             }
         }
-        act_mem[out_base_addr+f/ACT_PACK].range(((f%ACT_PACK+1)*W_ACT-1, (f%ACT_PACK)*W_ACT)) = (DTYPE_ACT) (sum / (noy * nox));
+        act_mem[out_base_addr+f/ACT_PACK].range((f%ACT_PACK+1)*W_ACT-1, (f%ACT_PACK)*W_ACT) = (DTYPE_ACT) (sum / (noy * nox));
     }
 }
 
@@ -407,7 +407,7 @@ void fc(
         float sum = 0;
         for (int f_in = 0; f_in < nif; f_in++) {
             unsigned weight_addr = f_out*nif + f_in;
-            sum = ((float) act_mem[in_base_addr + f_in%ACT_PACK].range(((f_in%ACT_PACK+1)*W_ACT-1, (f_in%ACT_PACK)*W_ACT))) * bn_weight_mem[bn_weight_base_addr + weight_addr];
+            sum = ((float) act_mem[in_base_addr + f_in%ACT_PACK].range((f_in%ACT_PACK+1)*W_ACT-1, (f_in%ACT_PACK)*W_ACT)) * bn_weight_mem[bn_weight_base_addr + weight_addr];
         }
         act_mem[out_base_addr+f_out%ACT_PACK].range() = sum + (float) bn_weight_mem[bn_weight_base_addr + AVG_POOL_C*FC_C + f_out];
     }
