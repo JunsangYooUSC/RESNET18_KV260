@@ -1318,17 +1318,17 @@ void conv_kernel(
         store_output(act_mem, skip_out_fifo, base_addr_out, 
                 nky, nkx, nof, nif, noy, nox);
                 
-//        // max pool
-//        max_pool(act_mem, base_addr_in, base_addr_out, 
-//                nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
-//        
-//        // avg pool
-//        avg_pool(act_mem, base_addr_in, base_addr_out, 
-//                nky, nkx, nof, nif, noy, nox, stride, pad, avg_pool_en);
-//
-//        // fc
-//        fc(act_mem, bn_weight_mem, base_addr_in, base_addr_out, bn_weight_base,
-//                nof, nif, fc_en);
+        // max pool
+        max_pool(act_mem, base_addr_in, base_addr_out, 
+                nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
+        
+        // avg pool
+        avg_pool(act_mem, base_addr_in, base_addr_out, 
+                nky, nkx, nof, nif, noy, nox, stride, pad, avg_pool_en);
+
+        // fc
+        fc(act_mem, bn_weight_mem, base_addr_in, base_addr_out, bn_weight_base,
+                nof, nif, fc_en);
 
         // output back to host
         if (layer_cnt == *end_layer) {
