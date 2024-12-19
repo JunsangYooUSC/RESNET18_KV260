@@ -325,17 +325,27 @@ print(f"Total number of layers in the model (excluding BatchNorm and ReLU): {tot
 
 ##
 quantized_model.eval()
+x = fixed_point_quantize(x, 8, 3)
 a = quantized_model.conv1(x)
 b = quantized_model.bn1(a)
 c = quantized_model.relu(b)
 d = quantized_model.maxpool(c)
-e = quantized_model.layer1[0].conv1(d)
-f = quantized_model.layer1[0].bn1(e)
-g = quantized_model.layer1[0].relu(f)
+e = quantized_model.layer1(d)
+f = quantized_model.layer2(e)
+g = quantized_model.layer3(f)
+h = quantized_model.layer4(g)
+
 for idx in range(20):
     for jdx in range(5):
-        print(idx*5+jdx, np.round(d.flatten()[idx*5+jdx].item(),5))
+        print(idx*5+jdx, np.round(h.flatten()[idx*5+jdx].item(),5))
 
+##
+y = torch.rand(h.shape)-0.5
+y = fixed_point_quantize(y, 8, 3)
+conv_weights.tofile("conv_all_params.bin")
+bn_params.tofile("bn_all_params.bin")
+input = np.int8(y*(2**(8-input_int_bits))).flatten()
+input.tofile("input.bin")
 
-
-
+z = quantized_model.avgpool(y)
+zz = quantized_model.fc(z.flatten())
