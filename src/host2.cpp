@@ -38,6 +38,33 @@ int main(){
 	print_data_types();
 	// Assertion to check the configuration
 #endif
+	// memory block check
+	static_assert(MEM1_BASE_ADDR >= MEM0_BASE_ADDR + MEM0_SIZE, 
+			"Memory overlap between MEM0 and MEM1");
+	static_assert(MEM2_BASE_ADDR >= MEM1_BASE_ADDR + MEM1_SIZE, 
+			"Memory overlap between MEM1 and MEM2");
+
+	// weight memory size check
+	static_assert(WEIGHT_MEM_SIZE >= (BB8_CONV2_WEIGHT_BASE + BB8_CONV2_WEIGHT_SIZE), 
+			"WEIGHT_MEM_SIZE not enough");
+
+	// BN weight memory size check
+	static_assert(BN_WEIGHT_MEM_SIZE >= (FC_BN_WEIGHT_BASE + FC_BN_WEIGHT_SIZE), 
+			"BN_WEIGHT_MEM_SIZE not enough");
+
+	// activation memory size check
+	static_assert(MAX_ACT_MEM_SIZE >= MEM0_SIZE && 
+			MAX_ACT_MEM_SIZE >= MEM1_SIZE && 
+			MAX_ACT_MEM_SIZE >= MEM2_SIZE, 
+			"MAX_ACT_MEM_SIZE not enough");
+
+	// packing check
+	static_assert((MEM0_SIZE % ACT_PACK == 0) && 
+			(MEM1_SIZE % ACT_PACK == 0) && 
+			(MEM2_SIZE % ACT_PACK == 0), 
+			"Memory sizes must align with ACT_PACK configuration.");
+
+
 	// kernel IO
 	DTYPE_ACT act_in_host[MAX_ACT_MEM_SIZE];
 	DTYPE_ACT act_out_host[MAX_ACT_MEM_SIZE];
