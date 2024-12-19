@@ -274,7 +274,7 @@ int main(){
 		// FC layer cnt 27
 		if (layer_cnt == 27) {
 			// fc
-			fc_golden<float, float>(act_host_float, bn_weight_host_float, base_addr_in, base_addr_out, 
+			fc_golden<float>(act_host_float, bn_weight_host_float, base_addr_in, base_addr_out, 
 					bn_weight_base, nof, nif, fc_en);
 		}
 

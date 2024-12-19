@@ -446,5 +446,15 @@ void avg_pool_golden(
     }
 }
 
+template<typename DTYPE>
+void fc_golden(
+    DTYPE *act_mem,
+    float *bn_weight_mem,
+    unsigned int in_base_addr,
+    unsigned int out_base_addr,
+    unsigned int bn_weight_base_addr,
+    unsigned int nof,
+    unsigned int nif
+);
 
 #endif
