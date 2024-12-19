@@ -1237,62 +1237,62 @@ void conv_kernel(
     hls::stream<float> skip_out_fifo;
     #pragma HLS STREAM variable=skip_out_fifo depth=FIFO_ARR_DEPTH
     
-//    unsigned layer_cnt = 0;
-//    unsigned nif = 0;
-//    unsigned nof = 0;
-//    unsigned noy = 0;
-//    unsigned nox = 0;
-//    unsigned nkx = 0;
-//    unsigned nky = 0;
-//    unsigned stride = 0;
-//    unsigned pad = 0;
-//    bool bb_en = 0;
-//    bool conv_en = 0;
-//    bool bn_en = 0;
-//    bool skip_en = 0;
-//    bool relu_en = 0;
-//    bool max_pool_en = 0;
-//    bool avg_pool_en = 0;
-//    bool fc_en = 0;
-//    unsigned base_addr_in = 0;
-//    unsigned base_addr_out = 0;
-//    unsigned base_addr_add = 0;
-//    unsigned weight_base = 0;
-//    unsigned weight_size = 0;
-//    unsigned bn_weight_base = 0;
-//    unsigned bn_weight_size = 0;
-//    unsigned in_size = 0;
-//    unsigned out_size = 0;
-//
-//    for (layer_cnt = *start_layer; layer_cnt <= *end_layer; layer_cnt++) {
-//        controller (
-//            &layer_cnt,
-//            &nif,
-//            &nof,
-//            &noy,
-//            &nox,
-//            &nkx,
-//            &nky,
-//            &stride,
-//            &pad,
-//            &bb_en,
-//            &conv_en,
-//            &bn_en,
-//            &skip_en,
-//            &relu_en,
-//            &max_pool_en,
-//            &avg_pool_en,
-//            &fc_en,
-//            &base_addr_in,
-//            &base_addr_out,
-//            &base_addr_add,
-//            &weight_base,
-//            &weight_size,
-//            &bn_weight_base,
-//            &bn_weight_size,
-//            &in_size,
-//            &out_size
-//        );
+    unsigned layer_cnt = 0;
+    unsigned nif = 0;
+    unsigned nof = 0;
+    unsigned noy = 0;
+    unsigned nox = 0;
+    unsigned nkx = 0;
+    unsigned nky = 0;
+    unsigned stride = 0;
+    unsigned pad = 0;
+    bool bb_en = 0;
+    bool conv_en = 0;
+    bool bn_en = 0;
+    bool skip_en = 0;
+    bool relu_en = 0;
+    bool max_pool_en = 0;
+    bool avg_pool_en = 0;
+    bool fc_en = 0;
+    unsigned base_addr_in = 0;
+    unsigned base_addr_out = 0;
+    unsigned base_addr_add = 0;
+    unsigned weight_base = 0;
+    unsigned weight_size = 0;
+    unsigned bn_weight_base = 0;
+    unsigned bn_weight_size = 0;
+    unsigned in_size = 0;
+    unsigned out_size = 0;
+
+    for (layer_cnt = *start_layer; layer_cnt <= *end_layer; layer_cnt++) {
+        controller (
+            &layer_cnt,
+            &nif,
+            &nof,
+            &noy,
+            &nox,
+            &nkx,
+            &nky,
+            &stride,
+            &pad,
+            &bb_en,
+            &conv_en,
+            &bn_en,
+            &skip_en,
+            &relu_en,
+            &max_pool_en,
+            &avg_pool_en,
+            &fc_en,
+            &base_addr_in,
+            &base_addr_out,
+            &base_addr_add,
+            &weight_base,
+            &weight_size,
+            &bn_weight_base,
+            &bn_weight_size,
+            &in_size,
+            &out_size
+        );
 //
 //        // initial input
 //        if (layer_cnt == *start_layer) {
