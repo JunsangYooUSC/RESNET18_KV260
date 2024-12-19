@@ -150,15 +150,6 @@ int main(){
 				act_host_float[base_addr_out+idx] = (act_host_float[base_addr_out+idx] > 0) ? act_host_float[base_addr_out+idx] : 0;
 			}
 		}
-		// MAX_POOL layer cnt 1
-		if (layer_cnt == 1) {
-			// max pool
-			max_pool(
-				act_host_float, 
-				base_addr_in,
-				base_addr_out,
-				nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
-		}
 		
 
 		// BB7_CONV1 layer cnt 21

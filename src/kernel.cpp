@@ -56,26 +56,27 @@ void load_input(
             }
         }
     }
-
-    for (int f_out = 0; f_out < nof; f_out += POF) {
-        for (int y0 = 0; y0 < noy*stride; y0 += POY*stride) {
-            for (int x0 = 0; x0 < nox*stride; x0 += POX*stride) {
-                for (int f_in = 0; f_in < nif; f_in ++) {
-                    for (int f = 0; f < POF; f++) {
-                        for (int y = 0; y < POY*stride; y+=stride) {
-                            for (int x = 0; x < POX*stride; x+=stride) {
-                                for (int i = 0; i < nky; i++) {
-                                    for (int j = 0; j < nkx; j++) {
-                                        DTYPE_ACT in_val;
-                                        if ( (y0 + y + i < pad) || (y0 + y + i >= noy*stride + pad) || (x0 + x + j < pad) || (x0 + x + j >= nox*stride + pad) ){
-                                            in_val = 0;
+    else {
+        for (int f_out = 0; f_out < nof; f_out += POF) {
+            for (int y0 = 0; y0 < noy*stride; y0 += POY*stride) {
+                for (int x0 = 0; x0 < nox*stride; x0 += POX*stride) {
+                    for (int f_in = 0; f_in < nif; f_in ++) {
+                        for (int f = 0; f < POF; f++) {
+                            for (int y = 0; y < POY*stride; y+=stride) {
+                                for (int x = 0; x < POX*stride; x+=stride) {
+                                    for (int i = 0; i < nky; i++) {
+                                        for (int j = 0; j < nkx; j++) {
+                                            DTYPE_ACT in_val;
+                                            if ( (y0 + y + i < pad) || (y0 + y + i >= noy*stride + pad) || (x0 + x + j < pad) || (x0 + x + j >= nox*stride + pad) ){
+                                                in_val = 0;
+                                            }
+                                            else {
+                                                // unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad);
+                                                unsigned addr = f_in*noy*stride*nox*stride + (y0+y+i-pad)*nox*stride + (x0+x+j-pad);
+                                                in_val = act_mem[base_addr+addr];
+                                            }
+                                            load_input_fifo.write(in_val);
                                         }
-                                        else {
-                                            // unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad);
-                                            unsigned addr = f_in*noy*stride*nox*stride + (y0+y+i-pad)*nox*stride + (x0+x+j-pad);
-                                            in_val = act_mem[base_addr+addr];
-                                        }
-                                        load_input_fifo.write(in_val);
                                     }
                                 }
                             }
@@ -112,7 +113,7 @@ void load_weight(
                             for (int x = 0; x < POX; x++) {
                                 for (int i = 0; i < nky; i++) {
                                     for (int j = 0; j < nkx; j++) {
-                                        unsigned int addr = (f_out+f)*nif*nky*nkx + f_in*nky*nkx + i*nky + j;
+                                        unsigned int addr = (f_out+f)*nif*nky*nkx + f_in*nky*nkx + i*nkx + j;
                                         load_weight_fifo.write(weight_mem[base_addr+addr]);
                                     }
                                 }

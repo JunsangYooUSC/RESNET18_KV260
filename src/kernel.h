@@ -60,21 +60,9 @@ void load_input(
     unsigned int noy,
     unsigned int nox,
     unsigned int stride,
-    unsigned int pad
-);
-
-void store_input_test(
-    DTYPE_ACT *act_mem,
-    hls::stream<DTYPE_ACT> &load_input_fifo,
-    unsigned int base_addr,
-    unsigned int nky,
-    unsigned int nkx,
-    unsigned int nof,
-    unsigned int nif,
-    unsigned int noy,
-    unsigned int nox,
-    unsigned int stride,
-    unsigned int pad
+    unsigned int pad,
+    unsigned int bb_en,
+    unsigned int conv_en
 );
 
 void load_weight(
@@ -86,8 +74,9 @@ void load_weight(
     unsigned int nof,
     unsigned int nif,
     unsigned int noy,
-    unsigned int nox
-
+    unsigned int nox,
+    unsigned int bb_en,
+    unsigned int conv_en
 );
 
 void PE(
