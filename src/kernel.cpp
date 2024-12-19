@@ -209,8 +209,10 @@ void store_output(
     unsigned int nof,
     unsigned int nif,
     unsigned int noy,
-    unsigned int nox
+    unsigned int nox,
+    unsigned int bb_en
 ) {
+    if (!bb_en) return;
     for (int f_out = 0; f_out < nof; f_out += POF) {
         for (int y0 = 0; y0 < noy; y0 += POY) {
             for (int x0 = 0; x0 < nox; x0 += POX) {
@@ -1316,7 +1318,7 @@ void conv_kernel(
         skip_conn(act_mem, bn_out_fifo, skip_out_fifo, base_addr_add,
                 nof, noy, nox, bb_en, skip_en, relu_en);
         store_output(act_mem, skip_out_fifo, base_addr_out, 
-                nky, nkx, nof, nif, noy, nox);
+                nky, nkx, nof, nif, noy, nox, bb_en);
                 
         // max pool
         max_pool(act_mem, base_addr_in, base_addr_out, 
