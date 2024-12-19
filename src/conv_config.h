@@ -718,9 +718,14 @@ constexpr unsigned WEIGHT_MEM_SIZE = 100000;  // todo: temporary for now
 constexpr unsigned BN_WEIGHT_MEM_SIZE = 100000;
 // constexpr unsigned BN_WEIGHT_MEM_SIZE = BB7_SKIP_BN_WEIGHT_BASE;
 #else
-constexpr unsigned MEM0_SIZE = CONV1_C  * CONV1_H * CONV1_W / ACT_PACK;
-constexpr unsigned MEM1_SIZE = MAXPOOL_C  * MAXPOOL_H * MAXPOOL_W / ACT_PACK;
-constexpr unsigned MEM2_SIZE = BB1_CONV2_C  * BB1_CONV2_H * BB1_CONV2_W / ACT_PACK;
+// todo:
+// constexpr unsigned MEM0_SIZE = CONV1_C  * CONV1_H * CONV1_W / ACT_PACK;
+// constexpr unsigned MEM1_SIZE = MAXPOOL_C  * MAXPOOL_H * MAXPOOL_W / ACT_PACK;
+// constexpr unsigned MEM2_SIZE = BB1_CONV2_C  * BB1_CONV2_H * BB1_CONV2_W / ACT_PACK;
+constexpr unsigned MEM0_SIZE = BB7_CONV1_IN_SIZE / ACT_PACK;
+constexpr unsigned MEM1_SIZE = BB7_CONV1_OUT_SIZE / ACT_PACK;
+constexpr unsigned MEM2_SIZE = BB7_CONV2_OUT_SIZE / ACT_PACK;
+
 constexpr unsigned WEIGHT_MEM_SIZE = 20000000;  // todo: temporary for now
 // constexpr unsigned WEIGHT_MEM_SIZE = BB7_SKIP_WEIGHT_BASE;  // todo: temporary for now
 constexpr unsigned BN_WEIGHT_MEM_SIZE = 20000000;

@@ -943,7 +943,6 @@ void conv_kernel(
     unsigned *start_layer,
     unsigned *end_layer
 ) {
-    DTYPE_ACT act_mem[MEM0_SIZE+MEM1_SIZE+MEM2_SIZE];
     // interface
     // #pragma HLS INTERFACE s_axilite port=return bundle=control
     // #pragma HLS INTERFACE mode=m_axi port=act_mem offset=slave bundle=gmem0 depth = 10000000
@@ -966,6 +965,7 @@ void conv_kernel(
     #pragma HLS INTERFACE mode=s_axilite port=start_layer bundle=control
     #pragma HLS INTERFACE mode=s_axilite port=end_layer bundle=control
     
+    DTYPE_ACT act_mem[ACT_MEM_SIZE];
     #pragma HLS BIND_STORAGE variable=act_mem type=ram_2p impl=uram
     #pragma HLS ARRAY_PARTITION variable=act_mem block factor=8
 
