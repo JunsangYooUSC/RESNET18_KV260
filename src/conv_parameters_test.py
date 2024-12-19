@@ -338,7 +338,11 @@ h = quantized_model.layer4(g)
 for idx in range(20):
     for jdx in range(5):
         print(idx*5+jdx, np.round(h.flatten()[idx*5+jdx].item(),5))
-
+##
+with torch.no_grad():
+    input = np.int8(d*(2**(8-input_int_bits))).flatten()
+    input.tofile("input.bin")
+    output = np.int8(e*(2**(8-input_int_bits))).flatten()
 ##
 y = (torch.rand(h.shape)-0.5)*2
 y = fixed_point_quantize(y, 8, 3)
@@ -347,5 +351,6 @@ bn_params.tofile("bn_all_params.bin")
 input = np.int8(y*(2**(8-input_int_bits))).flatten()
 input.tofile("input.bin")
 
+quantized_model.eval()
 z = quantized_model.avgpool(y)
 zz = quantized_model.fc(z.flatten())
