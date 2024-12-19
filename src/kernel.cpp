@@ -333,11 +333,13 @@ void max_pool(
                 for (int i = 0; i < MAX_POOL_K; i++) {
                     for (int j = 0; j < MAX_POOL_K; j++) {
                         DTYPE_ACT in_val;
+                        int y_in = y*stride + i - pad;
+                        int x_in = x*stride + j - pad;
                         if ( (y*stride + i < pad) || (y*stride + i >= noy*stride + pad) || (x*stride + j < pad) || (x*stride + j >= nox*stride + pad) ){
                             in_val = 0;
                         }
                         else {
-                            unsigned in_addr = f*noy*nox + (y*stride+i-pad)*nox + (x*stride+j-pad);
+                            unsigned in_addr = f*noy*stride*nox*stride + (y*stride+i-pad)*nox*stride + (x*stride+j-pad);
                             in_val = act_mem[in_base_addr+in_addr];
                         }
                         max_pool_kernel[i * MAX_POOL_K + j] = in_val;
