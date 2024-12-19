@@ -1293,14 +1293,16 @@ void conv_kernel(
             &in_size,
             &out_size
         );
-
-        //// initial input
-        //if (layer_cnt == *start_layer) {
-        //    // load input
-        //    for (int idx = 0; idx < in_size; idx++){
-        //        act_mem[base_addr_in+idx] = act_in_host[idx];
-        //    }
-        //}
+        std::cout << "layer_cnt: " << layer_cnt << std::endl;
+        std::cout << "base_addr_in: " << base_addr_in << std::endl;
+        std::cout << "in_size: " << in_size << std::endl;
+        // initial input
+        if (layer_cnt == *start_layer) {
+            // load input
+            for (int idx = 0; idx < in_size; idx++){
+                act_mem[base_addr_in+idx] = act_in_host[idx];
+            }
+        }
 
 //        // conv
 //        load_input(act_mem, load_input_fifo, base_addr_in,
