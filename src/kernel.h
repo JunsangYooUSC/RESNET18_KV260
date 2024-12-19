@@ -91,6 +91,19 @@ void PE(
     unsigned int nox
 );
 
+void store_output(
+    DTYPE_ACT *act_mem,
+    hls::stream<float> &out_fifo,
+    unsigned int base_addr,
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int bb_en
+);
+
 void max_pool(
     DTYPE_ACT *act_mem,
     unsigned int in_base_addr,
