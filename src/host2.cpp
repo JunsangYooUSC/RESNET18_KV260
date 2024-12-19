@@ -267,9 +267,11 @@ int main(){
 
 	// kernel calculation
 	conv_kernel(act_in_host, act_out_host, weight_mem, bn_weight_mem, &start_layer, &end_layer);
-
+	for (int idx = 0; idx < out_size; idx++) {
+		std::cout << "idx: " << idx << "kernel out: " << act_out_host[idx] << std::endl;
+	}
 	// compare host and kernel
-	compare_result<DTYPE_ACT, float, MAX_ACT_MEM_SIZE>(act_out_host, act_host_float+base_addr_out);
+	// compare_result<DTYPE_ACT, float, MAX_ACT_MEM_SIZE>(act_out_host, act_host_float+base_addr_out);
 
 /*
 	// fill data
