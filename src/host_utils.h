@@ -56,7 +56,7 @@ void print_data_types() {
 
 // gen_rand: generate random array
 template<typename DTYPE>
-void gen_rand(DTYPE *arr, unsigned LEN, float min_val=-0.5, float max_val=0.5, unsigned int seed=1) {
+void gen_rand(DTYPE *arr, unsigned LEN, float min_val=-1, float max_val=1, unsigned int seed=1) {
 	std::mt19937 rng(seed);
 	std::uniform_real_distribution<float> dist(min_val, max_val);
 	for (int i = 0; i < LEN; i++) {
