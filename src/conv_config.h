@@ -87,7 +87,7 @@ constexpr unsigned int FIFO_ARR_DEPTH = 9;  // todo: reduce if unnecessary
 // input
 #define IN_H                224
 #define IN_W                224
-#define IN_C                3
+#define IN_C                1
 
 // enable signals
 // 0: off
