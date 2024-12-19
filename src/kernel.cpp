@@ -305,6 +305,103 @@ void skip_conn(
     }
 }
 
+void max_pool(
+    DTYPE_ACT *act_mem,
+    unsigned int in_base_addr,
+    unsigned int out_base_addr,
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int stride,
+    unsigned int pad
+    unsigned int max_pool_en
+) {
+    if (!max_pool_en) return;
+    // todo: burst read and write
+    DTYPE_ACT max_pool_kernel[MAX_POOL_K * MAX_POOL_K];
+
+    for (int f = 0; f < nif; f++) {
+        for (int y = 0; y < noy; y++) {
+            for (int x = 0; x < nox; x++) {
+                for (int i = 0; i < MAX_POOL_K; i++) {
+                    for (int j = 0; j < MAX_POOL_K; j++) {
+                        DTYPE_ACT in_val;
+                        if ( (y*stride + i < pad) || (y*stride + i >= noy*stride + pad) || (x*stride + j < pad) || (x*stride + j >= nox*stride + pad) ){
+                            in_val = 0;
+                        }
+                        else {
+                            unsigned in_addr = f*noy*nox + (y*stride+i-pad)*nox + (x*stride+j-pad);
+                            in_val = act_mem[in_base_addr+in_addr];
+                        }
+                        max_pool_kernel[i * MAX_POOL_K + j] = in_val;
+                    }
+                }
+                DTYPE_ACT max = max_pool_kernel[0];
+                for (int idx = 1; idx < MAX_POOL_K * MAX_POOL_K; idx++) {
+                    if (max_pool_kernel[idx] > max) {
+                        max = max_pool_kernel[idx];
+                    }
+                }
+                unsigned out_addr = f*noy*nox + y*nox + x;
+                act_mem[out_base_addr+out_addr] = max;
+            }
+        }
+    }
+}
+
+void avg_pool(
+    DTYPE_ACT *act_mem,
+    unsigned int in_base_addr,
+    unsigned int out_base_addr,
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int stride,
+    unsigned int pad,
+    unsigned int avg_pool_en
+) {
+    if (!avg_pool_en) return;
+    
+    for (int f = 0; f < nif; f++) {
+        float sum = 0;
+        for (int y = 0; y < noy; y++) {
+            for (int x = 0; x < nox; x++) {
+                unsigned in_addr = f*noy*nox + y*nox + x;
+                sum += act_mem[in_base_addr+in_addr];
+            }
+        }
+        act_mem[out_base_addr+f] = sum / (noy * nox);
+    }
+}
+
+void fc(
+    DTYPE_ACT *act_mem,
+    float *bn_weight_mem,
+    unsigned int in_base_addr,
+    unsigned int out_base_addr,
+    unsigned int bn_weight_base_addr,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int fc_en
+) {
+    if (!fc_en) return;
+    // do a fc layer. the input dimension is nif and output dimension is nof and weight dimension is nif * nof
+    for (int f_out = 0; f_out < nof; f_out++) {
+        float sum = 0;
+        for (int f_in = 0; f_in < nif; f_in++) {
+            unsigned weight_addr = f_out*nif + f_in;
+            sum += act_mem[in_base_addr + f_in] * bn_weight_mem[bn_weight_base_addr + weight_addr];
+        }
+        act_mem[f_out] = sum + act_mem[bn_weight_base_addr + AVG_POOL_C*FC_C + f_out];
+    }
+}
+
 void controller (
     unsigned *layer_cnt,
     unsigned *nif,
@@ -322,7 +419,7 @@ void controller (
     bool *relu_en,
     bool *max_pool_en,
     bool *avg_pool_en,
-    bool *lin_en,
+    bool *fc_en,
     unsigned *base_addr_in,
     unsigned *base_addr_out,
     unsigned *base_addr_add,
@@ -349,7 +446,7 @@ void controller (
         *relu_en            = CONV1_RELU_EN;
         *max_pool_en        = CONV1_MAX_POOL_EN;
         *avg_pool_en        = CONV1_AVG_POOL_EN;
-        *lin_en             = CONV1_LIN_EN;
+        *fc_en             = CONV1_FC_EN;
         *base_addr_in       = CONV1_BASE_ADDR_IN;
         *base_addr_out      = CONV1_BASE_ADDR_OUT;
         *base_addr_add      = CONV1_BASE_ADDR_ADD;
@@ -362,33 +459,33 @@ void controller (
     }
     else if (*layer_cnt == 1) {
         *nif                = CONV1_C;
-        *nof                = MAXPOOL_C;
-        *noy                = MAXPOOL_H;
-        *nox                = MAXPOOL_W;
-        *nkx                = MAXPOOL_K;
-        *nky                = MAXPOOL_K;
-        *stride             = MAXPOOL_S;
-        *pad                = MAXPOOL_PAD;
-        *bb_en              = MAXPOOL_BB_EN;
-        *conv_en            = MAXPOOL_CONV_EN;
-        *bn_en              = MAXPOOL_BN_EN;
-        *skip_en            = MAXPOOL_SKIP_EN;
-        *relu_en            = MAXPOOL_RELU_EN;
-        *max_pool_en        = MAXPOOL_MAX_POOL_EN;
-        *avg_pool_en        = MAXPOOL_AVG_POOL_EN;
-        *lin_en             = MAXPOOL_LIN_EN;
-        *base_addr_in       = MAXPOOL_BASE_ADDR_IN;
-        *base_addr_out      = MAXPOOL_BASE_ADDR_OUT;
-        *base_addr_add      = MAXPOOL_BASE_ADDR_ADD;
-        *weight_base        = MAXPOOL_WEIGHT_BASE;
-        *weight_size        = MAXPOOL_WEIGHT_SIZE;
-        *bn_weight_base     = MAXPOOL_BN_WEIGHT_BASE;
-        *bn_weight_size     = MAXPOOL_BN_WEIGHT_SIZE;
-        *in_size            = MAXPOOL_IN_SIZE;
-        *out_size           = MAXPOOL_OUT_SIZE;
+        *nof                = MAX_POOL_C;
+        *noy                = MAX_POOL_H;
+        *nox                = MAX_POOL_W;
+        *nkx                = MAX_POOL_K;
+        *nky                = MAX_POOL_K;
+        *stride             = MAX_POOL_S;
+        *pad                = MAX_POOL_PAD;
+        *bb_en              = MAX_POOL_BB_EN;
+        *conv_en            = MAX_POOL_CONV_EN;
+        *bn_en              = MAX_POOL_BN_EN;
+        *skip_en            = MAX_POOL_SKIP_EN;
+        *relu_en            = MAX_POOL_RELU_EN;
+        *max_pool_en        = MAX_POOL_MAX_POOL_EN;
+        *avg_pool_en        = MAX_POOL_AVG_POOL_EN;
+        *fc_en             = MAX_POOL_FC_EN;
+        *base_addr_in       = MAX_POOL_BASE_ADDR_IN;
+        *base_addr_out      = MAX_POOL_BASE_ADDR_OUT;
+        *base_addr_add      = MAX_POOL_BASE_ADDR_ADD;
+        *weight_base        = MAX_POOL_WEIGHT_BASE;
+        *weight_size        = MAX_POOL_WEIGHT_SIZE;
+        *bn_weight_base     = MAX_POOL_BN_WEIGHT_BASE;
+        *bn_weight_size     = MAX_POOL_BN_WEIGHT_SIZE;
+        *in_size            = MAX_POOL_IN_SIZE;
+        *out_size           = MAX_POOL_OUT_SIZE;
     }
     else if(*layer_cnt == 2) {
-        *nif                = MAXPOOL_C;
+        *nif                = MAX_POOL_C;
         *nof                = BB1_CONV1_C;
         *noy                = BB1_CONV1_H;
         *nox                = BB1_CONV1_W;
@@ -403,7 +500,7 @@ void controller (
         *relu_en            = BB1_CONV1_RELU_EN;
         *max_pool_en        = BB1_CONV1_MAX_POOL_EN;
         *avg_pool_en        = BB1_CONV1_AVG_POOL_EN;
-        *lin_en             = BB1_CONV1_LIN_EN;
+        *fc_en             = BB1_CONV1_FC_EN;
         *base_addr_in       = BB1_CONV1_BASE_ADDR_IN;
         *base_addr_out      = BB1_CONV1_BASE_ADDR_OUT;
         *base_addr_add      = BB1_CONV1_BASE_ADDR_ADD;
@@ -430,7 +527,7 @@ void controller (
         *relu_en            = BB1_CONV2_RELU_EN;
         *max_pool_en        = BB1_CONV2_MAX_POOL_EN;
         *avg_pool_en        = BB1_CONV2_AVG_POOL_EN;
-        *lin_en             = BB1_CONV2_LIN_EN;
+        *fc_en             = BB1_CONV2_FC_EN;
         *base_addr_in       = BB1_CONV2_BASE_ADDR_IN;
         *base_addr_out      = BB1_CONV2_BASE_ADDR_OUT;
         *base_addr_add      = BB1_CONV2_BASE_ADDR_ADD;
@@ -457,7 +554,7 @@ void controller (
         *relu_en            = BB1_SKIP_RELU_EN;
         *max_pool_en        = BB1_SKIP_MAX_POOL_EN;
         *avg_pool_en        = BB1_SKIP_AVG_POOL_EN;
-        *lin_en             = BB1_SKIP_LIN_EN;
+        *fc_en             = BB1_SKIP_FC_EN;
         *base_addr_in       = BB1_SKIP_BASE_ADDR_IN;
         *base_addr_out      = BB1_SKIP_BASE_ADDR_OUT;
         *base_addr_add      = BB1_SKIP_BASE_ADDR_ADD;
@@ -484,7 +581,7 @@ void controller (
         *relu_en            = BB2_CONV1_RELU_EN;
         *max_pool_en        = BB2_CONV1_MAX_POOL_EN;
         *avg_pool_en        = BB2_CONV1_AVG_POOL_EN;
-        *lin_en             = BB2_CONV1_LIN_EN;
+        *fc_en             = BB2_CONV1_FC_EN;
         *base_addr_in       = BB2_CONV1_BASE_ADDR_IN;
         *base_addr_out      = BB2_CONV1_BASE_ADDR_OUT;
         *base_addr_add      = BB2_CONV1_BASE_ADDR_ADD;
@@ -511,7 +608,7 @@ void controller (
         *relu_en            = BB2_CONV2_RELU_EN;
         *max_pool_en        = BB2_CONV2_MAX_POOL_EN;
         *avg_pool_en        = BB2_CONV2_AVG_POOL_EN;
-        *lin_en             = BB2_CONV2_LIN_EN;
+        *fc_en             = BB2_CONV2_FC_EN;
         *base_addr_in       = BB2_CONV2_BASE_ADDR_IN;
         *base_addr_out      = BB2_CONV2_BASE_ADDR_OUT;
         *base_addr_add      = BB2_CONV2_BASE_ADDR_ADD;
@@ -538,7 +635,7 @@ void controller (
         *relu_en            = BB2_SKIP_RELU_EN;
         *max_pool_en        = BB2_SKIP_MAX_POOL_EN;
         *avg_pool_en        = BB2_SKIP_AVG_POOL_EN;
-        *lin_en             = BB2_SKIP_LIN_EN;
+        *fc_en             = BB2_SKIP_FC_EN;
         *base_addr_in       = BB2_SKIP_BASE_ADDR_IN;
         *base_addr_out      = BB2_SKIP_BASE_ADDR_OUT;
         *base_addr_add      = BB2_SKIP_BASE_ADDR_ADD;
@@ -549,7 +646,6 @@ void controller (
         *in_size            = BB2_SKIP_IN_SIZE;
         *out_size           = BB2_SKIP_OUT_SIZE;
     }
-    /*
     else if(layer_cnt == 8) {
         *nif                = BB2_SKIP_C;
         *nof                = BB3_CONV1_C;
@@ -566,7 +662,7 @@ void controller (
         *relu_en            = BB3_CONV1_RELU_EN;
         *max_pool_en        = BB3_CONV1_MAX_POOL_EN;
         *avg_pool_en        = BB3_CONV1_AVG_POOL_EN;
-        *lin_en             = BB3_CONV1_LIN_EN;
+        *fc_en             = BB3_CONV1_FC_EN;
         *base_addr_in       = BB3_CONV1_BASE_ADDR_IN;
         *base_addr_out      = BB3_CONV1_BASE_ADDR_OUT;
         *base_addr_add      = BB3_CONV1_BASE_ADDR_ADD;
@@ -593,7 +689,7 @@ void controller (
         *relu_en            = BB3_CONV2_RELU_EN;
         *max_pool_en        = BB3_CONV2_MAX_POOL_EN;
         *avg_pool_en        = BB3_CONV2_AVG_POOL_EN;
-        *lin_en             = BB3_CONV2_LIN_EN;
+        *fc_en             = BB3_CONV2_FC_EN;
         *base_addr_in       = BB3_CONV2_BASE_ADDR_IN;
         *base_addr_out      = BB3_CONV2_BASE_ADDR_OUT;
         *base_addr_add      = BB3_CONV2_BASE_ADDR_ADD;
@@ -620,7 +716,7 @@ void controller (
         *relu_en            = BB3_SKIP_RELU_EN;
         *max_pool_en        = BB3_SKIP_MAX_POOL_EN;
         *avg_pool_en        = BB3_SKIP_AVG_POOL_EN;
-        *lin_en             = BB3_SKIP_LIN_EN;
+        *fc_en             = BB3_SKIP_FC_EN;
         *base_addr_in       = BB3_SKIP_BASE_ADDR_IN;
         *base_addr_out      = BB3_SKIP_BASE_ADDR_OUT;
         *base_addr_add      = BB3_SKIP_BASE_ADDR_ADD;
@@ -647,7 +743,7 @@ void controller (
         *relu_en            = BB4_CONV1_RELU_EN;
         *max_pool_en        = BB4_CONV1_MAX_POOL_EN;
         *avg_pool_en        = BB4_CONV1_AVG_POOL_EN;
-        *lin_en             = BB4_CONV1_LIN_EN;
+        *fc_en             = BB4_CONV1_FC_EN;
         *base_addr_in       = BB4_CONV1_BASE_ADDR_IN;
         *base_addr_out      = BB4_CONV1_BASE_ADDR_OUT;
         *base_addr_add      = BB4_CONV1_BASE_ADDR_ADD;
@@ -674,7 +770,7 @@ void controller (
         *relu_en            = BB4_CONV2_RELU_EN;
         *max_pool_en        = BB4_CONV2_MAX_POOL_EN;
         *avg_pool_en        = BB4_CONV2_AVG_POOL_EN;
-        *lin_en             = BB4_CONV2_LIN_EN;
+        *fc_en             = BB4_CONV2_FC_EN;
         *base_addr_in       = BB4_CONV2_BASE_ADDR_IN;
         *base_addr_out      = BB4_CONV2_BASE_ADDR_OUT;
         *base_addr_add      = BB4_CONV2_BASE_ADDR_ADD;
@@ -701,7 +797,7 @@ void controller (
         *relu_en            = BB4_SKIP_RELU_EN;
         *max_pool_en        = BB4_SKIP_MAX_POOL_EN;
         *avg_pool_en        = BB4_SKIP_AVG_POOL_EN;
-        *lin_en             = BB4_SKIP_LIN_EN;
+        *fc_en             = BB4_SKIP_FC_EN;
         *base_addr_in       = BB4_SKIP_BASE_ADDR_IN;
         *base_addr_out      = BB4_SKIP_BASE_ADDR_OUT;
         *base_addr_add      = BB4_SKIP_BASE_ADDR_ADD;
@@ -728,7 +824,7 @@ void controller (
         *relu_en            = BB5_CONV1_RELU_EN;
         *max_pool_en        = BB5_CONV1_MAX_POOL_EN;
         *avg_pool_en        = BB5_CONV1_AVG_POOL_EN;
-        *lin_en             = BB5_CONV1_LIN_EN;
+        *fc_en             = BB5_CONV1_FC_EN;
         *base_addr_in       = BB5_CONV1_BASE_ADDR_IN;
         *base_addr_out      = BB5_CONV1_BASE_ADDR_OUT;
         *base_addr_add      = BB5_CONV1_BASE_ADDR_ADD;
@@ -755,7 +851,7 @@ void controller (
         *relu_en            = BB5_CONV2_RELU_EN;
         *max_pool_en        = BB5_CONV2_MAX_POOL_EN;
         *avg_pool_en        = BB5_CONV2_AVG_POOL_EN;
-        *lin_en             = BB5_CONV2_LIN_EN;
+        *fc_en             = BB5_CONV2_FC_EN;
         *base_addr_in       = BB5_CONV2_BASE_ADDR_IN;
         *base_addr_out      = BB5_CONV2_BASE_ADDR_OUT;
         *base_addr_add      = BB5_CONV2_BASE_ADDR_ADD;
@@ -782,7 +878,7 @@ void controller (
         *relu_en            = BB5_SKIP_RELU_EN;
         *max_pool_en        = BB5_SKIP_MAX_POOL_EN;
         *avg_pool_en        = BB5_SKIP_AVG_POOL_EN;
-        *lin_en             = BB5_SKIP_LIN_EN;
+        *fc_en             = BB5_SKIP_FC_EN;
         *base_addr_in       = BB5_SKIP_BASE_ADDR_IN;
         *base_addr_out      = BB5_SKIP_BASE_ADDR_OUT;
         *base_addr_add      = BB5_SKIP_BASE_ADDR_ADD;
@@ -809,7 +905,7 @@ void controller (
         *relu_en            = BB6_CONV1_RELU_EN;
         *max_pool_en        = BB6_CONV1_MAX_POOL_EN;
         *avg_pool_en        = BB6_CONV1_AVG_POOL_EN;
-        *lin_en             = BB6_CONV1_LIN_EN;
+        *fc_en             = BB6_CONV1_FC_EN;
         *base_addr_in       = BB6_CONV1_BASE_ADDR_IN;
         *base_addr_out      = BB6_CONV1_BASE_ADDR_OUT;
         *base_addr_add      = BB6_CONV1_BASE_ADDR_ADD;
@@ -836,7 +932,7 @@ void controller (
         *relu_en            = BB6_CONV2_RELU_EN;
         *max_pool_en        = BB6_CONV2_MAX_POOL_EN;
         *avg_pool_en        = BB6_CONV2_AVG_POOL_EN;
-        *lin_en             = BB6_CONV2_LIN_EN;
+        *fc_en             = BB6_CONV2_FC_EN;
         *base_addr_in       = BB6_CONV2_BASE_ADDR_IN;
         *base_addr_out      = BB6_CONV2_BASE_ADDR_OUT;
         *base_addr_add      = BB6_CONV2_BASE_ADDR_ADD;
@@ -847,11 +943,34 @@ void controller (
         *in_size            = BB6_CONV2_IN_SIZE;
         *out_size           = BB6_CONV2_OUT_SIZE;
     }
-    else if (layer_cnt == 19) {
-        
+    else if (*layer_cnt == 19) {
+        *nif                = BB6_CONV2_C;
+        *nof                = BB6_SKIP_C;
+        *noy                = BB6_SKIP_H;
+        *nox                = BB6_SKIP_W;
+        *nkx                = BB6_SKIP_K;
+        *nky                = BB6_SKIP_K;
+        *stride             = BB6_SKIP_S;
+        *pad                = BB6_SKIP_PAD;
+        *bb_en              = BB6_SKIP_BB_EN;
+        *conv_en            = BB6_SKIP_CONV_EN;
+        *bn_en              = BB6_SKIP_BN_EN;
+        *skip_en            = BB6_SKIP_SKIP_EN;
+        *relu_en            = BB6_SKIP_RELU_EN;
+        *max_pool_en        = BB6_SKIP_MAX_POOL_EN;
+        *avg_pool_en        = BB6_SKIP_AVG_POOL_EN;
+        *fc_en             = BB6_SKIP_FC_EN;
+        *base_addr_in       = BB6_SKIP_BASE_ADDR_IN;
+        *base_addr_out      = BB6_SKIP_BASE_ADDR_OUT;
+        *base_addr_add      = BB6_SKIP_BASE_ADDR_ADD;
+        *weight_base        = BB6_SKIP_WEIGHT_BASE;
+        *weight_size        = BB6_SKIP_WEIGHT_SIZE;
+        *bn_weight_base     = BB6_SKIP_BN_WEIGHT_BASE;
+        *bn_weight_size     = BB6_SKIP_BN_WEIGHT_SIZE;
+        *in_size            = BB6_SKIP_IN_SIZE;
+        *out_size           = BB6_SKIP_OUT_SIZE;
     }
-    */
-    else if (*layer_cnt == 21) {
+    else if (*layer_cnt == 20) {
         *nif                = BB6_SKIP_C;
         *nof                = BB7_CONV1_C;
         *noy                = BB7_CONV1_H;
@@ -867,7 +986,7 @@ void controller (
         *relu_en            = BB7_CONV1_RELU_EN;
         *max_pool_en        = BB7_CONV1_MAX_POOL_EN;
         *avg_pool_en        = BB7_CONV1_AVG_POOL_EN;
-        *lin_en             = BB7_CONV1_LIN_EN;
+        *fc_en             = BB7_CONV1_FC_EN;
         *base_addr_in       = BB7_CONV1_BASE_ADDR_IN;
         *base_addr_out      = BB7_CONV1_BASE_ADDR_OUT;
         *base_addr_add      = BB7_CONV1_BASE_ADDR_ADD;
@@ -878,7 +997,7 @@ void controller (
         *in_size            = BB7_CONV1_IN_SIZE;
         *out_size           = BB7_CONV1_OUT_SIZE;
     }
-    else if (*layer_cnt == 22) {
+    else if (*layer_cnt == 21) {
         *nif                = BB7_CONV1_C;
         *nof                = BB7_CONV2_C;
         *noy                = BB7_CONV2_H;
@@ -894,7 +1013,7 @@ void controller (
         *relu_en            = BB7_CONV2_RELU_EN;
         *max_pool_en        = BB7_CONV2_MAX_POOL_EN;
         *avg_pool_en        = BB7_CONV2_AVG_POOL_EN;
-        *lin_en             = BB7_CONV2_LIN_EN;
+        *fc_en             = BB7_CONV2_FC_EN;
         *base_addr_in       = BB7_CONV2_BASE_ADDR_IN;
         *base_addr_out      = BB7_CONV2_BASE_ADDR_OUT;
         *base_addr_add      = BB7_CONV2_BASE_ADDR_ADD;
@@ -905,7 +1024,7 @@ void controller (
         *in_size            = BB7_CONV2_IN_SIZE;
         *out_size           = BB7_CONV2_OUT_SIZE;
     }
-    else if (*layer_cnt == 23) {
+    else if (*layer_cnt == 22) {
         *nif                = BB7_CONV2_C;
         *nof                = BB7_SKIP_C;
         *noy                = BB7_SKIP_H;
@@ -921,7 +1040,7 @@ void controller (
         *relu_en            = BB7_SKIP_RELU_EN;
         *max_pool_en        = BB7_SKIP_MAX_POOL_EN;
         *avg_pool_en        = BB7_SKIP_AVG_POOL_EN;
-        *lin_en             = BB7_SKIP_LIN_EN;
+        *fc_en             = BB7_SKIP_FC_EN;
         *base_addr_in       = BB7_SKIP_BASE_ADDR_IN;
         *base_addr_out      = BB7_SKIP_BASE_ADDR_OUT;
         *base_addr_add      = BB7_SKIP_BASE_ADDR_ADD;
@@ -931,6 +1050,141 @@ void controller (
         *bn_weight_size     = BB7_SKIP_BN_WEIGHT_SIZE;
         *in_size            = BB7_SKIP_IN_SIZE;
         *out_size           = BB7_SKIP_OUT_SIZE;
+    }
+    else if (*layer_cnt == 23) {
+        *nif                = BB7_SKIP_C;
+        *nof                = BB8_CONV1_C;
+        *noy                = BB8_CONV1_H;
+        *nox                = BB8_CONV1_W;
+        *nkx                = BB8_CONV1_K;
+        *nky                = BB8_CONV1_K;
+        *stride             = BB8_CONV1_S;
+        *pad                = BB8_CONV1_PAD;
+        *bb_en              = BB8_CONV1_BB_EN;
+        *conv_en            = BB8_CONV1_CONV_EN;
+        *bn_en              = BB8_CONV1_BN_EN;
+        *skip_en            = BB8_CONV1_SKIP_EN;
+        *relu_en            = BB8_CONV1_RELU_EN;
+        *max_pool_en        = BB8_CONV1_MAX_POOL_EN;
+        *avg_pool_en        = BB8_CONV1_AVG_POOL_EN;
+        *fc_en             = BB8_CONV1_FC_EN;
+        *base_addr_in       = BB8_CONV1_BASE_ADDR_IN;
+        *base_addr_out      = BB8_CONV1_BASE_ADDR_OUT;
+        *base_addr_add      = BB8_CONV1_BASE_ADDR_ADD;
+        *weight_base        = BB8_CONV1_WEIGHT_BASE;
+        *weight_size        = BB8_CONV1_WEIGHT_SIZE;
+        *bn_weight_base     = BB8_CONV1_BN_WEIGHT_BASE;
+        *bn_weight_size     = BB8_CONV1_BN_WEIGHT_SIZE;
+        *in_size            = BB8_CONV1_IN_SIZE;
+        *out_size           = BB8_CONV1_OUT_SIZE;
+    }
+    else if (*layer_cnt == 24) {
+        *nif                = BB8_CONV1_C;
+        *nof                = BB8_CONV2_C;
+        *noy                = BB8_CONV2_H;
+        *nox                = BB8_CONV2_W;
+        *nkx                = BB8_CONV2_K;
+        *nky                = BB8_CONV2_K;
+        *stride             = BB8_CONV2_S;
+        *pad                = BB8_CONV2_PAD;
+        *bb_en              = BB8_CONV2_BB_EN;
+        *conv_en            = BB8_CONV2_CONV_EN;
+        *bn_en              = BB8_CONV2_BN_EN;
+        *skip_en            = BB8_CONV2_SKIP_EN;
+        *relu_en            = BB8_CONV2_RELU_EN;
+        *max_pool_en        = BB8_CONV2_MAX_POOL_EN;
+        *avg_pool_en        = BB8_CONV2_AVG_POOL_EN;
+        *fc_en             = BB8_CONV2_FC_EN;
+        *base_addr_in       = BB8_CONV2_BASE_ADDR_IN;
+        *base_addr_out      = BB8_CONV2_BASE_ADDR_OUT;
+        *base_addr_add      = BB8_CONV2_BASE_ADDR_ADD;
+        *weight_base        = BB8_CONV2_WEIGHT_BASE;
+        *weight_size        = BB8_CONV2_WEIGHT_SIZE;
+        *bn_weight_base     = BB8_CONV2_BN_WEIGHT_BASE;
+        *bn_weight_size     = BB8_CONV2_BN_WEIGHT_SIZE;
+        *in_size            = BB8_CONV2_IN_SIZE;
+        *out_size           = BB8_CONV2_OUT_SIZE;
+    }
+    else if (*layer_cnt == 25) {
+        *nif                = BB8_CONV2_C;
+        *nof                = BB8_SKIP_C;
+        *noy                = BB8_SKIP_H;
+        *nox                = BB8_SKIP_W;
+        *nkx                = BB8_SKIP_K;
+        *nky                = BB8_SKIP_K;
+        *stride             = BB8_SKIP_S;
+        *pad                = BB8_SKIP_PAD;
+        *bb_en              = BB8_SKIP_BB_EN;
+        *conv_en            = BB8_SKIP_CONV_EN;
+        *bn_en              = BB8_SKIP_BN_EN;
+        *skip_en            = BB8_SKIP_SKIP_EN;
+        *relu_en            = BB8_SKIP_RELU_EN;
+        *max_pool_en        = BB8_SKIP_MAX_POOL_EN;
+        *avg_pool_en        = BB8_SKIP_AVG_POOL_EN;
+        *fc_en             = BB8_SKIP_FC_EN;
+        *base_addr_in       = BB8_SKIP_BASE_ADDR_IN;
+        *base_addr_out      = BB8_SKIP_BASE_ADDR_OUT;
+        *base_addr_add      = BB8_SKIP_BASE_ADDR_ADD;
+        *weight_base        = BB8_SKIP_WEIGHT_BASE;
+        *weight_size        = BB8_SKIP_WEIGHT_SIZE;
+        *bn_weight_base     = BB8_SKIP_BN_WEIGHT_BASE;
+        *bn_weight_size     = BB8_SKIP_BN_WEIGHT_SIZE;
+        *in_size            = BB8_SKIP_IN_SIZE;
+        *out_size           = BB8_SKIP_OUT_SIZE;
+    }
+    else if (*layer_cnt == 26) {
+        *nif                = BB8_SKIP_C;
+        *nof                = AVG_POOL_C;
+        *noy                = AVG_POOL_H;
+        *nox                = AVG_POOL_W;
+        *nkx                = AVG_POOL_K;
+        *nky                = AVG_POOL_K;
+        *stride             = AVG_POOL_S;
+        *pad                = AVG_POOL_PAD;
+        *bb_en              = AVG_POOL_BB_EN;
+        *conv_en            = AVG_POOL_CONV_EN;
+        *bn_en              = AVG_POOL_BN_EN;
+        *skip_en            = AVG_POOL_SKIP_EN;
+        *relu_en            = AVG_POOL_RELU_EN;
+        *max_pool_en        = AVG_POOL_MAX_POOL_EN;
+        *avg_pool_en        = AVG_POOL_AVG_POOL_EN;
+        *fc_en             = AVG_POOL_FC_EN;
+        *base_addr_in       = AVG_POOL_BASE_ADDR_IN;
+        *base_addr_out      = AVG_POOL_BASE_ADDR_OUT;
+        *base_addr_add      = AVG_POOL_BASE_ADDR_ADD;
+        *weight_base        = AVG_POOL_WEIGHT_BASE;
+        *weight_size        = AVG_POOL_WEIGHT_SIZE;
+        *bn_weight_base     = AVG_POOL_BN_WEIGHT_BASE;
+        *bn_weight_size     = AVG_POOL_BN_WEIGHT_SIZE;
+        *in_size            = AVG_POOL_IN_SIZE;
+        *out_size           = AVG_POOL_OUT_SIZE;
+    }
+    else if (*layer_cnt == 26) {
+        *nif                = AVG_POOL_C;
+        *nof                = FC_C;
+        *noy                = FC_H;
+        *nox                = FC_W;
+        *nkx                = FC_K;
+        *nky                = FC_K;
+        *stride             = FC_S;
+        *pad                = FC_PAD;
+        *bb_en              = FC_BB_EN;
+        *conv_en            = FC_CONV_EN;
+        *bn_en              = FC_BN_EN;
+        *skip_en            = FC_SKIP_EN;
+        *relu_en            = FC_RELU_EN;
+        *max_pool_en        = FC_MAX_POOL_EN;
+        *avg_pool_en        = FC_AVG_POOL_EN;
+        *fc_en             = FC_FC_EN;
+        *base_addr_in       = FC_BASE_ADDR_IN;
+        *base_addr_out      = FC_BASE_ADDR_OUT;
+        *base_addr_add      = FC_BASE_ADDR_ADD;
+        *weight_base        = FC_WEIGHT_BASE;
+        *weight_size        = FC_WEIGHT_SIZE;
+        *bn_weight_base     = FC_BN_WEIGHT_BASE;
+        *bn_weight_size     = FC_BN_WEIGHT_SIZE;
+        *in_size            = FC_IN_SIZE;
+        *out_size           = FC_OUT_SIZE;
     }
     
 }
@@ -997,7 +1251,7 @@ void conv_kernel(
     bool relu_en = 0;
     bool max_pool_en = 0;
     bool avg_pool_en = 0;
-    bool lin_en = 0;
+    bool fc_en = 0;
     unsigned base_addr_in = 0;
     unsigned base_addr_out = 0;
     unsigned base_addr_add = 0;
@@ -1026,7 +1280,7 @@ void conv_kernel(
             &relu_en,
             &max_pool_en,
             &avg_pool_en,
-            &lin_en,
+            &fc_en,
             &base_addr_in,
             &base_addr_out,
             &base_addr_add,

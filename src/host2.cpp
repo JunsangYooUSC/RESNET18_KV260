@@ -79,7 +79,7 @@ int main(){
 	bool relu_en = 0;
 	bool max_pool_en = 0;
 	bool avg_pool_en = 0;
-	bool lin_en = 0;
+	bool fc_en = 0;
 	unsigned base_addr_in = 0;
 	unsigned base_addr_out = 0;
 	unsigned base_addr_add = 0;
@@ -108,7 +108,7 @@ int main(){
             &relu_en,
             &max_pool_en,
             &avg_pool_en,
-            &lin_en,
+            &fc_en,
             &base_addr_in,
             &base_addr_out,
             &base_addr_add,
@@ -227,7 +227,7 @@ int main(){
 		std::cout << "relu_en: " << relu_en << std::endl;
 		std::cout << "max_pool_en: " << max_pool_en << std::endl;
 		std::cout << "avg_pool_en: " << avg_pool_en << std::endl;
-		std::cout << "lin_en: " << lin_en << std::endl;
+		std::cout << "fc_en: " << fc_en << std::endl;
 		std::cout << "base_addr_in: " << base_addr_in << std::endl;
 		std::cout << "base_addr_out: " << base_addr_out << std::endl;
 		std::cout << "base_addr_add: " << base_addr_add << std::endl;
