@@ -1228,6 +1228,7 @@ void conv_kernel(
     DTYPE_ACT act_mem[ACT_MEM_SIZE];
     #pragma HLS BIND_STORAGE variable=act_mem type=ram_2p impl=uram
     #pragma HLS ARRAY_PARTITION variable=act_mem block factor=8
+	#pragma HLS DEPENDENCE variable=act_mem dependent=false
 
     // fifo
     hls::stream<DTYPE_ACT> load_input_fifo;

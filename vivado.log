@@ -200,3 +200,4 @@ WARNING: [Vivado-projutils-10] Found source(s) that were local or imported into 
  under the header section.
 
 write_project_tcl: Time (s): cpu = 00:00:03 ; elapsed = 00:00:11 . Memory (MB): peak = 9622.289 ; gain = 0.000 ; free physical = 9786 ; free virtual = 13315
+WARNING: [IP_Flow 19-4318] IP-XACT file does not exist: /home/junsang/projects/EE511/hw4/hw4_ee511/resnet/solution1/impl/ip/component.xml. It will be created.
