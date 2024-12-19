@@ -121,6 +121,9 @@ int main(){
             &out_size
         );
 		if (layer_cnt == start_layer){
+			std::cout << "WEIGHT_MEM_SIZE: " << WEIGHT_MEM_SIZE << std::endl;
+			std::cout << "BN_WEIGHT_MEM_SIZE: " << BN_WEIGHT_MEM_SIZE << std::endl;
+			std::cout << "ACT_MEM_SIZE: " << ACT_MEM_SIZE << std::endl;
 			// load input
 			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/input.bin";
 			read_bin_fixed<DTYPE_ACT>(fname, act_in_host, base_addr_in, in_size);
@@ -133,8 +136,6 @@ int main(){
 			read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, WEIGHT_MEM_SIZE);
 			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/bn_all_params.bin";
 			read_bin_float(fname, bn_weight_mem, bn_weight_base, BN_WEIGHT_MEM_SIZE);
-			std::cout << "WEIGHT_MEM_SIZE: " << WEIGHT_MEM_SIZE << std::endl;
-			std::cout << "BN_WEIGHT_MEM_SIZE: " << BN_WEIGHT_MEM_SIZE << std::endl;
 		}
 		// CONV1 layer cnt 0
 		if (layer_cnt == 0) {
