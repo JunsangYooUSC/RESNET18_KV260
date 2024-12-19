@@ -1,0 +1,842 @@
+INFO: [SIM 2] *************** CSIM start ***************
+INFO: [SIM 4] CSIM will launch GCC as the compiler.
+   Compiling ../../../../RESNET18_KV260/src/host2.cpp in debug mode
+   Generating csim.exe
+PKX:        1
+PKY:        1
+PIF:        1
+POX:        7
+POY:        7
+POF:        1
+--------------------activation datatype information--------------------
+activation total bits:            16
+activation integer bits:          8
+--------------------FILTER datatype information--------------------
+filter total bits:                16
+filter integer bits:              8
+--------------------mult datatype information--------------------
+mult total bits:                  32
+mult integer bits:                16
+--------------------MAC datatype information--------------------
+MAC total bits:                   32
+MAC integer bits:                 16
+****************************************
+layer_cnt: 0
+nif: 3
+nof: 2
+noy: 112
+nox: 112
+nkx: 7
+nky: 7
+stride: 2
+pad: 3
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 0
+base_addr_out: 6272
+base_addr_add: 0
+weight_base: 0
+weight_size: 294
+bn_weight_base: 0
+bn_weight_size: 6
+in_size: 150528
+out_size: 25088
+****************************************
+
+****************************************
+layer_cnt: 1
+nif: 2
+nof: 2
+noy: 56
+nox: 56
+nkx: 3
+nky: 3
+stride: 2
+pad: 1
+bb_en: 0
+conv_en: 0
+bn_en: 0
+skip_en: 0
+relu_en: 0
+max_pool_en: 1
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 6272
+base_addr_out: 0
+base_addr_add: 0
+weight_base: 0
+weight_size: 0
+bn_weight_base: 0
+bn_weight_size: 0
+in_size: 25088
+out_size: 6272
+****************************************
+
+****************************************
+layer_cnt: 2
+nif: 2
+nof: 2
+noy: 56
+nox: 56
+nkx: 3
+nky: 3
+stride: 1
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 0
+base_addr_out: 6272
+base_addr_add: 0
+weight_base: 294
+weight_size: 36
+bn_weight_base: 6
+bn_weight_size: 6
+in_size: 6272
+out_size: 6272
+****************************************
+
+****************************************
+layer_cnt: 3
+nif: 2
+nof: 2
+noy: 56
+nox: 56
+nkx: 3
+nky: 3
+stride: 1
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 0
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 6272
+base_addr_out: 31360
+base_addr_add: 0
+weight_base: 330
+weight_size: 36
+bn_weight_base: 12
+bn_weight_size: 6
+in_size: 6272
+out_size: 6272
+****************************************
+
+****************************************
+layer_cnt: 4
+nif: 2
+nof: 2
+noy: 56
+nox: 56
+nkx: 0
+nky: 0
+stride: 0
+pad: 0
+bb_en: 1
+conv_en: 0
+bn_en: 0
+skip_en: 1
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 0
+base_addr_out: 6272
+base_addr_add: 31360
+weight_base: 0
+weight_size: 0
+bn_weight_base: 0
+bn_weight_size: 0
+in_size: 6272
+out_size: 6272
+****************************************
+
+****************************************
+layer_cnt: 5
+nif: 2
+nof: 2
+noy: 56
+nox: 56
+nkx: 3
+nky: 3
+stride: 1
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 6272
+base_addr_out: 31360
+base_addr_add: 0
+weight_base: 366
+weight_size: 36
+bn_weight_base: 18
+bn_weight_size: 6
+in_size: 6272
+out_size: 6272
+****************************************
+
+****************************************
+layer_cnt: 6
+nif: 2
+nof: 2
+noy: 56
+nox: 56
+nkx: 3
+nky: 3
+stride: 1
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 0
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 31360
+base_addr_out: 0
+base_addr_add: 0
+weight_base: 402
+weight_size: 36
+bn_weight_base: 24
+bn_weight_size: 6
+in_size: 6272
+out_size: 6272
+****************************************
+
+****************************************
+layer_cnt: 7
+nif: 2
+nof: 2
+noy: 56
+nox: 56
+nkx: 0
+nky: 0
+stride: 0
+pad: 0
+bb_en: 1
+conv_en: 0
+bn_en: 0
+skip_en: 1
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 6272
+base_addr_out: 31360
+base_addr_add: 0
+weight_base: 0
+weight_size: 0
+bn_weight_base: 0
+bn_weight_size: 0
+in_size: 6272
+out_size: 6272
+****************************************
+
+****************************************
+layer_cnt: 8
+nif: 2
+nof: 4
+noy: 28
+nox: 28
+nkx: 3
+nky: 3
+stride: 2
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 31360
+base_addr_out: 0
+base_addr_add: 0
+weight_base: 438
+weight_size: 72
+bn_weight_base: 30
+bn_weight_size: 12
+in_size: 6272
+out_size: 3136
+****************************************
+
+****************************************
+layer_cnt: 9
+nif: 4
+nof: 4
+noy: 28
+nox: 28
+nkx: 3
+nky: 3
+stride: 1
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 0
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 0
+base_addr_out: 6272
+base_addr_add: 0
+weight_base: 510
+weight_size: 144
+bn_weight_base: 42
+bn_weight_size: 12
+in_size: 3136
+out_size: 3136
+****************************************
+
+****************************************
+layer_cnt: 10
+nif: 4
+nof: 4
+noy: 28
+nox: 28
+nkx: 1
+nky: 1
+stride: 2
+pad: 0
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 1
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 31360
+base_addr_out: 0
+base_addr_add: 6272
+weight_base: 654
+weight_size: 16
+bn_weight_base: 54
+bn_weight_size: 12
+in_size: 3136
+out_size: 3136
+****************************************
+
+****************************************
+layer_cnt: 11
+nif: 4
+nof: 4
+noy: 28
+nox: 28
+nkx: 3
+nky: 3
+stride: 1
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 0
+base_addr_out: 6272
+base_addr_add: 0
+weight_base: 670
+weight_size: 144
+bn_weight_base: 66
+bn_weight_size: 12
+in_size: 3136
+out_size: 3136
+****************************************
+
+****************************************
+layer_cnt: 12
+nif: 4
+nof: 4
+noy: 28
+nox: 28
+nkx: 3
+nky: 3
+stride: 1
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 0
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 6272
+base_addr_out: 31360
+base_addr_add: 0
+weight_base: 814
+weight_size: 144
+bn_weight_base: 78
+bn_weight_size: 12
+in_size: 3136
+out_size: 3136
+****************************************
+
+****************************************
+layer_cnt: 13
+nif: 4
+nof: 4
+noy: 28
+nox: 28
+nkx: 0
+nky: 0
+stride: 0
+pad: 0
+bb_en: 1
+conv_en: 0
+bn_en: 0
+skip_en: 1
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 0
+base_addr_out: 6272
+base_addr_add: 31360
+weight_base: 0
+weight_size: 0
+bn_weight_base: 0
+bn_weight_size: 0
+in_size: 3136
+out_size: 3136
+****************************************
+
+****************************************
+layer_cnt: 14
+nif: 4
+nof: 8
+noy: 14
+nox: 14
+nkx: 3
+nky: 3
+stride: 2
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 6272
+base_addr_out: 31360
+base_addr_add: 0
+weight_base: 958
+weight_size: 288
+bn_weight_base: 90
+bn_weight_size: 24
+in_size: 3136
+out_size: 1568
+****************************************
+
+****************************************
+layer_cnt: 15
+nif: 8
+nof: 8
+noy: 14
+nox: 14
+nkx: 3
+nky: 3
+stride: 1
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 0
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 31360
+base_addr_out: 0
+base_addr_add: 0
+weight_base: 1246
+weight_size: 576
+bn_weight_base: 114
+bn_weight_size: 24
+in_size: 1568
+out_size: 1568
+****************************************
+
+****************************************
+layer_cnt: 16
+nif: 8
+nof: 8
+noy: 14
+nox: 14
+nkx: 1
+nky: 1
+stride: 2
+pad: 0
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 1
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 6272
+base_addr_out: 31360
+base_addr_add: 0
+weight_base: 1822
+weight_size: 64
+bn_weight_base: 138
+bn_weight_size: 24
+in_size: 1568
+out_size: 1568
+****************************************
+
+****************************************
+layer_cnt: 17
+nif: 8
+nof: 8
+noy: 14
+nox: 14
+nkx: 3
+nky: 3
+stride: 1
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 31360
+base_addr_out: 0
+base_addr_add: 0
+weight_base: 1886
+weight_size: 576
+bn_weight_base: 162
+bn_weight_size: 24
+in_size: 1568
+out_size: 1568
+****************************************
+
+****************************************
+layer_cnt: 18
+nif: 8
+nof: 8
+noy: 14
+nox: 14
+nkx: 3
+nky: 3
+stride: 1
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 0
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 0
+base_addr_out: 6272
+base_addr_add: 0
+weight_base: 2462
+weight_size: 576
+bn_weight_base: 186
+bn_weight_size: 24
+in_size: 1568
+out_size: 1568
+****************************************
+
+****************************************
+layer_cnt: 19
+nif: 8
+nof: 8
+noy: 14
+nox: 14
+nkx: 0
+nky: 0
+stride: 0
+pad: 0
+bb_en: 1
+conv_en: 0
+bn_en: 0
+skip_en: 1
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 31360
+base_addr_out: 0
+base_addr_add: 6272
+weight_base: 0
+weight_size: 0
+bn_weight_base: 0
+bn_weight_size: 0
+in_size: 1568
+out_size: 1568
+****************************************
+
+****************************************
+layer_cnt: 20
+nif: 8
+nof: 16
+noy: 7
+nox: 7
+nkx: 3
+nky: 3
+stride: 2
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 0
+base_addr_out: 6272
+base_addr_add: 0
+weight_base: 3038
+weight_size: 1152
+bn_weight_base: 210
+bn_weight_size: 48
+in_size: 1568
+out_size: 784
+****************************************
+
+****************************************
+layer_cnt: 21
+nif: 16
+nof: 16
+noy: 7
+nox: 7
+nkx: 3
+nky: 3
+stride: 1
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 0
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 6272
+base_addr_out: 31360
+base_addr_add: 0
+weight_base: 4190
+weight_size: 2304
+bn_weight_base: 258
+bn_weight_size: 48
+in_size: 784
+out_size: 784
+****************************************
+
+****************************************
+layer_cnt: 22
+nif: 16
+nof: 16
+noy: 7
+nox: 7
+nkx: 1
+nky: 1
+stride: 2
+pad: 0
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 1
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 0
+base_addr_out: 6272
+base_addr_add: 31360
+weight_base: 6494
+weight_size: 256
+bn_weight_base: 306
+bn_weight_size: 48
+in_size: 784
+out_size: 784
+****************************************
+
+****************************************
+layer_cnt: 23
+nif: 16
+nof: 16
+noy: 7
+nox: 7
+nkx: 3
+nky: 3
+stride: 1
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 6272
+base_addr_out: 31360
+base_addr_add: 0
+weight_base: 6750
+weight_size: 2304
+bn_weight_base: 354
+bn_weight_size: 48
+in_size: 784
+out_size: 784
+****************************************
+
+****************************************
+layer_cnt: 24
+nif: 16
+nof: 16
+noy: 7
+nox: 7
+nkx: 3
+nky: 3
+stride: 1
+pad: 1
+bb_en: 1
+conv_en: 1
+bn_en: 1
+skip_en: 0
+relu_en: 0
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 31360
+base_addr_out: 0
+base_addr_add: 0
+weight_base: 9054
+weight_size: 2304
+bn_weight_base: 402
+bn_weight_size: 48
+in_size: 784
+out_size: 784
+****************************************
+
+****************************************
+layer_cnt: 25
+nif: 16
+nof: 16
+noy: 7
+nox: 7
+nkx: 0
+nky: 0
+stride: 0
+pad: 0
+bb_en: 1
+conv_en: 0
+bn_en: 0
+skip_en: 1
+relu_en: 1
+max_pool_en: 0
+avg_pool_en: 0
+fc_en: 0
+base_addr_in: 6272
+base_addr_out: 31360
+base_addr_add: 0
+weight_base: 0
+weight_size: 0
+bn_weight_base: 0
+bn_weight_size: 0
+in_size: 784
+out_size: 784
+****************************************
+
+****************************************
+layer_cnt: 26
+nif: 16
+nof: 16
+noy: 1
+nox: 1
+nkx: 0
+nky: 0
+stride: 0
+pad: 0
+bb_en: 0
+conv_en: 0
+bn_en: 0
+skip_en: 0
+relu_en: 0
+max_pool_en: 0
+avg_pool_en: 1
+fc_en: 0
+base_addr_in: 31360
+base_addr_out: 0
+base_addr_add: 0
+weight_base: 0
+weight_size: 0
+bn_weight_base: 0
+bn_weight_size: 0
+in_size: 784
+out_size: 16
+****************************************
+
+****************************************
+layer_cnt: 27
+nif: 16
+nof: 16
+noy: 1
+nox: 1
+nkx: 0
+nky: 0
+stride: 0
+pad: 0
+bb_en: 0
+conv_en: 0
+bn_en: 0
+skip_en: 0
+relu_en: 0
+max_pool_en: 0
+avg_pool_en: 1
+fc_en: 0
+base_addr_in: 31360
+base_addr_out: 0
+base_addr_add: 0
+weight_base: 0
+weight_size: 0
+bn_weight_base: 0
+bn_weight_size: 0
+in_size: 784
+out_size: 16
+****************************************
+
+WEIGHT_MEM_SIZE: 11358
+BN_WEIGHT_MEM_SIZE: 620
+ACT_MEM_SIZE: 37632
+MEM0_SIZE: 6272
+MEM1_SIZE: 25088
+MEM2_SIZE: 6272
+ERR: [SIM 100] CSim failed with errors.
+INFO: [SIM 3] *************** CSIM finish ***************
