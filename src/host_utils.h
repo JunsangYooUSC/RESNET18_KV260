@@ -371,22 +371,4 @@ void convolution_bn_skip_relu_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out
 }
 
 
-void save_fixed_to_bin(const std::string &filename, const fixed_t *data, size_t size) {
-    std::ofstream file(filename, std::ios::binary);
-
-    if (!file.is_open()) {
-        std::cerr << "Error" << filename << std::endl;
-        return;
-    }
-
-    for (size_t i = 0; i < size; ++i) {
-        int8_t char_format = data[i].to_int();
-        file.write(reinterpret_cast<const char *>(&char_format), sizeof(int8_t));
-    }
-
-    // Close the file
-    file.close();
-}
-
-
 #endif
