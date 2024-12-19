@@ -90,6 +90,7 @@ int main(){
 	unsigned in_size = 0;
 	unsigned out_size = 0;
 
+	// mimic controller
     for (layer_cnt = start_layer; layer_cnt <= end_layer; layer_cnt++) {
         controller (
             &layer_cnt,
@@ -121,13 +122,44 @@ int main(){
         );
 		if (layer_cnt == start_layer){
 			// load input
-			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/input.bin";
+			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/input.bin";
 			read_bin_fixed<DTYPE_ACT>(fname, act_in_host, base_addr_in, in_size);
 			// copy for host validation
 			for (int idx = 0; idx < in_size; idx++) {
 				act_host_float[base_addr_in+idx] = act_in_host[base_addr_in+idx];
 			}
+			// load weight and bn_weight as a whole
+			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/conv_all_params.bin";
+			read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, WEIGHT_MEM_SIZE);
+			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/bn_all_params.bin";
+			read_bin_float(fname, bn_weight_mem, bn_weight_base, BN_WEIGHT_MEM_SIZE);
+			std::cout << "WEIGHT_MEM_SIZE: " << WEIGHT_MEM_SIZE << std::endl;
+			std::cout << "BN_WEIGHT_MEM_SIZE: " << BN_WEIGHT_MEM_SIZE << std::endl;
 		}
+		// CONV1 layer cnt 0
+		if (layer_cnt == 0) {
+			// conv, bn
+			convolution_bn_golden<float, float, float, float>(
+					act_host_float+base_addr_in, 
+					weight_host_float, 
+					act_host_float+base_addr_out, 
+					bn_weight_host_float,
+					nky, nkx, nof, nif, noy, nox, stride, pad);
+			// relu
+			for (int idx = 0; idx < out_size; idx++) {
+				act_host_float[base_addr_out+idx] = (act_host_float[base_addr_out+idx] > 0) ? act_host_float[base_addr_out+idx] : 0;
+			}
+		}
+		// MAX_POOL layer cnt 1
+		if (layer_cnt == 1) {
+			// max pool
+			max_pool(
+				act_host_float, 
+				base_addr_in,
+				base_addr_out,
+				nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
+		}
+
 		// BB7_CONV1 layer cnt 21
 		if (layer_cnt == 21) {
 			// load weight

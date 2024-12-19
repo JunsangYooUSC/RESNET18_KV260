@@ -36,8 +36,27 @@ void load_input(
     unsigned int noy,
     unsigned int nox,
     unsigned int stride,
-    unsigned int pad
+    unsigned int pad,
+    unsigned int bb_en,
+    unsigned int conv_en
 ) {
+    if (!bb_en) return;
+    if (!conv_en) {
+        for (int f_out = 0; f_out < nof; f_out += POF) {
+            for (int y0 = 0; y0 < noy; y0 += POY) {
+                for (int x0 = 0; x0 < nox; x0 += POX) {
+                    for (int f = 0; f < POF; f++) {
+                        for (int y = 0; y < POY; y++) {
+                            for (int x = 0; x < POX; x++) {
+                                load_input_fifo.write(act_mem[base_addr+(f_out+f)*noy*nox + (y0+y)*nox + x0+x]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     for (int f_out = 0; f_out < nof; f_out += POF) {
         for (int y0 = 0; y0 < noy*stride; y0 += POY*stride) {
             for (int x0 = 0; x0 < nox*stride; x0 += POX*stride) {
@@ -68,49 +87,6 @@ void load_input(
     }
 }
 
-void store_input_test(
-    DTYPE_ACT *act_mem,
-    hls::stream<DTYPE_ACT> &load_input_fifo,
-    unsigned int base_addr,
-    unsigned int nky,
-    unsigned int nkx,
-    unsigned int nof,
-    unsigned int nif,
-    unsigned int noy,
-    unsigned int nox,
-    unsigned int stride,
-    unsigned int pad
-) {
-    for (int f_out = 0; f_out < nof; f_out += POF) {
-        for (int y0 = 0; y0 < noy*stride; y0 += POY*stride) {
-            for (int x0 = 0; x0 < nox*stride; x0 += POX*stride) {
-                for (int f_in = 0; f_in < nif; f_in ++) {
-                    for (int f = 0; f < POF; f++) {
-                        for (int y = 0; y < POY*stride; y+=stride) {
-                            for (int x = 0; x < POX*stride; x+=stride) {
-                                for (int i = 0; i < nky; i++) {
-                                    for (int j = 0; j < nkx; j++) {
-                                        DTYPE_ACT in_val;
-                                        in_val = load_input_fifo.read();
-                                        if ( (y0 + y + i < pad) || (y0 + y + i >= noy*stride + pad) || (x0 + x + j < pad) || (x0 + x + j >= nox*stride + pad) ){
-                                            in_val = 0;
-                                        }
-                                        else {
-                                            // unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad);
-                                            unsigned addr = f_in*noy*stride*nox*stride + (y0+y+i-pad)*nox*stride + (x0+x+j-pad);
-                                            act_mem[base_addr+addr] = in_val;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 void load_weight(
     DTYPE_FIL *weight_mem,
     hls::stream<DTYPE_FIL> &load_weight_fifo,
@@ -120,8 +96,13 @@ void load_weight(
     unsigned int nof,
     unsigned int nif,
     unsigned int noy,
-    unsigned int nox
+    unsigned int nox,
+    unsigned int bb_en,
+    unsigned int conv_en
 ) {
+    if (!bb_en) return;
+    if (!conv_en) return;
+
     for (int f_out = 0; f_out < nof; f_out += POF) {
         for (int y0 = 0; y0 < noy; y0 += POY) {
             for (int x0 = 0; x0 < nox; x0 += POX) {
@@ -153,43 +134,63 @@ void PE(
     unsigned int nof,
     unsigned int nif,
     unsigned int noy,
-    unsigned int nox
+    unsigned int nox,
+    unsigned int bb_en,
+    unsigned int conv_en
 ) {
-    DTYPE_MAC mac_vals[POF][POY][POX];
-    for (int f_out = 0; f_out < nof; f_out += POF) {
-        for (int y0 = 0; y0 < noy; y0 += POY) {
-            for (int x0 = 0; x0 < nox; x0 += POX) {
-                // init mac
-                for (int f = 0; f < POF; f++) {
-                    for (int y = 0; y < POY; y++) {
-                        for (int x = 0; x < POX; x++) {
-                            mac_vals[f][y][x] = 0;
-                        }
-                    }
-                }
-                // calc 
-                for (int f_in = 0; f_in < nif; f_in ++) {
+    if (!bb_en) return;
+    if (!conv_en) {
+        for (int f_out = 0; f_out < nof; f_out += POF) {
+            for (int y0 = 0; y0 < noy; y0 += POY) {
+                for (int x0 = 0; x0 < nox; x0 += POX) {
                     for (int f = 0; f < POF; f++) {
                         for (int y = 0; y < POY; y++) {
                             for (int x = 0; x < POX; x++) {
-                                for (int i = 0; i < nky; i++) {
-                                    for (int j = 0; j < nkx; j++) {
-                                        DTYPE_ACT act_in = load_input_fifo.read();
-                                        DTYPE_FIL fil_in = load_weight_fifo.read();
-                                        DTYPE_MUL mul_val = act_in * fil_in;
-                                        mac_vals[f][y][x] += mul_val;
+                                pe_out_fifo.write(load_input_fifo.read());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else {
+        DTYPE_MAC mac_vals[POF][POY][POX];
+        for (int f_out = 0; f_out < nof; f_out += POF) {
+            for (int y0 = 0; y0 < noy; y0 += POY) {
+                for (int x0 = 0; x0 < nox; x0 += POX) {
+                    // init mac
+                    for (int f = 0; f < POF; f++) {
+                        for (int y = 0; y < POY; y++) {
+                            for (int x = 0; x < POX; x++) {
+                                mac_vals[f][y][x] = 0;
+                            }
+                        }
+                    }
+                    // calc 
+                    for (int f_in = 0; f_in < nif; f_in ++) {
+                        for (int f = 0; f < POF; f++) {
+                            for (int y = 0; y < POY; y++) {
+                                for (int x = 0; x < POX; x++) {
+                                    for (int i = 0; i < nky; i++) {
+                                        for (int j = 0; j < nkx; j++) {
+                                            DTYPE_ACT act_in = load_input_fifo.read();
+                                            DTYPE_FIL fil_in = load_weight_fifo.read();
+                                            DTYPE_MUL mul_val = act_in * fil_in;
+                                            mac_vals[f][y][x] += mul_val;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                // pass to fifo
-                for (int f = 0; f < POF; f++) {
-                    for (int y = 0; y < POY; y++) {
-                        for (int x = 0; x < POX; x++) {
-                            unsigned int addr = (f_out+f)*noy*nox + y*nox + x;
-                            pe_out_fifo.write(mac_vals[f][y][x]);
+                    // pass to fifo
+                    for (int f = 0; f < POF; f++) {
+                        for (int y = 0; y < POY; y++) {
+                            for (int x = 0; x < POX; x++) {
+                                unsigned int addr = (f_out+f)*noy*nox + y*nox + x;
+                                pe_out_fifo.write(mac_vals[f][y][x]);
+                            }
                         }
                     }
                 }
