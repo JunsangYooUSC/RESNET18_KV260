@@ -1340,14 +1340,14 @@ void conv_kernel(
 //        fc(act_mem, bn_weight_mem, base_addr_in, base_addr_out, bn_weight_base,
 //                nof, nif, fc_en);
 
-        // output back to host
-        if (layer_cnt == *end_layer) {
-            for (int idx = 0; idx < out_size/ACT_PACK; idx++){
-                for (int jdx = 0; jdx < ACT_PACK; jdx++) {
-                    act_out_host[idx*ACT_PACK+jdx].range() = act_mem[base_addr_out+idx].range(W_ACT*(jdx+1)-1, W_ACT*jdx);
-                }
-            }
-        }
+        //// output back to host
+        //if (layer_cnt == *end_layer) {
+        //    for (int idx = 0; idx < out_size/ACT_PACK; idx++){
+        //        for (int jdx = 0; jdx < ACT_PACK; jdx++) {
+        //            act_out_host[idx*ACT_PACK+jdx].range() = act_mem[base_addr_out+idx].range(W_ACT*(jdx+1)-1, W_ACT*jdx);
+        //        }
+        //    }
+        //}
     }
 
 }
