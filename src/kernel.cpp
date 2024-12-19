@@ -1237,105 +1237,105 @@ void conv_kernel(
     hls::stream<float> skip_out_fifo;
     #pragma HLS STREAM variable=skip_out_fifo depth=FIFO_ARR_DEPTH
     
-    unsigned layer_cnt = 0;
-    unsigned nif = 0;
-    unsigned nof = 0;
-    unsigned noy = 0;
-    unsigned nox = 0;
-    unsigned nkx = 0;
-    unsigned nky = 0;
-    unsigned stride = 0;
-    unsigned pad = 0;
-    bool bb_en = 0;
-    bool conv_en = 0;
-    bool bn_en = 0;
-    bool skip_en = 0;
-    bool relu_en = 0;
-    bool max_pool_en = 0;
-    bool avg_pool_en = 0;
-    bool fc_en = 0;
-    unsigned base_addr_in = 0;
-    unsigned base_addr_out = 0;
-    unsigned base_addr_add = 0;
-    unsigned weight_base = 0;
-    unsigned weight_size = 0;
-    unsigned bn_weight_base = 0;
-    unsigned bn_weight_size = 0;
-    unsigned in_size = 0;
-    unsigned out_size = 0;
-
-    for (layer_cnt = *start_layer; layer_cnt <= *end_layer; layer_cnt++) {
-        controller (
-            &layer_cnt,
-            &nif,
-            &nof,
-            &noy,
-            &nox,
-            &nkx,
-            &nky,
-            &stride,
-            &pad,
-            &bb_en,
-            &conv_en,
-            &bn_en,
-            &skip_en,
-            &relu_en,
-            &max_pool_en,
-            &avg_pool_en,
-            &fc_en,
-            &base_addr_in,
-            &base_addr_out,
-            &base_addr_add,
-            &weight_base,
-            &weight_size,
-            &bn_weight_base,
-            &bn_weight_size,
-            &in_size,
-            &out_size
-        );
-
-        // initial input
-        if (layer_cnt == *start_layer) {
-            // load input
-            for (int idx = 0; idx < in_size; idx++){
-                act_mem[base_addr_in+idx] = act_in_host[idx];
-            }
-        }
-
-        // conv
-        load_input(act_mem, load_input_fifo, base_addr_in,
-                nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
-        load_weight(weight_mem, load_weight_fifo, weight_base,
-                nky, nkx, nof, nif, noy, nox, bb_en, conv_en);
-        PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
-                nky, nkx, nof, nif, noy, nox, bb_en, conv_en);
-        batch_norm(bn_weight_mem, pe_out_fifo, bn_out_fifo, bn_weight_base,
-                nof, noy, nox, bb_en, bn_en);
-        skip_conn(act_mem, bn_out_fifo, skip_out_fifo, base_addr_add,
-                nof, noy, nox, bb_en, skip_en, relu_en);
-        store_output(act_mem, skip_out_fifo, base_addr_out, 
-                nky, nkx, nof, nif, noy, nox);
-                
-        // max pool
-        max_pool(act_mem, base_addr_in, base_addr_out, 
-                nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
-        
-        // avg pool
-        avg_pool(act_mem, base_addr_in, base_addr_out, 
-                nky, nkx, nof, nif, noy, nox, stride, pad, avg_pool_en);
-
-        // fc
-        fc(act_mem, bn_weight_mem, base_addr_in, base_addr_out, bn_weight_base,
-                nof, nif, fc_en);
-
-        // output back to host
-        if (layer_cnt == *end_layer) {
-            for (int idx = 0; idx < out_size; idx++){
-                act_out_host[idx] = act_mem[base_addr_out+idx];
-            }
-        }
-
-    }
+//    unsigned layer_cnt = 0;
+//    unsigned nif = 0;
+//    unsigned nof = 0;
+//    unsigned noy = 0;
+//    unsigned nox = 0;
+//    unsigned nkx = 0;
+//    unsigned nky = 0;
+//    unsigned stride = 0;
+//    unsigned pad = 0;
+//    bool bb_en = 0;
+//    bool conv_en = 0;
+//    bool bn_en = 0;
+//    bool skip_en = 0;
+//    bool relu_en = 0;
+//    bool max_pool_en = 0;
+//    bool avg_pool_en = 0;
+//    bool fc_en = 0;
+//    unsigned base_addr_in = 0;
+//    unsigned base_addr_out = 0;
+//    unsigned base_addr_add = 0;
+//    unsigned weight_base = 0;
+//    unsigned weight_size = 0;
+//    unsigned bn_weight_base = 0;
+//    unsigned bn_weight_size = 0;
+//    unsigned in_size = 0;
+//    unsigned out_size = 0;
+//
+//    for (layer_cnt = *start_layer; layer_cnt <= *end_layer; layer_cnt++) {
+//        controller (
+//            &layer_cnt,
+//            &nif,
+//            &nof,
+//            &noy,
+//            &nox,
+//            &nkx,
+//            &nky,
+//            &stride,
+//            &pad,
+//            &bb_en,
+//            &conv_en,
+//            &bn_en,
+//            &skip_en,
+//            &relu_en,
+//            &max_pool_en,
+//            &avg_pool_en,
+//            &fc_en,
+//            &base_addr_in,
+//            &base_addr_out,
+//            &base_addr_add,
+//            &weight_base,
+//            &weight_size,
+//            &bn_weight_base,
+//            &bn_weight_size,
+//            &in_size,
+//            &out_size
+//        );
+//
+//        // initial input
+//        if (layer_cnt == *start_layer) {
+//            // load input
+//            for (int idx = 0; idx < in_size; idx++){
+//                act_mem[base_addr_in+idx] = act_in_host[idx];
+//            }
+//        }
+//
+//        // conv
+//        load_input(act_mem, load_input_fifo, base_addr_in,
+//                nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
+//        load_weight(weight_mem, load_weight_fifo, weight_base,
+//                nky, nkx, nof, nif, noy, nox, bb_en, conv_en);
+//        PE(load_input_fifo, load_weight_fifo, pe_out_fifo,
+//                nky, nkx, nof, nif, noy, nox, bb_en, conv_en);
+//        batch_norm(bn_weight_mem, pe_out_fifo, bn_out_fifo, bn_weight_base,
+//                nof, noy, nox, bb_en, bn_en);
+//        skip_conn(act_mem, bn_out_fifo, skip_out_fifo, base_addr_add,
+//                nof, noy, nox, bb_en, skip_en, relu_en);
+//        store_output(act_mem, skip_out_fifo, base_addr_out, 
+//                nky, nkx, nof, nif, noy, nox);
+//                
+//        // max pool
+//        max_pool(act_mem, base_addr_in, base_addr_out, 
+//                nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
+//        
+//        // avg pool
+//        avg_pool(act_mem, base_addr_in, base_addr_out, 
+//                nky, nkx, nof, nif, noy, nox, stride, pad, avg_pool_en);
+//
+//        // fc
+//        fc(act_mem, bn_weight_mem, base_addr_in, base_addr_out, bn_weight_base,
+//                nof, nif, fc_en);
+//
+//        // output back to host
+//        if (layer_cnt == *end_layer) {
+//            for (int idx = 0; idx < out_size; idx++){
+//                act_out_host[idx] = act_mem[base_addr_out+idx];
+//            }
+//        }
+//
+//    }
 }
 
 #endif
