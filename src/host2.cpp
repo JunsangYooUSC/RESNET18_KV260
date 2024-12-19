@@ -194,6 +194,13 @@ int main(){
 	std::cout << "MEM0_SIZE: " << MEM0_SIZE << std::endl;
 	std::cout << "MEM1_SIZE: " << MEM1_SIZE << std::endl;
 	std::cout << "MEM2_SIZE: " << MEM2_SIZE << std::endl;
+	kernel calculation
+	conv_kernel(act_in_host, act_out_host, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+	for (int idx = 0; idx < out_size; idx++) {
+		std::cout << "idx: " << idx << "kernel out: " << act_out_host[idx] << std::endl;
+	}
+	compare host and kernel
+	compare_result<DTYPE_ACT, float, MAX_ACT_MEM_SIZE>(act_out_host, act_host_float+base_addr_out);
 
 	// mimic controller
 //    for (layer_cnt = start_layer; layer_cnt <= end_layer; layer_cnt++) {
