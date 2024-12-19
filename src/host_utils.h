@@ -470,7 +470,7 @@ void fc_golden(
 
 #include <cstdint>
 
-int save_to_bin(DTYPE_ACT *arr, unsigned size, const std::string &filename) {
+void save_to_bin(DTYPE_ACT *arr, unsigned size, const std::string &filename) {
     
 	std::ofstream outfile(filename, std::ios::binary);
 
