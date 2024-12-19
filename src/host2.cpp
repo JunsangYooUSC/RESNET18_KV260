@@ -71,7 +71,7 @@ int main(){
 	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_in_host[idx] = 0;
 	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_out_host[idx] = 0;
 	unsigned start_layer = 26;
-	unsigned end_layer = 27;
+	unsigned end_layer = 26;
 	// kernel offchip memory
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
 	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
