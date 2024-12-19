@@ -276,20 +276,27 @@ def count_parameters(model):
 
 print(f"Total parameters: {count_parameters(quantized_model)}")
 
-print(conv_weights.shape)
-print(bn_params.shape)
-print(conv_weights.shape[0]+bn_params_raw.shape[0])
-
 conv_weights.tofile("conv_all_params.bin")
 bn_params.tofile("bn_all_params.bin")
 input = np.int8(x*(2**(8-input_int_bits))).flatten()
 input.tofile("input.bin")
 
+##
+print(conv_weights.shape)
+print(bn_params.shape)
+print(conv_weights.shape[0]+bn_params_raw.shape[0])
 
+##
+conv_weights_get = np.fromfile("conv_all_params.bin",np.int8)/(2**(8-weight_int_bits))
+bn_params_get = np.fromfile("bn_all_params.bin", np.float32)
+input_get = np.fromfile("input.bin", np.int8)/(2**(8-input_int_bits))
 
-
-
-
+print(f"conv_weights: {conv_weights.shape}")
+print(f"conv_weights_get: {conv_weights_get.shape}")
+print(f"bn_params: {bn_params.shape}")
+print(f"bn_params_get: {bn_params_get.shape}")
+print(f"input: {input.shape}")
+print(f"input_get: {input_get.shape}")
 
 
 
