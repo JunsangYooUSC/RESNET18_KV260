@@ -330,6 +330,10 @@ a = quantized_model.conv1(x)
 b = quantized_model.bn1(a)
 c = quantized_model.relu(b)
 d = quantized_model.maxpool(c)
+cc = quantized_model.layer1[0].conv1(d)
+ccc = quantized_model.layer1[0].bn1(cc)
+ccc = quantized_model.layer1[0].relu(cc)
+
 e = quantized_model.layer1(d)   # idx 4
 f = quantized_model.layer2(e)
 g = quantized_model.layer3(f)
@@ -337,12 +341,13 @@ h = quantized_model.layer4(g)
 
 for idx in range(20):
     for jdx in range(5):
-        print(idx*5+jdx, np.round(h.flatten()[idx*5+jdx].item(),5))
+        print(idx*5+jdx, np.round(ccc.flatten()[idx*5+jdx].item(),5))
 ##
 with torch.no_grad():
     input = np.int8(d*(2**(8-input_int_bits))).flatten()
     input.tofile("input.bin")
     output = np.int8(e*(2**(8-input_int_bits))).flatten()
+    np.savetxt("output.txt", e.flatten(), fmt="%.5f", delimiter=",")
 ##
 y = (torch.rand(h.shape)-0.5)*2
 y = fixed_point_quantize(y, 8, 3)

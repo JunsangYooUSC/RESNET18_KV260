@@ -44,7 +44,11 @@
 #define MAX_PAD             3
 
 #define WEIGHT_PACK         1       // change_to: 8
-#define ACT_PACK            1       // change to: 7?
+#if SIM_MODE
+#define ACT_PACK            2
+#else
+#define ACT_PACK            8       // change to: 
+#endif
 
 // Bit widths
 #if SIM_MODE
@@ -83,7 +87,7 @@ constexpr unsigned int FIFO_ARR_DEPTH = 9;  // todo: reduce if unnecessary
 // input
 #define IN_H                224
 #define IN_W                224
-#define IN_C                1
+#define IN_C                3
 
 // enable signals
 // 0: off

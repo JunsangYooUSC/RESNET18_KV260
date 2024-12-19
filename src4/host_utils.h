@@ -67,12 +67,12 @@ void gen_rand(DTYPE arr[LEN], float min_val, float max_val, unsigned int seed=1)
 }
 
 // compare_result: compare values of two datatypes
-template<typename DTYPE1, typename DTYPE2, unsigned int LEN>
-void compare_result(DTYPE1 *mat1, DTYPE2 *mat2, float tolerance = 0.2) {
+template<typename DTYPE1, typename DTYPE2>
+void compare_result(DTYPE1 *mat1, DTYPE2 *mat2, unsigned int len, float tolerance = 0.2) {
     bool mismatch_flag = false;
     bool diff_flag;
     int cnt = 0;
-    for (int idx = 0; idx < LEN; idx++) {
+    for (int idx = 0; idx < len; idx++) {
         float val1 = static_cast<float>(mat1[idx]);
         float val2 = static_cast<float>(mat2[idx]);
         float diff = std::abs(val1 - val2);
@@ -370,5 +370,100 @@ void convolution_bn_skip_relu_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out
 	}
 }
 
+template<typename DTYPE>
+void max_pool_golden(
+    DTYPE *act_mem,
+    unsigned int in_base_addr,
+    unsigned int out_base_addr,
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int stride,
+    unsigned int pad,
+    unsigned int max_pool_en
+) {
+    if (!max_pool_en) return;
+    // todo: burst read and write
+    DTYPE max_pool_kernel[MAX_POOL_K * MAX_POOL_K];
+
+    for (int f = 0; f < nif; f++) {
+        for (int y = 0; y < noy; y++) {
+            for (int x = 0; x < nox; x++) {
+                for (int i = 0; i < MAX_POOL_K; i++) {
+                    for (int j = 0; j < MAX_POOL_K; j++) {
+                        DTYPE in_val;
+                        int y_in = y*stride + i - pad;
+                        int x_in = x*stride + j - pad;
+                        if ( (y*stride + i < pad) || (y*stride + i >= noy*stride + pad) || (x*stride + j < pad) || (x*stride + j >= nox*stride + pad) ){
+                            in_val = 0;
+                        }
+                        else {
+                            unsigned in_addr = f*noy*stride*nox*stride + (y*stride+i-pad)*nox*stride + (x*stride+j-pad);
+                            in_val = act_mem[in_base_addr+in_addr];
+                        }
+                        max_pool_kernel[i * MAX_POOL_K + j] = in_val;
+                    }
+                }
+                DTYPE max = max_pool_kernel[0];
+                for (int idx = 1; idx < MAX_POOL_K * MAX_POOL_K; idx++) {
+                    if (max_pool_kernel[idx] > max) {
+                        max = max_pool_kernel[idx];
+                    }
+                }
+                unsigned out_addr = f*noy*nox + y*nox + x;
+                act_mem[out_base_addr+out_addr] = max;
+            }
+        }
+    }
+}
+
+template<typename DTYPE>
+void avg_pool_golden(
+    DTYPE *act_mem,
+    unsigned int in_base_addr,
+    unsigned int out_base_addr,
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int stride,
+    unsigned int pad
+) {    
+    for (int f = 0; f < nif; f++) {
+        float sum = 0;
+        for (int y = 0; y < noy; y++) {
+            for (int x = 0; x < nox; x++) {
+                unsigned in_addr = f*noy*nox + y*nox + x;
+                sum = sum + (float) act_mem[in_base_addr+in_addr];
+            }
+        }
+        act_mem[out_base_addr+f] = sum / (noy * nox);
+    }
+}
+
+template<typename DTYPE>
+void fc_golden(
+    DTYPE *act_mem,
+    float *bn_weight_mem,
+    unsigned int in_base_addr,
+    unsigned int out_base_addr,
+    unsigned int bn_weight_base_addr,
+    unsigned int nof,
+    unsigned int nif
+){
+    for (int f_out = 0; f_out < nof; f_out++) {
+        float sum = 0;
+        for (int f_in = 0; f_in < nif; f_in++) {
+            unsigned weight_addr = f_out*nif + f_in;
+            sum = ((float) act_mem[in_base_addr + f_in]) * bn_weight_mem[bn_weight_base_addr + weight_addr];
+        }
+        act_mem[f_out] = sum + (float) bn_weight_mem[bn_weight_base_addr + AVG_POOL_C*FC_C + f_out];
+    }
+}
 
 #endif
