@@ -72,7 +72,7 @@ int main(){
 	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_out_host[idx] = 0;
 
 	unsigned start_layer = 0;
-	unsigned end_layer = 2;
+	unsigned end_layer = 0;
 	
 	// kernel offchip memory
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
