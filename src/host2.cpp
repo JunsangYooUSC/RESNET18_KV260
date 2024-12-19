@@ -208,27 +208,27 @@ int main(){
             &bn_weight_size,
             &in_size,
             &out_size
-        );
-		if (layer_cnt == start_layer){
-			std::cout << "WEIGHT_MEM_SIZE: " << WEIGHT_MEM_SIZE << std::endl;
-			std::cout << "BN_WEIGHT_MEM_SIZE: " << BN_WEIGHT_MEM_SIZE << std::endl;
-			std::cout << "ACT_MEM_SIZE: " << ACT_MEM_SIZE << std::endl;
-			std::cout << "MEM0_SIZE: " << MEM0_SIZE << std::endl;
-			std::cout << "MEM1_SIZE: " << MEM1_SIZE << std::endl;
-			std::cout << "MEM2_SIZE: " << MEM2_SIZE << std::endl;
-			// load input
-			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/input.bin";
-			read_bin_fixed<DTYPE_ACT>(fname, act_in_host, base_addr_in, in_size);
-			// copy for host validation
-			for (int idx = 0; idx < in_size; idx++) {
-				act_host_float[base_addr_in+idx] = act_in_host[base_addr_in+idx];
-			}
-			// load weight and bn_weight as a whole
-			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/conv_all_params.bin";
-			read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, WEIGHT_MEM_SIZE);
-			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/bn_all_params.bin";
-			read_bin_float(fname, bn_weight_mem, bn_weight_base, BN_WEIGHT_MEM_SIZE);
-		}
+        // );
+		// if (layer_cnt == start_layer){
+		// 	std::cout << "WEIGHT_MEM_SIZE: " << WEIGHT_MEM_SIZE << std::endl;
+		// 	std::cout << "BN_WEIGHT_MEM_SIZE: " << BN_WEIGHT_MEM_SIZE << std::endl;
+		// 	std::cout << "ACT_MEM_SIZE: " << ACT_MEM_SIZE << std::endl;
+		// 	std::cout << "MEM0_SIZE: " << MEM0_SIZE << std::endl;
+		// 	std::cout << "MEM1_SIZE: " << MEM1_SIZE << std::endl;
+		// 	std::cout << "MEM2_SIZE: " << MEM2_SIZE << std::endl;
+		// 	// load input
+		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/input.bin";
+		// 	read_bin_fixed<DTYPE_ACT>(fname, act_in_host, base_addr_in, in_size);
+		// 	// copy for host validation
+		// 	for (int idx = 0; idx < in_size; idx++) {
+		// 		act_host_float[base_addr_in+idx] = act_in_host[base_addr_in+idx];
+		// 	}
+		// 	// load weight and bn_weight as a whole
+		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/conv_all_params.bin";
+		// 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, WEIGHT_MEM_SIZE);
+		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/bn_all_params.bin";
+		// 	read_bin_float(fname, bn_weight_mem, bn_weight_base, BN_WEIGHT_MEM_SIZE);
+		// }
 		// // CONV1 layer cnt 0
 		// if (layer_cnt == 0) {
 		// 	// conv, bn
