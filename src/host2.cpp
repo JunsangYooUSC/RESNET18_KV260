@@ -72,7 +72,7 @@ int main(){
 	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_out_host[idx] = 0;
 
 	unsigned start_layer = 0;
-	unsigned end_layer = 0;
+	unsigned end_layer = 1;
 	
 	// kernel offchip memory
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
@@ -206,6 +206,13 @@ int main(){
 				act_host_float[base_addr_out+idx] = (act_host_float[base_addr_out+idx] > 0) ? act_host_float[base_addr_out+idx] : 0;
 			}
 		}
+		// MAX_POOL layer cnt 1
+		if (layer_cnt == 1) {
+			// max_pool
+			max_pool_golden<float>(act_host_float, base_addr_in, base_addr_out, nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
+		}
+
+
 
 		if (layer_cnt == end_layer){
 			// kernel calculation

@@ -370,5 +370,54 @@ void convolution_bn_skip_relu_golden(D_ACT *in_act, D_FILTER *in_fil, D_ACT *out
 	}
 }
 
+template<typename DTYPE>
+void max_pool_golden(
+    DTYPE *act_mem,
+    unsigned int in_base_addr,
+    unsigned int out_base_addr,
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int stride,
+    unsigned int pad,
+    unsigned int max_pool_en
+) {
+    if (!max_pool_en) return;
+    // todo: burst read and write
+    DTYPE max_pool_kernel[MAX_POOL_K * MAX_POOL_K];
+
+    for (int f = 0; f < nif; f++) {
+        for (int y = 0; y < noy; y++) {
+            for (int x = 0; x < nox; x++) {
+                for (int i = 0; i < MAX_POOL_K; i++) {
+                    for (int j = 0; j < MAX_POOL_K; j++) {
+                        DTYPE in_val;
+                        int y_in = y*stride + i - pad;
+                        int x_in = x*stride + j - pad;
+                        if ( (y*stride + i < pad) || (y*stride + i >= noy*stride + pad) || (x*stride + j < pad) || (x*stride + j >= nox*stride + pad) ){
+                            in_val = 0;
+                        }
+                        else {
+                            unsigned in_addr = f*noy*stride*nox*stride + (y*stride+i-pad)*nox*stride + (x*stride+j-pad);
+                            in_val = act_mem[in_base_addr+in_addr];
+                        }
+                        max_pool_kernel[i * MAX_POOL_K + j] = in_val;
+                    }
+                }
+                DTYPE max = max_pool_kernel[0];
+                for (int idx = 1; idx < MAX_POOL_K * MAX_POOL_K; idx++) {
+                    if (max_pool_kernel[idx] > max) {
+                        max = max_pool_kernel[idx];
+                    }
+                }
+                unsigned out_addr = f*noy*nox + y*nox + x;
+                act_mem[out_base_addr+out_addr] = max;
+            }
+        }
+    }
+}
 
 #endif
