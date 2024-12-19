@@ -1302,9 +1302,6 @@ void conv_kernel(
     //         &in_size,
     //         &out_size
     //     );
-    //     std::cout << "layer_cnt: " << layer_cnt << std::endl;
-    //     std::cout << "base_addr_in: " << base_addr_in << std::endl;
-    //     std::cout << "in_size: " << in_size << std::endl;
     //     // initial input
     //     if (layer_cnt == *start_layer) {
     //         // load input
@@ -1352,7 +1349,6 @@ void conv_kernel(
 //            }
 //        }
 //
-        }
 }
 
 #endif
