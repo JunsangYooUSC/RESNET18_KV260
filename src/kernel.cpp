@@ -1313,7 +1313,6 @@ void conv_kernel(
                 act_mem[base_addr_in+idx] = pack;
             }
         }
-    }
 
         // conv
         load_input(act_mem, load_input_fifo, base_addr_in,
@@ -1349,6 +1348,7 @@ void conv_kernel(
                 }
             }
         }
+    }
 
 }
 
