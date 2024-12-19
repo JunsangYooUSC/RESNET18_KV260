@@ -1170,7 +1170,7 @@ void controller (
         *in_size            = AVG_POOL_IN_SIZE;
         *out_size           = AVG_POOL_OUT_SIZE;
     }
-    else if (*layer_cnt == 26) {
+    else if (*layer_cnt == 27) {
         *nif                = AVG_POOL_C;
         *nof                = FC_C;
         *noy                = FC_H;
@@ -1316,7 +1316,7 @@ void conv_kernel(
                 act_mem[base_addr_in+idx] = pack;
             }
         }
-
+//
 //        // conv
 //        load_input(act_mem, load_input_fifo, base_addr_in,
 //                nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
@@ -1352,7 +1352,7 @@ void conv_kernel(
 //            }
 //        }
 //
-//    }
+        }
 }
 
 #endif
