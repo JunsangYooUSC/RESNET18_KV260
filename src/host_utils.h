@@ -23,6 +23,7 @@
 #include <string>
 #include <cmath>
 #include <random>
+#include <cstdint>
 // Include project headers
 #include "conv_config.h"
 
@@ -465,5 +466,20 @@ void fc_golden(
         act_mem[f_out] = sum + (float) bn_weight_mem[bn_weight_base_addr + AVG_POOL_C*FC_C + f_out];
     }
 }
+
+
+#include <cstdint>
+
+int save_to_bin(DTYPE_ACT *arr, unsigned size, const std::string &filename) {
+    
+	std::ofstream outfile(filename, std::ios::binary);
+
+	for (int idx = 0; idx < size; idx++) {
+		int8_t int_val = static_cast<int8_t>(arr[idx] * 32); // Scale factor of 8
+		outfile.write(reinterpret_cast<const char*>(&int_val), sizeof(int8_t));
+	}
+	outfile.close();
+}
+
 
 #endif

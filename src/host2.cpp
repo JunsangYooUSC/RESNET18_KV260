@@ -285,6 +285,7 @@ int main(){
 			for (int idx = 0; idx < out_size; idx++) {
 				std::cout << "idx: " << idx << "  kernel out: " << act_out_host[idx] << std::endl;
 			}
+			save_to_bin(act_out_host, out_size, "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/kernel_out.bin");
 		}
 	}
 	std::cout << "WEIGHT_MEM_SIZE: " << WEIGHT_MEM_SIZE << std::endl;
