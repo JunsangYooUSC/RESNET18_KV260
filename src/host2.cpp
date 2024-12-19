@@ -124,6 +124,9 @@ int main(){
 			std::cout << "WEIGHT_MEM_SIZE: " << WEIGHT_MEM_SIZE << std::endl;
 			std::cout << "BN_WEIGHT_MEM_SIZE: " << BN_WEIGHT_MEM_SIZE << std::endl;
 			std::cout << "ACT_MEM_SIZE: " << ACT_MEM_SIZE << std::endl;
+			std::cout << "MEM0_SIZE: " << MEM0_SIZE << std::endl;
+			std::cout << "MEM1_SIZE: " << MEM1_SIZE << std::endl;
+			std::cout << "MEM2_SIZE: " << MEM2_SIZE << std::endl;
 			// load input
 			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/input.bin";
 			read_bin_fixed<DTYPE_ACT>(fname, act_in_host, base_addr_in, in_size);
