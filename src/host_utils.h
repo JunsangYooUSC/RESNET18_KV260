@@ -67,12 +67,12 @@ void gen_rand(DTYPE arr[LEN], float min_val, float max_val, unsigned int seed=1)
 }
 
 // compare_result: compare values of two datatypes
-template<typename DTYPE1, typename DTYPE2, unsigned int LEN>
-void compare_result(DTYPE1 *mat1, DTYPE2 *mat2, float tolerance = 0.2) {
+template<typename DTYPE1, typename DTYPE2>
+void compare_result(DTYPE1 *mat1, DTYPE2 *mat2, unsigned int len, float tolerance = 0.2) {
     bool mismatch_flag = false;
     bool diff_flag;
     int cnt = 0;
-    for (int idx = 0; idx < LEN; idx++) {
+    for (int idx = 0; idx < len; idx++) {
         float val1 = static_cast<float>(mat1[idx]);
         float val2 = static_cast<float>(mat2[idx]);
         float diff = std::abs(val1 - val2);
@@ -419,5 +419,32 @@ void max_pool_golden(
         }
     }
 }
+
+template<typename DTYPE>
+void avg_pool_golden(
+    DTYPE *act_mem,
+    unsigned int in_base_addr,
+    unsigned int out_base_addr,
+    unsigned int nky,
+    unsigned int nkx,
+    unsigned int nof,
+    unsigned int nif,
+    unsigned int noy,
+    unsigned int nox,
+    unsigned int stride,
+    unsigned int pad
+) {    
+    for (int f = 0; f < nif; f++) {
+        float sum = 0;
+        for (int y = 0; y < noy; y++) {
+            for (int x = 0; x < nox; x++) {
+                unsigned in_addr = f*noy*nox + y*nox + x;
+                sum = sum + (float) act_mem[in_base_addr+in_addr];
+            }
+        }
+        act_mem[out_base_addr+f] = sum / (noy * nox);
+    }
+}
+
 
 #endif
