@@ -180,183 +180,183 @@ int main(){
 	}
 
 	// mimic controller
-    for (layer_cnt = start_layer; layer_cnt <= end_layer; layer_cnt++) {
-        controller (
-            &layer_cnt,
-            &nif,
-            &nof,
-            &noy,
-            &nox,
-            &nkx,
-            &nky,
-            &stride,
-            &pad,
-            &bb_en,
-            &conv_en,
-            &bn_en,
-            &skip_en,
-            &relu_en,
-            &max_pool_en,
-            &avg_pool_en,
-            &fc_en,
-            &base_addr_in,
-            &base_addr_out,
-            &base_addr_add,
-            &weight_base,
-            &weight_size,
-            &bn_weight_base,
-            &bn_weight_size,
-            &in_size,
-            &out_size
-        // );
-		// if (layer_cnt == start_layer){
-		// 	std::cout << "WEIGHT_MEM_SIZE: " << WEIGHT_MEM_SIZE << std::endl;
-		// 	std::cout << "BN_WEIGHT_MEM_SIZE: " << BN_WEIGHT_MEM_SIZE << std::endl;
-		// 	std::cout << "ACT_MEM_SIZE: " << ACT_MEM_SIZE << std::endl;
-		// 	std::cout << "MEM0_SIZE: " << MEM0_SIZE << std::endl;
-		// 	std::cout << "MEM1_SIZE: " << MEM1_SIZE << std::endl;
-		// 	std::cout << "MEM2_SIZE: " << MEM2_SIZE << std::endl;
-		// 	// load input
-		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/input.bin";
-		// 	read_bin_fixed<DTYPE_ACT>(fname, act_in_host, base_addr_in, in_size);
-		// 	// copy for host validation
-		// 	for (int idx = 0; idx < in_size; idx++) {
-		// 		act_host_float[base_addr_in+idx] = act_in_host[base_addr_in+idx];
-		// 	}
-		// 	// load weight and bn_weight as a whole
-		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/conv_all_params.bin";
-		// 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, WEIGHT_MEM_SIZE);
-		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/bn_all_params.bin";
-		// 	read_bin_float(fname, bn_weight_mem, bn_weight_base, BN_WEIGHT_MEM_SIZE);
-		// }
-		// // CONV1 layer cnt 0
-		// if (layer_cnt == 0) {
-		// 	// conv, bn
-		// 	convolution_bn_golden<float, float, float, float>(
-		// 			act_host_float+base_addr_in, 
-		// 			weight_host_float, 
-		// 			act_host_float+base_addr_out, 
-		// 			bn_weight_host_float,
-		// 			nky, nkx, nof, nif, noy, nox, stride, pad);
-		// 	// relu
-		// 	for (int idx = 0; idx < out_size; idx++) {
-		// 		act_host_float[base_addr_out+idx] = (act_host_float[base_addr_out+idx] > 0) ? act_host_float[base_addr_out+idx] : 0;
-		// 	}
-		// }
-		// 
-// 
-		// // BB7_CONV1 layer cnt 21
-		// if (layer_cnt == 21) {
-		// 	// load weight
-		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight1.bin";
-		// 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, weight_size);
-		// 	// load bn_weight
-		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight1.bin";
-		// 	read_bin_float(fname, bn_weight_mem, bn_weight_base, bn_weight_size);
-		// 	// copy weight for host validation
-		// 	for (int idx = 0; idx < weight_size; idx++) {
-		// 		weight_host_float[idx] = weight_mem[weight_base+idx];
-		// 	}
-		// 	// copy bn_weight for host validation
-		// 	for (int idx = 0; idx < bn_weight_size; idx++) {
-		// 		bn_weight_host_float[idx] = bn_weight_mem[bn_weight_base+idx];
-		// 	}
-		// 	// host calculation
-		// 	// conv, bn
-		// 	convolution_bn_golden<float, float, float, float>(
-		// 			act_host_float+base_addr_in, 
-		// 			weight_host_float, 
-		// 			act_host_float+base_addr_out, 
-		// 			bn_weight_host_float,
-		// 			nky, nkx, nof, nif, noy, nox, stride, pad);
-		// 	// relu
-		// 	for (int idx = 0; idx < out_size; idx++) {
-		// 		act_host_float[base_addr_out+idx] = (act_host_float[base_addr_out+idx] > 0) ? act_host_float[base_addr_out+idx] : 0;
-		// 	}
-		// }
-		// // BB7_CONV2 layer cnt 22
-		// if (layer_cnt == 22) {
-		// 	// load weight
-		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight2.bin";
-		// 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, weight_size);
-		// 	// load bn_weight
-		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight2.bin";
-		// 	read_bin_float(fname, bn_weight_mem, bn_weight_base, bn_weight_size);
-		// 	// copy weight for host validation
-		// 	for (int idx = 0; idx < weight_size; idx++) {
-		// 		weight_host_float[idx] = weight_mem[weight_base+idx];
-		// 	}
-		// 	// copy bn_weight for host validation
-		// 	for (int idx = 0; idx < bn_weight_size; idx++) {
-		// 		bn_weight_host_float[idx] = bn_weight_mem[bn_weight_base+idx];
-		// 	}
-		// 	// host calculation
-		// 	// conv, bn
-		// 	convolution_bn_golden<float, float, float, float>(
-		// 			act_host_float+base_addr_in, 
-		// 			weight_host_float, 
-		// 			act_host_float+base_addr_out, 
-		// 			bn_weight_host_float,
-		// 			nky, nkx, nof, nif, noy, nox, stride, pad);
-		// }
-		// // BB7_SKIP layer cnt 23
-		// if (layer_cnt == 23) {
-		// 	// load weight
-		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight3.bin";
-		// 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, weight_size);
-		// 	// load bn_weight
-		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight3.bin";
-		// 	read_bin_float(fname, bn_weight_mem, bn_weight_base, bn_weight_size);
-		// 	// copy weight for host validation
-		// 	for (int idx = 0; idx < weight_size; idx++) {
-		// 		weight_host_float[idx] = weight_mem[weight_base+idx];
-		// 	}
-		// 	// copy bn_weight for host validation
-		// 	for (int idx = 0; idx < bn_weight_size; idx++) {
-		// 		bn_weight_host_float[idx] = bn_weight_mem[bn_weight_base+idx];
-		// 	}
-		// 	// host calculation
-		// 	// conv, bn
-		// 	convolution_bn_skip_relu_golden<float, float, float, float>(
-		// 			act_host_float+base_addr_in, 
-		// 			weight_host_float, 
-		// 			act_host_float+base_addr_out, 
-		// 			bn_weight_host_float,
-		// 			act_host_float+base_addr_add,
-		// 			nky, nkx, nof, nif, noy, nox, stride, pad);
-		// }
-		// 
-		// // for debugging
-		// std::cout << "****************************************" << std::endl;
-		// std::cout << "layer_cnt: " << layer_cnt << std::endl;
-		// std::cout << "nif: " << nif << std::endl;
-		// std::cout << "nof: " << nof << std::endl;
-		// std::cout << "noy: " << noy << std::endl;
-		// std::cout << "nox: " << nox << std::endl;
-		// std::cout << "nkx: " << nkx << std::endl;
-		// std::cout << "nky: " << nky << std::endl;
-		// std::cout << "stride: " << stride << std::endl;
-		// std::cout << "pad: " << pad << std::endl;
-		// std::cout << "bb_en: " << bb_en << std::endl;
-		// std::cout << "conv_en: " << conv_en << std::endl;
-		// std::cout << "bn_en: " << bn_en << std::endl;
-		// std::cout << "skip_en: " << skip_en << std::endl;
-		// std::cout << "relu_en: " << relu_en << std::endl;
-		// std::cout << "max_pool_en: " << max_pool_en << std::endl;
-		// std::cout << "avg_pool_en: " << avg_pool_en << std::endl;
-		// std::cout << "fc_en: " << fc_en << std::endl;
-		// std::cout << "base_addr_in: " << base_addr_in << std::endl;
-		// std::cout << "base_addr_out: " << base_addr_out << std::endl;
-		// std::cout << "base_addr_add: " << base_addr_add << std::endl;
-		// std::cout << "weight_base: " << weight_base << std::endl;
-		// std::cout << "weight_size: " << weight_size << std::endl;
-		// std::cout << "bn_weight_base: " << bn_weight_base << std::endl;
-		// std::cout << "bn_weight_size: " << bn_weight_size << std::endl;
-		// std::cout << "in_size: " << in_size << std::endl;
-		// std::cout << "out_size: " << out_size << std::endl;
-		// std::cout << "****************************************" << std::endl;
-		// std::cout << std::endl;
-	}
+//    for (layer_cnt = start_layer; layer_cnt <= end_layer; layer_cnt++) {
+//        controller (
+//            &layer_cnt,
+//            &nif,
+//            &nof,
+//            &noy,
+//            &nox,
+//            &nkx,
+//            &nky,
+//            &stride,
+//            &pad,
+//            &bb_en,
+//            &conv_en,
+//            &bn_en,
+//            &skip_en,
+//            &relu_en,
+//            &max_pool_en,
+//            &avg_pool_en,
+//            &fc_en,
+//            &base_addr_in,
+//            &base_addr_out,
+//            &base_addr_add,
+//            &weight_base,
+//            &weight_size,
+//            &bn_weight_base,
+//            &bn_weight_size,
+//            &in_size,
+//            &out_size
+//        );
+//		if (layer_cnt == start_layer){
+//			std::cout << "WEIGHT_MEM_SIZE: " << WEIGHT_MEM_SIZE << std::endl;
+//			std::cout << "BN_WEIGHT_MEM_SIZE: " << BN_WEIGHT_MEM_SIZE << std::endl;
+//			std::cout << "ACT_MEM_SIZE: " << ACT_MEM_SIZE << std::endl;
+//			std::cout << "MEM0_SIZE: " << MEM0_SIZE << std::endl;
+//			std::cout << "MEM1_SIZE: " << MEM1_SIZE << std::endl;
+//			std::cout << "MEM2_SIZE: " << MEM2_SIZE << std::endl;
+//			// load input
+//			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/input.bin";
+//			read_bin_fixed<DTYPE_ACT>(fname, act_in_host, base_addr_in, in_size);
+//			// copy for host validation
+//			for (int idx = 0; idx < in_size; idx++) {
+//				act_host_float[base_addr_in+idx] = act_in_host[base_addr_in+idx];
+//			}
+//			// load weight and bn_weight as a whole
+//			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/conv_all_params.bin";
+//			read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, WEIGHT_MEM_SIZE);
+//			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/bn_all_params.bin";
+//			read_bin_float(fname, bn_weight_mem, bn_weight_base, BN_WEIGHT_MEM_SIZE);
+//		}
+//		// // CONV1 layer cnt 0
+//		// if (layer_cnt == 0) {
+//		// 	// conv, bn
+//		// 	convolution_bn_golden<float, float, float, float>(
+//		// 			act_host_float+base_addr_in, 
+//		// 			weight_host_float, 
+//		// 			act_host_float+base_addr_out, 
+//		// 			bn_weight_host_float,
+//		// 			nky, nkx, nof, nif, noy, nox, stride, pad);
+//		// 	// relu
+//		// 	for (int idx = 0; idx < out_size; idx++) {
+//		// 		act_host_float[base_addr_out+idx] = (act_host_float[base_addr_out+idx] > 0) ? act_host_float[base_addr_out+idx] : 0;
+//		// 	}
+//		// }
+//		// 
+//// 
+//		// // BB7_CONV1 layer cnt 21
+//		// if (layer_cnt == 21) {
+//		// 	// load weight
+//		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight1.bin";
+//		// 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, weight_size);
+//		// 	// load bn_weight
+//		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight1.bin";
+//		// 	read_bin_float(fname, bn_weight_mem, bn_weight_base, bn_weight_size);
+//		// 	// copy weight for host validation
+//		// 	for (int idx = 0; idx < weight_size; idx++) {
+//		// 		weight_host_float[idx] = weight_mem[weight_base+idx];
+//		// 	}
+//		// 	// copy bn_weight for host validation
+//		// 	for (int idx = 0; idx < bn_weight_size; idx++) {
+//		// 		bn_weight_host_float[idx] = bn_weight_mem[bn_weight_base+idx];
+//		// 	}
+//		// 	// host calculation
+//		// 	// conv, bn
+//		// 	convolution_bn_golden<float, float, float, float>(
+//		// 			act_host_float+base_addr_in, 
+//		// 			weight_host_float, 
+//		// 			act_host_float+base_addr_out, 
+//		// 			bn_weight_host_float,
+//		// 			nky, nkx, nof, nif, noy, nox, stride, pad);
+//		// 	// relu
+//		// 	for (int idx = 0; idx < out_size; idx++) {
+//		// 		act_host_float[base_addr_out+idx] = (act_host_float[base_addr_out+idx] > 0) ? act_host_float[base_addr_out+idx] : 0;
+//		// 	}
+//		// }
+//		// // BB7_CONV2 layer cnt 22
+//		// if (layer_cnt == 22) {
+//		// 	// load weight
+//		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight2.bin";
+//		// 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, weight_size);
+//		// 	// load bn_weight
+//		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight2.bin";
+//		// 	read_bin_float(fname, bn_weight_mem, bn_weight_base, bn_weight_size);
+//		// 	// copy weight for host validation
+//		// 	for (int idx = 0; idx < weight_size; idx++) {
+//		// 		weight_host_float[idx] = weight_mem[weight_base+idx];
+//		// 	}
+//		// 	// copy bn_weight for host validation
+//		// 	for (int idx = 0; idx < bn_weight_size; idx++) {
+//		// 		bn_weight_host_float[idx] = bn_weight_mem[bn_weight_base+idx];
+//		// 	}
+//		// 	// host calculation
+//		// 	// conv, bn
+//		// 	convolution_bn_golden<float, float, float, float>(
+//		// 			act_host_float+base_addr_in, 
+//		// 			weight_host_float, 
+//		// 			act_host_float+base_addr_out, 
+//		// 			bn_weight_host_float,
+//		// 			nky, nkx, nof, nif, noy, nox, stride, pad);
+//		// }
+//		// // BB7_SKIP layer cnt 23
+//		// if (layer_cnt == 23) {
+//		// 	// load weight
+//		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/weight3.bin";
+//		// 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, weight_size);
+//		// 	// load bn_weight
+//		// 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/bn_hw_weight3.bin";
+//		// 	read_bin_float(fname, bn_weight_mem, bn_weight_base, bn_weight_size);
+//		// 	// copy weight for host validation
+//		// 	for (int idx = 0; idx < weight_size; idx++) {
+//		// 		weight_host_float[idx] = weight_mem[weight_base+idx];
+//		// 	}
+//		// 	// copy bn_weight for host validation
+//		// 	for (int idx = 0; idx < bn_weight_size; idx++) {
+//		// 		bn_weight_host_float[idx] = bn_weight_mem[bn_weight_base+idx];
+//		// 	}
+//		// 	// host calculation
+//		// 	// conv, bn
+//		// 	convolution_bn_skip_relu_golden<float, float, float, float>(
+//		// 			act_host_float+base_addr_in, 
+//		// 			weight_host_float, 
+//		// 			act_host_float+base_addr_out, 
+//		// 			bn_weight_host_float,
+//		// 			act_host_float+base_addr_add,
+//		// 			nky, nkx, nof, nif, noy, nox, stride, pad);
+//		// }
+//		// 
+//		// // for debugging
+//		// std::cout << "****************************************" << std::endl;
+//		// std::cout << "layer_cnt: " << layer_cnt << std::endl;
+//		// std::cout << "nif: " << nif << std::endl;
+//		// std::cout << "nof: " << nof << std::endl;
+//		// std::cout << "noy: " << noy << std::endl;
+//		// std::cout << "nox: " << nox << std::endl;
+//		// std::cout << "nkx: " << nkx << std::endl;
+//		// std::cout << "nky: " << nky << std::endl;
+//		// std::cout << "stride: " << stride << std::endl;
+//		// std::cout << "pad: " << pad << std::endl;
+//		// std::cout << "bb_en: " << bb_en << std::endl;
+//		// std::cout << "conv_en: " << conv_en << std::endl;
+//		// std::cout << "bn_en: " << bn_en << std::endl;
+//		// std::cout << "skip_en: " << skip_en << std::endl;
+//		// std::cout << "relu_en: " << relu_en << std::endl;
+//		// std::cout << "max_pool_en: " << max_pool_en << std::endl;
+//		// std::cout << "avg_pool_en: " << avg_pool_en << std::endl;
+//		// std::cout << "fc_en: " << fc_en << std::endl;
+//		// std::cout << "base_addr_in: " << base_addr_in << std::endl;
+//		// std::cout << "base_addr_out: " << base_addr_out << std::endl;
+//		// std::cout << "base_addr_add: " << base_addr_add << std::endl;
+//		// std::cout << "weight_base: " << weight_base << std::endl;
+//		// std::cout << "weight_size: " << weight_size << std::endl;
+//		// std::cout << "bn_weight_base: " << bn_weight_base << std::endl;
+//		// std::cout << "bn_weight_size: " << bn_weight_size << std::endl;
+//		// std::cout << "in_size: " << in_size << std::endl;
+//		// std::cout << "out_size: " << out_size << std::endl;
+//		// std::cout << "****************************************" << std::endl;
+//		// std::cout << std::endl;
+//	}
 
 	// kernel calculation
 	// conv_kernel(act_in_host, act_out_host, weight_mem, bn_weight_mem, &start_layer, &end_layer);
