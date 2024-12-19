@@ -70,8 +70,10 @@ int main(){
 	DTYPE_ACT act_out_host[MAX_ACT_MEM_SIZE];
 	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_in_host[idx] = 0;
 	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_out_host[idx] = 0;
-	unsigned start_layer = 2;
-	unsigned end_layer = 7;
+
+	unsigned start_layer = 0;
+	unsigned end_layer = 0;
+	
 	// kernel offchip memory
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
 	float bn_weight_mem[BN_WEIGHT_MEM_SIZE];
@@ -80,14 +82,22 @@ int main(){
 
 	// host memory
 	float act_host_float[ACT_MEM_SIZE];
-	float weight_host_float[MAX_WEIGHT_MEM_SIZE];
-	float bn_weight_host_float[MAX_BN_WEIGHT_MEM_SIZE];
+	float weight_host_float[WEIGHT_MEM_SIZE];
+	float bn_weight_host_float[BN_WEIGHT_MEM_SIZE];
 	for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_host_float[idx] = 0;
-	for (int idx = 0; idx < MAX_WEIGHT_MEM_SIZE; idx++) weight_host_float[idx] = 0;
-	for (int idx = 0; idx < MAX_BN_WEIGHT_MEM_SIZE; idx++) bn_weight_host_float[idx] = 0;
+	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_host_float[idx] = 0;
+	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_host_float[idx] = 0;
 
 	// layer configuration for validation
 	std::string fname;
+
+	// load weight and bn_weight as a whole
+	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/conv_all_params.bin";
+	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, WEIGHT_MEM_SIZE);
+	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/bn_all_params.bin";
+	read_bin_float(fname, bn_weight_mem, bn_weight_base, BN_WEIGHT_MEM_SIZE);
+	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_host_float[idx] = weight_mem[idx];
+	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_host_float[idx] = bn_weight_mem[idx];
 
 	// mimic controller 
 	unsigned layer_cnt = 0;
@@ -177,13 +187,6 @@ int main(){
 		std::cout << "out_size: " << out_size << std::endl;
 		std::cout << "****************************************" << std::endl;
 		std::cout << std::endl;
-		if (layer_cnt == 0){
-			// load weight and bn_weight as a whole
-			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/conv_all_params.bin";
-			read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, WEIGHT_MEM_SIZE);
-			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/bn_all_params.bin";
-			read_bin_float(fname, bn_weight_mem, bn_weight_base, BN_WEIGHT_MEM_SIZE);
-		}
 		if (layer_cnt == start_layer) {
 			// load input
 			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/input.bin";
@@ -194,9 +197,9 @@ int main(){
 			// conv, bn
 			convolution_bn_golden<float, float, float, float>(
 					act_in_host+base_addr_in, 
-					weight_mem+weight_base, 
+					weight_host_float+weight_base, 
 					act_out_host+base_addr_out, 
-					bn_weight_mem+bn_weight_base,
+					bn_weight_host_float+bn_weight_base,
 					nky, nkx, nof, nif, noy, nox, stride, pad);
 			// relu
 			for (int idx = 0; idx < out_size; idx++) {
