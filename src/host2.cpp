@@ -187,10 +187,6 @@ int main(){
 	// load input
 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/input.bin";
 	read_bin_fixed<DTYPE_ACT>(fname, act_in_host, base_addr_in, in_size);
-	// copy for host validation
-	for (int idx = 0; idx < in_size; idx++) {
-		act_host_float[base_addr_in+idx] = act_in_host[base_addr_in+idx];
-	}
 	// load weight and bn_weight as a whole
 	fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/conv_all_params.bin";
 	read_bin_fixed<DTYPE_FIL>(fname, weight_mem, weight_base, WEIGHT_MEM_SIZE);
