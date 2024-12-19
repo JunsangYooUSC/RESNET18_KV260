@@ -1273,46 +1273,47 @@ void conv_kernel(
     unsigned in_size;
     unsigned out_size;
 
-    // for (layer_cnt = *start_layer; layer_cnt <= *end_layer; layer_cnt++) {
-    //     controller (
-    //         &layer_cnt,
-    //         &nif,
-    //         &nof,
-    //         &noy,
-    //         &nox,
-    //         &nkx,
-    //         &nky,
-    //         &stride,
-    //         &pad,
-    //         &bb_en,
-    //         &conv_en,
-    //         &bn_en,
-    //         &skip_en,
-    //         &relu_en,
-    //         &max_pool_en,
-    //         &avg_pool_en,
-    //         &fc_en,
-    //         &base_addr_in,
-    //         &base_addr_out,
-    //         &base_addr_add,
-    //         &weight_base,
-    //         &weight_size,
-    //         &bn_weight_base,
-    //         &bn_weight_size,
-    //         &in_size,
-    //         &out_size
-    //     );
-    //     // initial input
-    //     if (layer_cnt == *start_layer) {
-    //         // load input
-    //         for (int idx = 0; idx < in_size/ACT_PACK; idx++){
-    //             DTYPE_MEM_ACT pack;
-    //             for (int jdx = 0; jdx < ACT_PACK; jdx++) {
-    //                 pack.range(W_ACT*(jdx+1)-1, W_ACT*jdx) = act_in_host[idx*ACT_PACK+jdx];
-    //             }
-    //             act_mem[base_addr_in+idx] = pack;
-    //         }
-    //     }
+    for (layer_cnt = *start_layer; layer_cnt <= *end_layer; layer_cnt++) {
+        controller (
+            &layer_cnt,
+            &nif,
+            &nof,
+            &noy,
+            &nox,
+            &nkx,
+            &nky,
+            &stride,
+            &pad,
+            &bb_en,
+            &conv_en,
+            &bn_en,
+            &skip_en,
+            &relu_en,
+            &max_pool_en,
+            &avg_pool_en,
+            &fc_en,
+            &base_addr_in,
+            &base_addr_out,
+            &base_addr_add,
+            &weight_base,
+            &weight_size,
+            &bn_weight_base,
+            &bn_weight_size,
+            &in_size,
+            &out_size
+        );
+        // initial input
+        if (layer_cnt == *start_layer) {
+            // load input
+            for (int idx = 0; idx < in_size/ACT_PACK; idx++){
+                DTYPE_MEM_ACT pack;
+                for (int jdx = 0; jdx < ACT_PACK; jdx++) {
+                    pack.range(W_ACT*(jdx+1)-1, W_ACT*jdx) = act_in_host[idx*ACT_PACK+jdx];
+                }
+                act_mem[base_addr_in+idx] = pack;
+            }
+        }
+    }
 //
 //        // conv
 //        load_input(act_mem, load_input_fifo, base_addr_in,
