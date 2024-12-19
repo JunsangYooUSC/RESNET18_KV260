@@ -178,7 +178,7 @@ int main(){
 		std::cout << "****************************************" << std::endl;
 		std::cout << std::endl;
 		if (layer_cnt == 0){
-			load input
+			// load input
 			fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/input.bin";
 			read_bin_fixed<DTYPE_ACT>(fname, act_in_host, base_addr_in, in_size);
 			load weight and bn_weight as a whole
