@@ -31,6 +31,11 @@
 // *****************************************
 // simulation settings vs synthesis settings
 #define SIM_MODE            1
+#if SIM_MODE
+#define SCALE_FACTOR                64
+#else
+#define SCALE_FACTOR                1
+#endif
 // *****************************************
 
 // kernel parallel parameters
@@ -45,7 +50,7 @@
 
 #define WEIGHT_PACK         1       // change_to: 8
 #if SIM_MODE
-#define ACT_PACK            2
+#define ACT_PACK            1
 #else
 #define ACT_PACK            8       // change to: 
 #endif
@@ -106,12 +111,6 @@ constexpr unsigned int FIFO_ARR_DEPTH = 9;  // todo: reduce if unnecessary
 // 1: mem1
 // 2: mem2
 // 3: fake mem block mem3
-
-#if SIM_MODE
-#define SCALE_FACTOR                64
-#else
-#define SCALE_FACTOR                1
-#endif
 
 // CONV1 layer cnt 0
 #define CONV1_C                     (64/SCALE_FACTOR)
