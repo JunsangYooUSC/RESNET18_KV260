@@ -199,20 +199,24 @@ eps = 1e-5
 
 for name, module in quantized_model.named_modules():
     if isinstance(module, nn.Conv2d):
-        print("conv,"name)
-        conv_weights_raw = np.append(conv_weights_raw, module.weight.detach().numpy().flatten())
+        data = module.weight.detach().numpy().flatten()
+        conv_weights_raw = np.append(conv_weights_raw, data)
+        print(name, data.flatten().shape[0])
     if isinstance(module, nn.BatchNorm2d):
-        print("bn,"name)
         mult_factor = module.weight / torch.sqrt(module.running_var + eps)
         params = torch.stack([
             module.running_mean,
             mult_factor,
             module.bias
         ])
-        bn_params_raw = np.append(bn_params_raw, params.detach().numpy().flatten())
+        data = params.detach().numpy().flatten()
+        bn_params_raw = np.append(bn_params_raw, data)
+        print(name, data.flatten().shape[0])
     if isinstance(module, nn.Linear):
-        bn_params_raw = np.append(bn_params_raw, module.weight.detach().numpy().flatten())
-        bn_params_raw = np.append(bn_params_raw, module.bias.detach().numpy().flatten())
+        data = module.weight.detach().numpy().flatten();
+        data = np.append(data, module.bias.detach().numpy().flatten())
+        bn_params_raw = np.append(bn_params_raw, data)
+        print(name, data.flatten().shape[0])
 
 conv_weights = dtype_weight(conv_weights_raw)
 bn_params = dtype_bn_weight(bn_params_raw)
@@ -269,6 +273,21 @@ if (y.flatten() == output_get).all():
     print("Output match")
 else:
     print("Output do not match")
+
+## params match
+# cnt = 0
+# for name, module in quantized_model.named_modules():
+#     if isinstance(module, nn.Conv2d):
+#         print(name, sum(p.numel() for p in module.parameters()))
+#         cnt += 1
+#     if isinstance(module, nn.Linear):
+#         print(name, sum(p.numel() for p in module.parameters()))
+#         cnt += 1
+#     if isinstance(module, nn.BatchNorm2d):
+#         print(name, sum(p.numel() for p in module.parameters()))
+#
+# print("layers with params:", cnt)
+
 
 ## intermediate vals
 after_conv1 = quantized_model.conv1(x)

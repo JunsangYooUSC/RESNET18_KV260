@@ -81,7 +81,7 @@ int main(){
 			&base_addr_in, &base_addr_out, &base_addr_add, 
 			&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
 		);
-		if (bb_en) {
+		if (conv_en) {
 			std::cout << "layer_cnt: " << layer_cnt << std::endl;
 			std::cout << "  weight_size: " << weight_size << std::endl;
 			std::cout << "  bn_weight_size: " << bn_weight_size << std::endl;
