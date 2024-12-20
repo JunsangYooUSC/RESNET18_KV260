@@ -275,7 +275,7 @@ int main(){
 		std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
 	}
 	for (int idx = 0; idx < 100; idx++) {
-		std::cout << "act_out_host[" << idx << "]: " << act_out_host[idx] << std::endl;
+		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[idx] << std::endl;
 	}
 #endif
 
