@@ -165,6 +165,9 @@ int main(){
 		&base_addr_in, &base_addr_out, &base_addr_add, 
 		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
 	);
+	// load input for test
+	read_bin<DTYPE_ACT>(base_fname+"input.bin", act_mem_host, base_addr_in, in_size);
+	for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_mem[idx] = act_mem_host[idx];
 	// conv, bn
 	convolution_bn_golden<float, float, float, float>(
 			act_mem_host+base_addr_in, 
@@ -188,6 +191,9 @@ int main(){
 		&base_addr_in, &base_addr_out, &base_addr_add, 
 		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
 	);
+	// load input for test
+	read_bin<DTYPE_ACT>(base_fname+"after_relu.bin", act_mem_host, base_addr_in, in_size);
+	for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_mem[idx] = act_mem_host[idx];
 	// conv, bn
 	max_pool_golden<float>(
 			act_mem_host, 
