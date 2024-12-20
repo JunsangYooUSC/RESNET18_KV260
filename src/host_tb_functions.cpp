@@ -150,6 +150,7 @@ int main(){
 	// show all outputs for debugging
 #if SHOW_ALL_OUTPUT
 	for (int idx = 0; idx < out_size; idx++) {
+		std::cout << "act_out size: " << out_size << std::endl;
 		std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
 	}
 #endif
