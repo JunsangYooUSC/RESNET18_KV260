@@ -91,7 +91,7 @@ int main(){
 		// if (fc_en) {
 		// 	std::cout << "layer_cnt: " << layer_cnt << std::endl;
 		// 	std::cout << "bn_weight_size: " << bn_weight_size << std::endl;
-		}
+		// }
 		// // for debugging
 		// std::cout << "****************************************" << std::endl;
 		// std::cout << "layer_cnt: " << layer_cnt << std::endl;
