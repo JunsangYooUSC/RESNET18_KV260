@@ -195,7 +195,8 @@ int main(){
 	);
 	// load input for test
 	read_bin<DTYPE_ACT>(base_fname+"after_relu.bin", act_mem_host, base_addr_in, in_size);
-	for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_mem[idx] = act_mem_host[idx];
+	for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_mem[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
+	for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_in[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
 	// conv, bn
 	max_pool_golden<float>(
 			act_mem_host, 
