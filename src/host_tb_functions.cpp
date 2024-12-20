@@ -64,6 +64,7 @@ int main(){
 	read_bin<DTYPE_FIL>(base_fname+"conv_all_params.bin", weight_mem, 0, WEIGHT_MEM_SIZE);
 	read_bin<float>(base_fname+"bn_all_params.bin", bn_weight_mem, 0, BN_WEIGHT_MEM_SIZE);
 	std::cout << "input, filter, bn_weight loaded" << std::endl << std::endl;
+	for (int idx = 0; idx < CONV1_IN_SIZE; idx++) act_in[idx] = act_mem[idx];
 
 	// host memory
 	float act_mem_host[ACT_MEM_SIZE];
@@ -126,7 +127,7 @@ int main(){
 	for (int idx = 0; idx < out_size; idx++) {
 		act_mem[base_addr_out+idx] = (act_mem[base_addr_out+idx] > 0) ? act_mem[base_addr_out+idx] : 0;
 	}
-	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 	// show all outputs for debugging
 #if SHOW_ALL_OUTPUT
 	for (int idx = 0; idx < out_size; idx++) {
