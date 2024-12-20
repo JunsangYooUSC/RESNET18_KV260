@@ -315,14 +315,15 @@ void batch_norm(
                 // parallel
                 batch_norm_loop4:
                 for (int f = 0; f < POF; f++) {
-                    #pragma HLS PIPELINE II=1
                     mean = bn_weight_mem[bn_weight_base_addr+(f_out+f)];
                     mult_factor = bn_weight_mem[bn_weight_base_addr+nof+(f_out+f)];
                     beta = bn_weight_mem[bn_weight_base_addr+nof*2+(f_out+f)];
+                    
                     batch_norm_loop5:
                     for (int y = 0; y < POY; y++) {
                         batch_norm_loop6:
                         for (int x = 0; x < POX; x++) {
+                            #pragma HLS PIPELINE II=1
                             float val;
                             val = in_fifo.read();
                             float pass_val;
