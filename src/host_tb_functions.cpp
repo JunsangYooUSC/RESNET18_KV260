@@ -220,6 +220,9 @@ int main(){
 	read_bin<DTYPE_ACT>(base_fname+"after_layer4.bin", act_mem_host, base_addr_in, in_size);
 	for (int idx = 0; idx < in_size; idx++) act_mem[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
 	for (int idx = 0; idx < in_size; idx++) act_in[idx] = act_mem_host[base_addr_in+idx];
+	for (int idx = 0; idx < in_size; idx++) {
+		std::cout << "act_mem[" << idx << "]: " << act_mem[base_addr_in+idx] << std::endl;
+	}
 	// max pool
 	avg_pool_golden<float>(
 			act_mem_host, 

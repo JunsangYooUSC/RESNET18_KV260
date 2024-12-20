@@ -295,26 +295,27 @@ else:
 
 
 ## intermediate vals
-after_conv1 = quantized_model.conv1(x)
-after_bn1 = quantized_model.bn1(after_conv1)
-after_relu = quantized_model.relu(after_bn1)
-after_maxpool = quantized_model.maxpool(after_relu)
-after_layer1_0 = quantized_model.layer1[0](after_maxpool)
-after_layer1_1 = quantized_model.layer1[1](after_layer1_0)
-after_layer1 = quantized_model.layer1(after_maxpool)
-after_layer2 = quantized_model.layer2(after_layer1)
-after_layer3 = quantized_model.layer3(after_layer2)
-after_layer4 = quantized_model.layer4(after_layer3)
-after_avgpool = quantized_model.avgpool(after_layer4)
-after_fc = quantized_model.fc(after_avgpool.flatten())
-if (y == after_fc).all():
-    print("Intermediate values match")
+with torch.no_grad():
+    after_conv1 = quantized_model.conv1(x)
+    after_bn1 = quantized_model.bn1(after_conv1)
+    after_relu = quantized_model.relu(after_bn1)
+    after_maxpool = quantized_model.maxpool(after_relu)
+    after_layer1_0 = quantized_model.layer1[0](after_maxpool)
+    after_layer1_1 = quantized_model.layer1[1](after_layer1_0)
+    after_layer1 = quantized_model.layer1(after_maxpool)
+    after_layer2 = quantized_model.layer2(after_layer1)
+    after_layer3 = quantized_model.layer3(after_layer2)
+    after_layer4 = quantized_model.layer4(after_layer3)
+    after_avgpool = quantized_model.avgpool(after_layer4)
+    after_fc = quantized_model.fc(after_avgpool.flatten())
+    if (y == after_fc).all():
+        print("Intermediate values match")
 
-# save intermediate results
-save_to_bin(after_relu, "data/after_relu.bin", dtype_output, total_bits, input_int_bits)
-save_to_bin(after_maxpool, "data/after_maxpool.bin", dtype_output, total_bits, input_int_bits)
-save_to_bin(after_layer1_0, "data/after_layer1_0.bin", dtype_output, total_bits, input_int_bits)
-save_to_bin(after_layer1_1, "data/after_layer1_1.bin", dtype_output, total_bits, input_int_bits)
-save_to_bin(after_layer4, "data/after_layer4.bin", dtype_output, total_bits, input_int_bits)
-save_to_bin(after_avgpool, "data/after_avgpool.bin", dtype_output, total_bits, input_int_bits)
-save_to_bin(after_fc, "data/after_fc.bin", dtype_output, total_bits, input_int_bits)
+    # save intermediate results
+    save_to_bin(after_relu, "data/after_relu.bin", dtype_output, total_bits, input_int_bits)
+    save_to_bin(after_maxpool, "data/after_maxpool.bin", dtype_output, total_bits, input_int_bits)
+    save_to_bin(after_layer1_0, "data/after_layer1_0.bin", dtype_output, total_bits, input_int_bits)
+    save_to_bin(after_layer1_1, "data/after_layer1_1.bin", dtype_output, total_bits, input_int_bits)
+    save_to_bin(after_layer4, "data/after_layer4.bin", dtype_output, total_bits, input_int_bits)
+    save_to_bin(after_avgpool, "data/after_avgpool.bin", dtype_output, total_bits, input_int_bits)
+    save_to_bin(after_fc, "data/after_fc.bin", dtype_output, total_bits, input_int_bits)
