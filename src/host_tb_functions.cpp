@@ -232,11 +232,11 @@ int main(){
 #if SHOW_ALL_OUTPUT
 	std::cout << "act_out size: " << out_size << std::endl;
 	// for (int idx = 0; idx < out_size; idx++) {
-	for (int idx = 0; idx < 100; idx++) {
+	for (int idx = 0; idx < out_size; idx++) {
 		std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
 	}
-	for (int idx = 0; idx < 100; idx++) {
-		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[idx] << std::endl;
+	for (int idx = 0; idx < out_size; idx++) {
+		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[base_addr_out+idx] << std::endl;
 	}
 #endif
 
