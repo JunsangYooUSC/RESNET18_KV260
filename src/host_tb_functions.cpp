@@ -184,6 +184,37 @@ int main(){
 	}
 	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 	
+	// for debugging
+	std::cout << "****************************************" << std::endl;
+	std::cout << "layer_cnt: " << layer_cnt << std::endl;
+	std::cout << "nif: " << nif << std::endl;
+	std::cout << "nof: " << nof << std::endl;
+	std::cout << "noy: " << noy << std::endl;
+	std::cout << "nox: " << nox << std::endl;
+	std::cout << "nkx: " << nkx << std::endl;
+	std::cout << "nky: " << nky << std::endl;
+	std::cout << "stride: " << stride << std::endl;
+	std::cout << "pad: " << pad << std::endl;
+	std::cout << "bb_en: " << bb_en << std::endl;
+	std::cout << "conv_en: " << conv_en << std::endl;
+	std::cout << "bn_en: " << bn_en << std::endl;
+	std::cout << "skip_en: " << skip_en << std::endl;
+	std::cout << "relu_en: " << relu_en << std::endl;
+	std::cout << "max_pool_en: " << max_pool_en << std::endl;
+	std::cout << "avg_pool_en: " << avg_pool_en << std::endl;
+	std::cout << "fc_en: " << fc_en << std::endl;
+	std::cout << "base_addr_in: " << base_addr_in << std::endl;
+	std::cout << "base_addr_out: " << base_addr_out << std::endl;
+	std::cout << "base_addr_add: " << base_addr_add << std::endl;
+	std::cout << "weight_base: " << weight_base << std::endl;
+	std::cout << "weight_size: " << weight_size << std::endl;
+	std::cout << "bn_weight_base: " << bn_weight_base << std::endl;
+	std::cout << "bn_weight_size: " << bn_weight_size << std::endl;
+	std::cout << "in_size: " << in_size << std::endl;
+	std::cout << "out_size: " << out_size << std::endl;
+	std::cout << "****************************************" << std::endl;
+	std::cout << std::endl;
+
 	// maxpool test
 	start_layer = 1;
 	end_layer = 1;
@@ -204,13 +235,43 @@ int main(){
 			base_addr_in, 
 			base_addr_out, 
 			nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
+	// for debugging
+	std::cout << "****************************************" << std::endl;
+	std::cout << "layer_cnt: " << layer_cnt << std::endl;
+	std::cout << "nif: " << nif << std::endl;
+	std::cout << "nof: " << nof << std::endl;
+	std::cout << "noy: " << noy << std::endl;
+	std::cout << "nox: " << nox << std::endl;
+	std::cout << "nkx: " << nkx << std::endl;
+	std::cout << "nky: " << nky << std::endl;
+	std::cout << "stride: " << stride << std::endl;
+	std::cout << "pad: " << pad << std::endl;
+	std::cout << "bb_en: " << bb_en << std::endl;
+	std::cout << "conv_en: " << conv_en << std::endl;
+	std::cout << "bn_en: " << bn_en << std::endl;
+	std::cout << "skip_en: " << skip_en << std::endl;
+	std::cout << "relu_en: " << relu_en << std::endl;
+	std::cout << "max_pool_en: " << max_pool_en << std::endl;
+	std::cout << "avg_pool_en: " << avg_pool_en << std::endl;
+	std::cout << "fc_en: " << fc_en << std::endl;
+	std::cout << "base_addr_in: " << base_addr_in << std::endl;
+	std::cout << "base_addr_out: " << base_addr_out << std::endl;
+	std::cout << "base_addr_add: " << base_addr_add << std::endl;
+	std::cout << "weight_base: " << weight_base << std::endl;
+	std::cout << "weight_size: " << weight_size << std::endl;
+	std::cout << "bn_weight_base: " << bn_weight_base << std::endl;
+	std::cout << "bn_weight_size: " << bn_weight_size << std::endl;
+	std::cout << "in_size: " << in_size << std::endl;
+	std::cout << "out_size: " << out_size << std::endl;
+	std::cout << "****************************************" << std::endl;
+	std::cout << std::endl;
 	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 
 	// show all outputs for debugging
 #if SHOW_ALL_OUTPUT
 	std::cout << "act_out size: " << out_size << std::endl;
 	for (int idx = 0; idx < out_size; idx++) {
-		std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
+		//std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
 	}
 #endif
 
