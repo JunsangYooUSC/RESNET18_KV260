@@ -1292,6 +1292,7 @@ void conv_kernel(
 
     #pragma HLS DEPENDENCE variable=act_mem intra false
     #pragma HLS DEPENDENCE variable=act_mem inter false
+    #pragma HLS LOOP_TRIPCOUNT min=0 max=27
     for (layer_cnt = *start_layer; layer_cnt <= *end_layer; layer_cnt++) {
         controller (
             &layer_cnt,
@@ -1329,6 +1330,7 @@ void conv_kernel(
             }
         }
 
+        #pragma HLS DATAFLOW
         // conv
         load_input(act_mem, load_input_fifo, base_addr_in,
                 nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
