@@ -42,11 +42,17 @@ void load_input(
 ) {
     if (!bb_en) return;
     if (!conv_en) {
+        load_input_loop1:
         for (int f_out = 0; f_out < nof; f_out += POF) {
+            load_input_loop2:
             for (int y0 = 0; y0 < noy; y0 += POY) {
+                load_input_loop3:
                 for (int x0 = 0; x0 < nox; x0 += POX) {
+                    load_input_loop4:
                     for (int f = 0; f < POF; f++) {
+                        load_input_loop5:
                         for (int y = 0; y < POY; y++) {
+                            load_input_loop6:
                             for (int x = 0; x < POX; x++) {
                                 #pragma HLS PIPELINE II=1
                                 load_input_fifo.write(act_mem[base_addr+(f_out+f)*noy*nox + (y0+y)*nox + x0+x]);
@@ -58,14 +64,23 @@ void load_input(
         }
     }
     else {
+        load_input_loop7:
         for (int f_out = 0; f_out < nof; f_out += POF) {
+            load_input_loop8:
             for (int y0 = 0; y0 < noy*stride; y0 += POY*stride) {
+                load_input_loop9:
                 for (int x0 = 0; x0 < nox*stride; x0 += POX*stride) {
+                    load_input_loop10:
                     for (int f_in = 0; f_in < nif; f_in ++) {
+                        load_input_loop11:
                         for (int f = 0; f < POF; f++) {
+                            load_input_loop12:
                             for (int y = 0; y < POY*stride; y+=stride) {
+                                load_input_loop13:
                                 for (int x = 0; x < POX*stride; x+=stride) {
+                                    load_input_loop14:
                                     for (int i = 0; i < nky; i++) {
+                                        load_input_loop15:
                                         for (int j = 0; j < nkx; j++) {
                                             #pragma HLS PIPELINE II=1
                                             DTYPE_ACT in_val;
@@ -106,14 +121,23 @@ void load_weight(
     if (!bb_en) return;
     if (!conv_en) return;
 
+    load_weight_loop1:
     for (int f_out = 0; f_out < nof; f_out += POF) {
+        load_weight_loop2:
         for (int y0 = 0; y0 < noy; y0 += POY) {
+            load_weight_loop3:
             for (int x0 = 0; x0 < nox; x0 += POX) {
+                load_weight_loop4:
                 for (int f_in = 0; f_in < nif; f_in ++) {
+                    load_weight_loop5:
                     for (int f = 0; f < POF; f++) {
+                        load_weight_loop6:
                         for (int y = 0; y < POY; y++) {
+                            load_weight_loop7:
                             for (int x = 0; x < POX; x++) {
+                                load_weight_loop8:
                                 for (int i = 0; i < nky; i++) {
+                                    load_weight_loop9:
                                     for (int j = 0; j < nkx; j++) {
                                         #pragma HLS PIPELINE II=1
                                         unsigned int addr = (f_out+f)*nif*nky*nkx + f_in*nky*nkx + i*nkx + j;
@@ -144,11 +168,17 @@ void PE(
 ) {
     if (!bb_en) return;
     if (!conv_en) {
+        pe_loop1:
         for (int f_out = 0; f_out < nof; f_out += POF) {
+            pe_loop2:
             for (int y0 = 0; y0 < noy; y0 += POY) {
+                pe_loop3:
                 for (int x0 = 0; x0 < nox; x0 += POX) {
+                    pe_loop4:
                     for (int f = 0; f < POF; f++) {
+                        pe_loop5:
                         for (int y = 0; y < POY; y++) {
+                            pe_loop6:
                             for (int x = 0; x < POX; x++) {
                                 #pragma HLS PIPELINE II=1
                                 pe_out_fifo.write(load_input_fifo.read());
@@ -165,23 +195,35 @@ void PE(
         #pragma HLS ARRAY_PARTITION variable=mac_vals complete dim=2
         #pragma HLS ARRAY_PARTITION variable=mac_vals complete dim=3
 
+        pe_loop7:
         for (int f_out = 0; f_out < nof; f_out += POF) {
+            pe_loop8:
             for (int y0 = 0; y0 < noy; y0 += POY) {
+                pe_loop9:
                 for (int x0 = 0; x0 < nox; x0 += POX) {
                     // init mac
+                    pe_loop10:
                     for (int f = 0; f < POF; f++) {
+                        pe_loop11:
                         for (int y = 0; y < POY; y++) {
+                            pe_loop12:
                             for (int x = 0; x < POX; x++) {
                                 mac_vals[f][y][x] = 0;
                             }
                         }
                     }
                     // calc 
+                    pe_loop13:
                     for (int f_in = 0; f_in < nif; f_in ++) {
+                        pe_loop14:
                         for (int f = 0; f < POF; f++) {
+                            pe_loop15:
                             for (int y = 0; y < POY; y++) {
+                                pe_loop16:
                                 for (int x = 0; x < POX; x++) {
+                                    pe_loop17:
                                     for (int i = 0; i < nky; i++) {
+                                        pe_loop18:
                                         for (int j = 0; j < nkx; j++) {
                                             #pragma HLS PIPELINE II=1
                                             DTYPE_ACT act_in = load_input_fifo.read();
@@ -195,8 +237,11 @@ void PE(
                         }
                     }
                     // pass to fifo
+                    pe_loop19:
                     for (int f = 0; f < POF; f++) {
+                        pe_loop20:
                         for (int y = 0; y < POY; y++) {
+                            pe_loop21:
                             for (int x = 0; x < POX; x++) {
                                 #pragma HLS PIPELINE II=1
                                 unsigned int addr = (f_out+f)*noy*nox + y*nox + x;
@@ -223,11 +268,17 @@ void store_output(
     unsigned int bb_en
 ) {
     if (!bb_en) return;
+    sotre_output_loop1:
     for (int f_out = 0; f_out < nof; f_out += POF) {
+        sotre_output_loop2:
         for (int y0 = 0; y0 < noy; y0 += POY) {
+            sotre_output_loop3:
             for (int x0 = 0; x0 < nox; x0 += POX) {
+                sotre_output_loop4:
                 for (int f = 0; f < POF; f++) {
+                    sotre_output_loop5:
                     for (int y = 0; y < POY; y++) {
+                        sotre_output_loop6:
                         for (int x = 0; x < POX; x++) {
                             #pragma HLS PIPELINE II=1
                             unsigned int addr = (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
@@ -256,16 +307,22 @@ void batch_norm(
     float mean;
     float mult_factor;
     float beta;
+    batch_norm_loop1:
     for (int f_out = 0; f_out < nof; f_out+=POF) {
+        batch_norm_loop2:
         for (int y0 = 0; y0 < noy; y0+=POY) {
+            batch_norm_loop3:
             for (int x0 = 0; x0 < nox; x0+=POX) {
                 // parallel
+                batch_norm_loop4:
                 for (int f = 0; f < POF; f++) {
                     #pragma HLS PIPELINE II=1
                     mean = bn_weight_mem[bn_weight_base_addr+(f_out+f)];
                     mult_factor = bn_weight_mem[bn_weight_base_addr+nof+(f_out+f)];
                     beta = bn_weight_mem[bn_weight_base_addr+nof*2+(f_out+f)];
+                    batch_norm_loop5:
                     for (int y = 0; y < POY; y++) {
+                        batch_norm_loop6:
                         for (int x = 0; x < POX; x++) {
                             #pragma HLS PIPELINE II=1
                             float val;
@@ -298,11 +355,17 @@ void skip_conn(
 ) {
     if (!bb_en) return;
 
+    skip_conn_loop1:
     for (int f_out = 0; f_out < nof; f_out+=POF) {
+        skip_conn_loop2:
         for (int y0 = 0; y0 < noy; y0+=POY) {
+            skip_conn_loop3:
             for (int x0 = 0; x0 < nox; x0+=POX) {
+                skip_conn_loop4:
                 for (int f = 0; f < POF; f++) {
+                    skip_conn_loop5:
                     for (int y = 0; y < POY; y++) {
+                        skip_conn_loop6:
                         for (int x = 0; x < POX; x++) {
                             #pragma HLS PIPELINE II=1
                             float val = in_fifo.read();
@@ -346,11 +409,16 @@ void max_pool(
     DTYPE_ACT max_pool_kernel[MAX_POOL_K * MAX_POOL_K];
     #pragma HLS ARRAY_PARTITION variable=max_pool_kernel complete
 
+    max_pool_loop1:
     for (int f = 0; f < nif; f++) {
+        max_pool_loop2:
         for (int y = 0; y < noy; y++) {
+            max_pool_loop3:
             for (int x = 0; x < nox; x++) {
                 #pragma HLS PIPELINE II=1
+                max_pool_loop4:
                 for (int i = 0; i < MAX_POOL_K; i++) {
+                    max_pool_loop5:
                     for (int j = 0; j < MAX_POOL_K; j++) {
                         DTYPE_ACT in_val;
                         int y_in = y*stride + i - pad;
@@ -366,6 +434,7 @@ void max_pool(
                     }
                 }
                 DTYPE_ACT max = max_pool_kernel[0];
+                max_pool_loop6:
                 for (int idx = 1; idx < MAX_POOL_K * MAX_POOL_K; idx++) {
                     if (max_pool_kernel[idx] > max) {
                         max = max_pool_kernel[idx];
@@ -399,10 +468,13 @@ void avg_pool(
 	if (!avg_pool_en) return;
     #pragma HLS DEPENDENCE variable=act_mem inter false
     #pragma HLS DEPENDENCE variable=act_mem intra false
+    avg_pool_loop1:
     for (int f = 0; f < nif; f++) {
         float sum = 0;
         #pragma HLS PIPELINE II=1
+        avg_pool_loop2:
         for (int y = 0; y < niy; y++) {
+            avg_pool_loop3:
             for (int x = 0; x < nix; x++) {
                 #pragma HLS PIPELINE II=1
                 unsigned in_addr = f*niy*nix + y*nix + x;
@@ -426,9 +498,11 @@ void fc(
     if (!fc_en) return;
     #pragma HLS DEPENDENCE variable=act_mem inter false
     #pragma HLS DEPENDENCE variable=act_mem intra false
+    fc_loop1:
     for (int f_out = 0; f_out < nof; f_out++) {
         float sum = 0;
         #pragma HLS PIPELINE II=1
+        fc_loop2:
         for (int f_in = 0; f_in < nif; f_in++) {
             #pragma HLS PIPELINE II=1
             unsigned weight_addr = f_out*nif + f_in;
@@ -1293,6 +1367,7 @@ void conv_kernel(
     #pragma HLS DEPENDENCE variable=act_mem intra false
     #pragma HLS DEPENDENCE variable=act_mem inter false
     #pragma HLS LOOP_TRIPCOUNT min=0 max=27
+    conv_kernel_loop1:
     for (layer_cnt = *start_layer; layer_cnt <= *end_layer; layer_cnt++) {
         controller (
             &layer_cnt,
@@ -1325,6 +1400,7 @@ void conv_kernel(
         // initial input
         if (layer_cnt == *start_layer) {
             // load input
+            conv_kernel_loop2:
             for (int idx = 0; idx < in_size; idx++){
                 act_mem[base_addr_in+idx] = act_in[idx];
             }
@@ -1359,6 +1435,7 @@ void conv_kernel(
 
         // output back to host
         if (layer_cnt == *end_layer) {
+            conv_kernel_loop3:
             for (int idx = 0; idx < out_size; idx++){
                 act_out[idx] = act_mem[base_addr_out+idx];
             }
