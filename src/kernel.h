@@ -12,6 +12,7 @@
 #include "conv_config.h"
 
 void conv_kernel(
+    DTYPE_ACT *act_mem,
     DTYPE_ACT *act_in,
     DTYPE_ACT *act_out,
     DTYPE_FIL *weight_mem,

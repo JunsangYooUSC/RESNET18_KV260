@@ -127,7 +127,7 @@ int main(){
 	for (int idx = 0; idx < out_size; idx++) {
 		act_mem[base_addr_out+idx] = (act_mem[base_addr_out+idx] > 0) ? act_mem[base_addr_out+idx] : 0;
 	}
-	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 	// show all outputs for debugging
 #if SHOW_ALL_OUTPUT
 	for (int idx = 0; idx < out_size; idx++) {
