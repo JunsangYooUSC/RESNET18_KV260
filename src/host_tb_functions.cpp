@@ -232,7 +232,7 @@ int main(){
 	std::cout << "****************************************" << std::endl;
 	// load input for test
 	read_bin<DTYPE_ACT>(base_fname+"after_relu.bin", act_mem_host, base_addr_in, in_size);
-	// for (int idx = 0; idx < in_size; idx++) act_mem[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
+	for (int idx = 0; idx < in_size; idx++) act_mem[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
 	// for (int idx = 0; idx < in_size; idx++) act_in[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
 	std::cout << "****************************************" << std::endl;
 	std::cout << "out_size: " << out_size << std::endl;
