@@ -1,6 +1,6 @@
 version 0
 - uses only off-chip memory
-- no optimizations
+- minimum pragmas applied
 - no parallel
 - no packing
 - use float
