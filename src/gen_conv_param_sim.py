@@ -22,6 +22,9 @@ import time
 
 device = torch.device("cpu")
 print(f"Using device: {device}")
+
+SCALE = 64
+
 ##
 import torch
 import torch.nn as nn
@@ -45,46 +48,46 @@ class ModifiedResNet18(nn.Module):
         # Adjust only the internal channels, keeping input parameters the same
         self.base_model.conv1 = nn.Conv2d(
             in_channels=input_channels,
-            out_channels=max(1, self.base_model.conv1.out_channels // 32),
+            out_channels=max(1, self.base_model.conv1.out_channels // SCALE),
             kernel_size=self.base_model.conv1.kernel_size,
             stride=self.base_model.conv1.stride,
             padding=self.base_model.conv1.padding,
             bias=False
         )
 
-        self.base_model.bn1 = nn.BatchNorm2d(max(1, self.base_model.bn1.num_features // 32))
+        self.base_model.bn1 = nn.BatchNorm2d(max(1, self.base_model.bn1.num_features // SCALE))
 
         # Scale down the layers
         def scale_down_layer(layer):
             for block in layer:
                 block.conv1 = nn.Conv2d(
-                    in_channels=max(1, block.conv1.in_channels // 32),
-                    out_channels=max(1, block.conv1.out_channels // 32),
+                    in_channels=max(1, block.conv1.in_channels // SCALE),
+                    out_channels=max(1, block.conv1.out_channels // SCALE),
                     kernel_size=block.conv1.kernel_size,
                     stride=block.conv1.stride,
                     padding=block.conv1.padding,
                     bias=False
                 )
-                block.bn1 = nn.BatchNorm2d(max(1, block.bn1.num_features // 32))
+                block.bn1 = nn.BatchNorm2d(max(1, block.bn1.num_features // SCALE))
                 block.conv2 = nn.Conv2d(
-                    in_channels=max(1, block.conv2.in_channels // 32),
-                    out_channels=max(1, block.conv2.out_channels // 32),
+                    in_channels=max(1, block.conv2.in_channels // SCALE),
+                    out_channels=max(1, block.conv2.out_channels // SCALE),
                     kernel_size=block.conv2.kernel_size,
                     stride=block.conv2.stride,
                     padding=block.conv2.padding,
                     bias=False
                 )
-                block.bn2 = nn.BatchNorm2d(max(1, block.bn2.num_features // 32))
+                block.bn2 = nn.BatchNorm2d(max(1, block.bn2.num_features // SCALE))
                 if block.downsample is not None:
                     block.downsample[0] = nn.Conv2d(
-                        in_channels=max(1, block.downsample[0].in_channels // 32),
-                        out_channels=max(1, block.downsample[0].out_channels // 32),
+                        in_channels=max(1, block.downsample[0].in_channels // SCALE),
+                        out_channels=max(1, block.downsample[0].out_channels // SCALE),
                         kernel_size=block.downsample[0].kernel_size,
                         stride=block.downsample[0].stride,
                         padding=block.downsample[0].padding,
                         bias=False
                     )
-                    block.downsample[1] = nn.BatchNorm2d(max(1, block.downsample[1].num_features // 32))
+                    block.downsample[1] = nn.BatchNorm2d(max(1, block.downsample[1].num_features // SCALE))
 
         scale_down_layer(self.base_model.layer1)
         scale_down_layer(self.base_model.layer2)
@@ -92,7 +95,7 @@ class ModifiedResNet18(nn.Module):
         scale_down_layer(self.base_model.layer4)
 
         # Replace the fully connected layer
-        self.base_model.fc = nn.Linear(16, 10)
+        self.base_model.fc = nn.Linear(512//SCALE, 10)
 
     def forward(self, x):
         """Forward pass for the modified ResNet-18 model."""
