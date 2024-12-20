@@ -447,8 +447,10 @@ void avg_pool_golden(
     unsigned int noy,
     unsigned int nox,
     unsigned int stride,
-    unsigned int pad
+    unsigned int pad,
+	unsigned int avg_pool_en
 ) {    
+	if (!avg_pool_en) return;
     for (int f = 0; f < nif; f++) {
         float sum = 0;
         for (int y = 0; y < noy; y++) {
@@ -469,8 +471,10 @@ void fc_golden(
     unsigned int out_base_addr,
     unsigned int bn_weight_base_addr,
     unsigned int nof,
-    unsigned int nif
+    unsigned int nif,
+	unsigned int fc_en
 ){
+	if (!fc_en) return;
     for (int f_out = 0; f_out < nof; f_out++) {
         float sum = 0;
         for (int f_in = 0; f_in < nif; f_in++) {
