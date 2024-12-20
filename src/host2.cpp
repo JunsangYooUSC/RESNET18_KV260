@@ -254,6 +254,10 @@ int main(){
 					}
 				}
 			}
+			// relu
+			for (int idx = 0; idx < out_size; idx++) {
+				act_host_float[base_addr_out+idx] = (act_host_float[base_addr_out+idx] > 0) ? act_host_float[base_addr_out+idx] : 0;
+			}
 		}
 		// BB3_SKIP layer cnt 10
 		// BB5_SKIP layer cnt 16
