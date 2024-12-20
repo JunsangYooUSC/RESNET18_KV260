@@ -225,7 +225,7 @@ int main(){
 			act_mem_host, 
 			base_addr_in, 
 			base_addr_out, 
-			nky, nkx, nof, nif, noy, nox, stride, pad);
+			nky, nkx, nof, nif, noy, nox, stride, pad, avg_pool_en);
 	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 
 	// show all outputs for debugging
