@@ -287,9 +287,9 @@ int main(){
 
 		if (layer_cnt == end_layer){
 			// kernel calculation
-			conv_kernel(act_in_host, act_out_host, weight_mem, bn_weight_mem, &start_layer, &end_layer);
-			compare_result<DTYPE_ACT, float>(act_out_host, act_host_float, base_addr_out);
-			save_to_bin(act_out_host, out_size, "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/kernel_out.bin");
+			// conv_kernel(act_in_host, act_out_host, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+			// compare_result<DTYPE_ACT, float>(act_out_host, act_host_float, base_addr_out);
+			// save_to_bin(act_out_host, out_size, "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/kernel_out.bin");
 		}
 	}
 
