@@ -817,10 +817,10 @@ constexpr unsigned FC_IN_SIZE = AVG_POOL_C * AVG_POOL_H * AVG_POOL_W;
 constexpr unsigned FC_OUT_SIZE = FC_C * FC_H * FC_W;
 
 // size of mem blocks
-constexpr unsigned MEM0_BASE_ADDR = 0;
-constexpr unsigned MEM1_BASE_ADDR = MEM0_SIZE;
-constexpr unsigned MEM2_BASE_ADDR = (MEM0_SIZE + MEM1_SIZE);
-constexpr unsigned NOMEM_BASE_ADDR = 0;
+#define MEM0_BASE_ADDR          0
+#define MEM1_BASE_ADDR          MEM0_SIZE
+#define MEM2_BASE_ADDR          (MEM0_SIZE + MEM1_SIZE)
+#define NOMEM_BASE_ADDR         0
 
 // #if SIM_MODE
 // constexpr unsigned MEM0_SIZE = 100000;
