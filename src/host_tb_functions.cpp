@@ -230,7 +230,7 @@ int main(){
 	std::cout << "base_addr_in: " << base_addr_in << std::endl;
 	std::cout << "base_addr_out: " << base_addr_out << std::endl;
 	std::cout << "****************************************" << std::endl;
-	// max pool
+	// avg pool
 	avg_pool_golden<float>(
 			act_mem_host, 
 			base_addr_in, 

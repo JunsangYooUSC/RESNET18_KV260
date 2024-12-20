@@ -450,16 +450,18 @@ void avg_pool_golden(
     unsigned int pad,
 	unsigned int avg_pool_en
 ) {    
+	unsigned int niy = 7;
+	unsigned int nix = 7;
 	if (!avg_pool_en) return;
     for (int f = 0; f < nif; f++) {
         float sum = 0;
-        for (int y = 0; y < noy; y++) {
-            for (int x = 0; x < nox; x++) {
-                unsigned in_addr = f*noy*nox + y*nox + x;
+        for (int y = 0; y < niy; y++) {
+            for (int x = 0; x < nix; x++) {
+                unsigned in_addr = f*niy*nix + y*nix + x;
                 sum = sum + (float) act_mem[in_base_addr+in_addr];
             }
         }
-        act_mem[out_base_addr+f] = sum / (noy * nox);
+        act_mem[out_base_addr+f] = sum / (niy * nix);
     }
 }
 
