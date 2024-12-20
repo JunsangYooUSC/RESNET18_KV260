@@ -160,7 +160,7 @@ int main(){
 	// ru kernel
 	start_layer = 0;
 	end_layer = 4;
-	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 
 	layer_cnt = 4;
 	controller (
