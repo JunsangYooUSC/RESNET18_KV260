@@ -113,40 +113,40 @@ int main(){
 	std::cout << "input, filter, bn_weight loaded" << std::endl << std::endl;
 	for (int idx = 0; idx < CONV1_IN_SIZE; idx++) act_in[idx] = act_mem[idx];
 
-	// host memory
-	float act_mem_host[ACT_MEM_SIZE];
-	float weight_mem_host[WEIGHT_MEM_SIZE];
-	float bn_weight_mem_host[BN_WEIGHT_MEM_SIZE];
-	for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_mem_host[idx] = 0;
-	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem_host[idx] = 0;
-	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem_host[idx] = 0;
-	// copy input, filter, bn_weight to host
-	for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_mem_host[idx] = (float) act_mem[idx];
-	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem_host[idx] = (float) weight_mem[idx];
-	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem_host[idx] = bn_weight_mem[idx];
-
-	// conv1 test
-	unsigned start_layer = 0;
-	unsigned end_layer = 0;
-	layer_cnt = 0;
-	controller (
-		&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
-		&bb_en, &conv_en, &bn_en, &skip_en, &relu_en, &max_pool_en, &avg_pool_en, &fc_en,
-		&base_addr_in, &base_addr_out, &base_addr_add, 
-		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
-	);
-	// conv, bn
-	convolution_bn_golden<float, float, float, float>(
-			act_mem_host+base_addr_in, 
-			weight_mem_host+weight_base, 
-			act_mem_host+base_addr_out, 
-			bn_weight_mem_host+bn_weight_base,
-			nky, nkx, nof, nif, noy, nox, stride, pad);
-	// relu
-	for (int idx = 0; idx < out_size; idx++) {
-		act_mem[base_addr_out+idx] = (act_mem[base_addr_out+idx] > 0) ? act_mem[base_addr_out+idx] : 0;
-	}
-	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+//	// host memory
+//	float act_mem_host[ACT_MEM_SIZE];
+//	float weight_mem_host[WEIGHT_MEM_SIZE];
+//	float bn_weight_mem_host[BN_WEIGHT_MEM_SIZE];
+//	for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_mem_host[idx] = 0;
+//	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem_host[idx] = 0;
+//	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem_host[idx] = 0;
+//	// copy input, filter, bn_weight to host
+//	for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_mem_host[idx] = (float) act_mem[idx];
+//	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem_host[idx] = (float) weight_mem[idx];
+//	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem_host[idx] = bn_weight_mem[idx];
+//
+//	// conv1 test
+//	unsigned start_layer = 0;
+//	unsigned end_layer = 0;
+//	layer_cnt = 0;
+//	controller (
+//		&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
+//		&bb_en, &conv_en, &bn_en, &skip_en, &relu_en, &max_pool_en, &avg_pool_en, &fc_en,
+//		&base_addr_in, &base_addr_out, &base_addr_add, 
+//		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
+//	);
+//	// conv, bn
+//	convolution_bn_golden<float, float, float, float>(
+//			act_mem_host+base_addr_in, 
+//			weight_mem_host+weight_base, 
+//			act_mem_host+base_addr_out, 
+//			bn_weight_mem_host+bn_weight_base,
+//			nky, nkx, nof, nif, noy, nox, stride, pad);
+//	// relu
+//	for (int idx = 0; idx < out_size; idx++) {
+//		act_mem[base_addr_out+idx] = (act_mem[base_addr_out+idx] > 0) ? act_mem[base_addr_out+idx] : 0;
+//	}
+//	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 	// show all outputs for debugging
 #if SHOW_ALL_OUTPUT
 	for (int idx = 0; idx < out_size; idx++) {
