@@ -411,6 +411,9 @@ void max_pool_golden(
                         }
                         else {
                             unsigned in_addr = f*noy*stride*nox*stride + (y*stride+i-pad)*nox*stride + (x*stride+j-pad);
+							if (in_addr >= MAX_POOL_IN_SIZE) {
+								std::cout << "in_addr: " << in_addr << std::endl;
+							}
                             in_val = act_mem[in_base_addr+in_addr];
                         }
                         max_pool_kernel[i * MAX_POOL_K + j] = in_val;
@@ -423,6 +426,9 @@ void max_pool_golden(
                     }
                 }
                 unsigned out_addr = f*noy*nox + y*nox + x;
+				if (out_addr >= MAX_POOL_OUT_SIZE) {
+					std::cout << "in_addr: " << in_addr << std::endl;
+				}
                 act_mem[out_base_addr+out_addr] = max;
             }
         }
