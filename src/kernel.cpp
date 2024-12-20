@@ -1165,7 +1165,7 @@ void controller (
         *in_size            = AVG_POOL_IN_SIZE;
         *out_size           = AVG_POOL_OUT_SIZE;
     }
-    else if (*layer_cnt == 26) {
+    else if (*layer_cnt == 27) {
         *nif                = AVG_POOL_C;
         *nof                = FC_C;
         *noy                = FC_H;

@@ -789,7 +789,11 @@ constexpr unsigned AVG_POOL_IN_SIZE = BB8_SKIP_C * BB8_SKIP_H * BB8_SKIP_W;
 constexpr unsigned AVG_POOL_OUT_SIZE = AVG_POOL_C * AVG_POOL_H * AVG_POOL_W;
 
 // FC layer cnt 27
+#if SIM_MODE
+#define FC_C                        10
+#else
 #define FC_C                        100
+#endif
 #define FC_H                        1
 #define FC_W                        1
 #define FC_K                        0
