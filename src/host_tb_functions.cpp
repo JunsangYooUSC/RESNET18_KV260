@@ -270,7 +270,8 @@ int main(){
 	// show all outputs for debugging
 #if SHOW_ALL_OUTPUT
 	std::cout << "act_out size: " << out_size << std::endl;
-	for (int idx = 0; idx < out_size; idx++) {
+	// for (int idx = 0; idx < out_size; idx++) {
+	for (int idx = 0; idx < 100; idx++) {
 		//std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
 	}
 #endif
