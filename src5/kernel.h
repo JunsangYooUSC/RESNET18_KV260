@@ -12,8 +12,8 @@
 #include "conv_config.h"
 
 void conv_kernel(
-    DTYPE_ACT *act_in,
-    DTYPE_ACT *act_out,
+    DTYPE_ACT *act_in_host,
+    DTYPE_ACT *act_out_host,
     DTYPE_FIL *weight_mem,
     float *bn_weight_mem,
     unsigned *start_layer,

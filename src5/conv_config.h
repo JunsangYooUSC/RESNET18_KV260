@@ -72,17 +72,13 @@ constexpr unsigned I_MAC = 16;
 // constexpr unsigned MAC_EXTRA_BITS = log2_ceil(NOF * NIF * NOX * NOY) + 1;
 
 // Data type definition
-// typedef ap_fixed<W_ACT, I_ACT> DTYPE_ACT;  // data type used for input / output activation
-// typedef ap_fixed<W_FIL, I_FIL> DTYPE_FIL;
-// typedef ap_fixed<W_MUL, I_MUL> DTYPE_MUL;
-// typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
-typedef float DTYPE_ACT;
-typedef float DTYPE_FIL;
-typedef float DTYPE_MUL;
-typedef float DTYPE_MAC;
+typedef ap_fixed<W_ACT, I_ACT> DTYPE_ACT;  // data type used for input / output activation
+typedef ap_fixed<W_FIL, I_FIL> DTYPE_FIL;
+typedef ap_fixed<W_MUL, I_MUL> DTYPE_MUL;
+typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
 
-// typedef ap_uint<ACT_PACK*W_ACT> DTYPE_MEM_ACT;
-// typedef ap_uint<WEIGHT_PACK*W_FIL> DTYPE_MEM_WEIGHT;
+typedef ap_uint<ACT_PACK*W_ACT> DTYPE_MEM_ACT;
+typedef ap_uint<WEIGHT_PACK*W_FIL> DTYPE_MEM_WEIGHT;
 
 // BUF2PE vectors
 constexpr unsigned int FIFO_ARR_DEPTH = 9;  // todo: reduce if unnecessary
@@ -91,11 +87,7 @@ constexpr unsigned int FIFO_ARR_DEPTH = 9;  // todo: reduce if unnecessary
 // input
 #define IN_H                224
 #define IN_W                224
-#if SIM_MODE
 #define IN_C                1
-#else
-#define IN_C                3
-#endif
 
 // enable signals
 // 0: off
