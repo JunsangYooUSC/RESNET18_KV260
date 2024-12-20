@@ -1406,7 +1406,7 @@ void conv_kernel(
             }
         }
 
-        // #pragma HLS DATAFLOW
+        #pragma HLS DATAFLOW
         // conv
         load_input(act_mem, load_input_fifo, base_addr_in,
                 nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
