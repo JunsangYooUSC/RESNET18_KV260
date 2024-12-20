@@ -325,11 +325,17 @@ void batch_norm(
                         for (int x = 0; x < POX; x++) {
                             float val;
                             val = in_fifo.read();
+                            float pass_val;
                             // batch norm when enabled
                             if (bn_en) {
-                                val = (val-mean)*mult_factor+beta;
+                                float tmp1 = (val-mean);
+                                float tmp2 = tmp1 *mult_factor;
+                                pass_val = tmp2 + beta;
                             }
-                            out_fifo.write(val);
+                            else {
+                                pass_val = val;
+                            }
+                            out_fifo.write(pass_val);
                         }
                     }
                 }
