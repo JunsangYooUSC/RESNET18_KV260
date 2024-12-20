@@ -184,27 +184,27 @@ int main(){
 	}
 	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 	
-//	// maxpool test
-//	start_layer = 1;
-//	end_layer = 1;
-//	layer_cnt = 1;
-//	controller (
-//		&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
-//		&bb_en, &conv_en, &bn_en, &skip_en, &relu_en, &max_pool_en, &avg_pool_en, &fc_en,
-//		&base_addr_in, &base_addr_out, &base_addr_add, 
-//		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
-//	);
-//	// load input for test
-//	read_bin<DTYPE_ACT>(base_fname+"after_relu.bin", act_mem_host, base_addr_in, in_size);
-//	for (int idx = 0; idx < in_size; idx++) act_mem[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
-//	for (int idx = 0; idx < in_size; idx++) act_in[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
-//	// conv, bn
-//	max_pool_golden<float>(
-//			act_mem_host, 
-//			base_addr_in, 
-//			base_addr_out, 
-//			nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
-//	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+	// maxpool test
+	start_layer = 1;
+	end_layer = 1;
+	layer_cnt = 1;
+	controller (
+		&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
+		&bb_en, &conv_en, &bn_en, &skip_en, &relu_en, &max_pool_en, &avg_pool_en, &fc_en,
+		&base_addr_in, &base_addr_out, &base_addr_add, 
+		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
+	);
+	// load input for test
+	read_bin<DTYPE_ACT>(base_fname+"after_relu.bin", act_mem_host, base_addr_in, in_size);
+	for (int idx = 0; idx < in_size; idx++) act_mem[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
+	for (int idx = 0; idx < in_size; idx++) act_in[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
+	// conv, bn
+	max_pool_golden<float>(
+			act_mem_host, 
+			base_addr_in, 
+			base_addr_out, 
+			nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
+	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 
 	// show all outputs for debugging
 #if SHOW_ALL_OUTPUT
