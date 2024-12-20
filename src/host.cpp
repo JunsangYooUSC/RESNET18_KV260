@@ -159,10 +159,10 @@ int main(){
 
 	// ru kernel
 	start_layer = 0;
-	end_layer = 4;
+	end_layer = 27;
 	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 
-	layer_cnt = 4;
+	layer_cnt = 27;
 	controller (
 		&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
 		&bb_en, &conv_en, &bn_en, &skip_en, &relu_en, &max_pool_en, &avg_pool_en, &fc_en,
