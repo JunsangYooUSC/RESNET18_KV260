@@ -226,6 +226,10 @@ int main(){
 	for (int idx = 0; idx < in_size; idx++) {
 		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[base_addr_in+idx] << std::endl;
 	}
+	std::cout << "****************************************" << std::endl;
+	std::cout << "base_addr_in: " << base_addr_in << std::endl;
+	std::cout << "base_addr_out: " << base_addr_out << std::endl;
+	std::cout << "****************************************" << std::endl;
 	// max pool
 	avg_pool_golden<float>(
 			act_mem_host, 
