@@ -227,6 +227,8 @@ int main(){
 	);
 	std::cout << "****************************************" << std::endl;
 	std::cout << "out_size: " << out_size << std::endl;
+	std::cout << "base_addr_in: " << base_addr_in << std::endl;	// 50176
+	std::cout << "in_size: " << in_size << std::endl; // 12544
 	std::cout << "****************************************" << std::endl;
 	// load input for test
 	read_bin<DTYPE_ACT>(base_fname+"after_relu.bin", act_mem_host, base_addr_in, in_size);
@@ -234,6 +236,8 @@ int main(){
 	for (int idx = 0; idx < in_size; idx++) act_in[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
 	std::cout << "****************************************" << std::endl;
 	std::cout << "out_size: " << out_size << std::endl;
+	std::cout << "base_addr_in: " << base_addr_in << std::endl;	// 50176
+	std::cout << "in_size: " << in_size << std::endl; // 12544
 	std::cout << "****************************************" << std::endl;
 	// max pool
 	max_pool_golden<float>(
