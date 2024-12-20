@@ -832,7 +832,7 @@ constexpr unsigned FC_OUT_SIZE = FC_C * FC_H * FC_W;
 // constexpr unsigned MEM1_SIZE = MAX_POOL_C  * MAX_POOL_H * MAX_POOL_W / ACT_PACK;
 // constexpr unsigned MEM2_SIZE = BB1_CONV2_C  * BB1_CONV2_H * BB1_CONV2_W / ACT_PACK;
 // size of mem blocks
-constexpr unsigned MEM0_SIZE = CONV1_IN_SIZE / ACT_PACK;
+constexpr unsigned MEM0_SIZE = (CONV1_IN_SIZE / ACT_PACK > MAX_POOL_OUT_SIZE / ACT_PACK) ? CONV1_IN_SIZE / ACT_PACK : MAX_POOL_OUT_SIZE / ACT_PACK;
 constexpr unsigned MEM1_SIZE = CONV1_OUT_SIZE / ACT_PACK;
 constexpr unsigned MEM2_SIZE = MAX_POOL_OUT_SIZE / ACT_PACK;
 constexpr unsigned MEM0_BASE_ADDR = 0;
