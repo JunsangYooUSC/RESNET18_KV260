@@ -174,6 +174,7 @@ input_int_bits = 3
 
 quantize_conv2d(quantized_model, total_bits, weight_int_bits, input_int_bits)
 quantized_model = quantized_model.to(device)
+quantized_model.eval()
 
 ##
 # function to save the values in given format
@@ -229,6 +230,7 @@ def count_parameters(model):
 
 # input gen
 x = torch.randn(1, input_channels, input_size, input_size)
+x = fixed_point_quantize(x, total_bits, input_int_bits)
 y = quantized_model(x)
 
 print()
