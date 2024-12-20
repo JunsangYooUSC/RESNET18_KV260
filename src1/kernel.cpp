@@ -243,7 +243,6 @@ void PE(
                         for (int y = 0; y < POY; y++) {
                             pe_loop21:
                             for (int x = 0; x < POX; x++) {
-                                #pragma HLS PIPELINE II=1
                                 unsigned int addr = (f_out+f)*noy*nox + y*nox + x;
                                 pe_out_fifo.write(mac_vals[f][y][x]);
                             }
@@ -324,7 +323,6 @@ void batch_norm(
                     for (int y = 0; y < POY; y++) {
                         batch_norm_loop6:
                         for (int x = 0; x < POX; x++) {
-                            #pragma HLS PIPELINE II=1
                             float val;
                             val = in_fifo.read();
                             // batch norm when enabled
@@ -1406,7 +1404,7 @@ void conv_kernel(
             }
         }
 
-        #pragma HLS DATAFLOW
+        // #pragma HLS DATAFLOW
         // conv
         load_input(act_mem, load_input_fifo, base_addr_in,
                 nky, nkx, nof, nif, noy, nox, stride, pad, bb_en, conv_en);
