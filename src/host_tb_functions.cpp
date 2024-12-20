@@ -40,6 +40,8 @@ int main(){
 	std::cout << "****************************************" << std::endl;
 
 	// mimic controller 
+	unsigned start_layer;
+	unsigned end_layer;
 	unsigned layer_cnt;
 	unsigned nif;
 	unsigned nof;
@@ -156,8 +158,8 @@ int main(){
 	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem_host[idx] = bn_weight_mem[idx];
 
 	// conv1 test
-	unsigned start_layer = 0;
-	unsigned end_layer = 0;
+	start_layer = 0;
+	end_layer = 0;
 	layer_cnt = 0;
 	controller (
 		&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
@@ -182,8 +184,8 @@ int main(){
 	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 	
 	// maxpool test
-	unsigned start_layer = 1;
-	unsigned end_layer = 1;
+	start_layer = 1;
+	end_layer = 1;
 	layer_cnt = 1;
 	controller (
 		&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
