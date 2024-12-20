@@ -427,7 +427,7 @@ void max_pool_golden(
                 }
                 unsigned out_addr = f*noy*nox + y*nox + x;
 				if (out_addr >= MAX_POOL_OUT_SIZE) {
-					std::cout << "in_addr: " << in_addr << std::endl;
+					std::cout << "out_addr: " << out_addr << std::endl;
 				}
                 act_mem[out_base_addr+out_addr] = max;
             }
