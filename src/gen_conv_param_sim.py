@@ -199,8 +199,10 @@ eps = 1e-5
 
 for name, module in quantized_model.named_modules():
     if isinstance(module, nn.Conv2d):
+        print("conv,"name)
         conv_weights_raw = np.append(conv_weights_raw, module.weight.detach().numpy().flatten())
     if isinstance(module, nn.BatchNorm2d):
+        print("bn,"name)
         mult_factor = module.weight / torch.sqrt(module.running_var + eps)
         params = torch.stack([
             module.running_mean,

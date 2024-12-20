@@ -38,12 +38,59 @@ int main(){
 	std::cout << "****************************************" << std::endl;
 	std::cout << "host_tb_functions.cpp" << std::endl;
 	std::cout << "****************************************" << std::endl;
-	
+
+	// mimic controller 
+	unsigned layer_cnt;
+	unsigned nif;
+	unsigned nof;
+	unsigned noy;
+	unsigned nox;
+	unsigned nkx;
+	unsigned nky;
+	unsigned stride;
+	unsigned pad;
+	bool bb_en;
+	bool conv_en;
+	bool bn_en;
+	bool skip_en;
+	bool relu_en;
+	bool max_pool_en;
+	bool avg_pool_en;
+	bool fc_en;
+	unsigned base_addr_in;
+	unsigned base_addr_out;
+	unsigned base_addr_add;
+	unsigned weight_base;
+	unsigned weight_size;
+	unsigned bn_weight_base;
+	unsigned bn_weight_size;
+	unsigned in_size;
+	unsigned out_size;
+
 	// mem check
 	std::cout << "WEIGHT_MEM_SIZE: " << WEIGHT_MEM_SIZE << std::endl;
 	std::cout << "BN_WEIGHT_MEM_SIZE: " << BN_WEIGHT_MEM_SIZE << std::endl;
 	std::cout << "ACT_MEM_SIZE: " << ACT_MEM_SIZE << std::endl;
 	std::cout << "MAX_ACT_MEM_SIZE: " << MAX_ACT_MEM_SIZE << std::endl << std::endl;
+
+	// layer size check
+	for (layer_cnt = 0; layer_cnt <= 27; layer_cnt++) {
+		controller (
+			&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
+			&bb_en, &conv_en, &bn_en, &skip_en, &relu_en, &max_pool_en, &avg_pool_en, &fc_en,
+			&base_addr_in, &base_addr_out, &base_addr_add, 
+			&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
+		);
+		if (bb_en) {
+			std::cout << "layer_cnt: " << layer_cnt << std::endl;
+			std::cout << "  weight_size: " << weight_size << std::endl;
+			std::cout << "  bn_weight_size: " << bn_weight_size << std::endl;
+		}
+		if (fc_en) {
+			std::cout << "layer_cnt: " << layer_cnt << std::endl;
+			std::cout << "bn_weight_size: " << bn_weight_size << std::endl;
+		}
+	}
 
 	// kernel IO
 	DTYPE_ACT act_in[MAX_ACT_MEM_SIZE];
@@ -77,34 +124,6 @@ int main(){
 	for (int idx = 0; idx < ACT_MEM_SIZE; idx++) act_mem_host[idx] = (float) act_mem[idx];
 	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem_host[idx] = (float) weight_mem[idx];
 	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem_host[idx] = bn_weight_mem[idx];
-
-	// mimic controller 
-	unsigned layer_cnt;
-	unsigned nif;
-	unsigned nof;
-	unsigned noy;
-	unsigned nox;
-	unsigned nkx;
-	unsigned nky;
-	unsigned stride;
-	unsigned pad;
-	bool bb_en;
-	bool conv_en;
-	bool bn_en;
-	bool skip_en;
-	bool relu_en;
-	bool max_pool_en;
-	bool avg_pool_en;
-	bool fc_en;
-	unsigned base_addr_in;
-	unsigned base_addr_out;
-	unsigned base_addr_add;
-	unsigned weight_base;
-	unsigned weight_size;
-	unsigned bn_weight_base;
-	unsigned bn_weight_size;
-	unsigned in_size;
-	unsigned out_size;
 
 	// conv1 test
 	unsigned start_layer = 0;
