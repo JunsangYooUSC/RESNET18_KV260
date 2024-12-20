@@ -48,8 +48,8 @@ int main(){
 	// kernel IO
 	DTYPE_ACT act_in[MAX_ACT_MEM_SIZE];
 	DTYPE_ACT act_out[MAX_ACT_MEM_SIZE];
-	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_in_host[idx] = 0;
-	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_out_host[idx] = 0;
+	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_in[idx] = 0;
+	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_out[idx] = 0;
 
 	// kernel offchip memory
 	DTYPE_ACT act_mem[ACT_MEM_SIZE];
@@ -124,7 +124,7 @@ int main(){
 			nky, nkx, nof, nif, noy, nox, stride, pad);
 	// relu
 	for (int idx = 0; idx < out_size; idx++) {
-		act_host_float[base_addr_out+idx] = (act_host_float[base_addr_out+idx] > 0) ? act_host_float[base_addr_out+idx] : 0;
+		act_mem[base_addr_out+idx] = (act_mem[base_addr_out+idx] > 0) ? act_mem[base_addr_out+idx] : 0;
 	}
 	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 	// show all outputs for debugging
