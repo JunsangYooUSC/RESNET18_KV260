@@ -174,7 +174,7 @@ int main(){
 			nky, nkx, nof, nif, noy, nox, stride, pad);
 	// relu
 	for (int idx = 0; idx < out_size; idx++) {
-		act_mem[base_addr_out+idx] = (act_mem[base_addr_out+idx] > 0) ? act_mem[base_addr_out+idx] : 0;
+		act_mem_host[base_addr_out+idx] = (act_mem_host[base_addr_out+idx] > 0) ? act_mem_host[base_addr_out+idx] : 0;
 	}
 	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 	std::cout << "act_out size: " << out_size << std::endl;
