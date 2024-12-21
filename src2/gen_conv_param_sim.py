@@ -336,3 +336,10 @@ with torch.no_grad():
     save_to_bin(after_layer4, "data/after_layer4.bin", dtype_output, total_bits, input_int_bits)
     save_to_bin(after_avgpool, "data/after_avgpool.bin", dtype_output, total_bits, input_int_bits)
     save_to_bin(after_fc, "data/after_fc.bin", dtype_output, total_bits, input_int_bits)
+
+##
+for idx in range(50):
+    print(idx, np.round(after_conv1.flatten()[idx].item(), 5))
+    # print(idx, np.round(after_bn1.flatten()[idx].item(), 5))
+
+

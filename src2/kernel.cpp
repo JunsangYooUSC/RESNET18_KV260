@@ -90,7 +90,7 @@ void load_input(
                                                 in_val = 0;
                                             }
                                             else {
-                                                // unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad);
+                                                // unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad); //////////////////////////////////////////////////////////////////////////////////////
                                                 unsigned addr = f_in*noy*stride*nox*stride + (y0+y+i-pad)*nox*stride + (x0+x+j-pad);
                                                 in_val = act_mem[base_addr+addr/ACT_PACK].range((addr%ACT_PACK+1)*W_ACT-1, (addr%ACT_PACK)*W_ACT);
                                             }
@@ -122,6 +122,7 @@ void load_weight(
 ) {
     if (!bb_en) return;
     if (!conv_en) return;
+    // todo: double buffering
 
     load_weight_loop1:
     for (int f_out = 0; f_out < nof; f_out += POF) {
@@ -245,8 +246,8 @@ void PE(
                         for (int y = 0; y < POY; y++) {
                             pe_loop21:
                             for (int x = 0; x < POX; x++) {
-                                // unsigned int addr = (f_out+f)*noy*nox + y*nox + x;
-                                unsigned int addr = (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
+                                unsigned int addr = (f_out+f)*noy*nox + y*nox + x; ///////////////////////////////////////////////////////////////////////
+                                // unsigned int addr = (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
                                 pe_out_fifo.write(mac_vals[f][y][x]);
                             }
                         }
