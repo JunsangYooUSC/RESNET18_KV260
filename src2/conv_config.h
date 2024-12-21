@@ -62,8 +62,10 @@ constexpr unsigned W_FIL = 8;
 constexpr unsigned I_FIL = 2;
 constexpr unsigned W_MUL = (W_ACT + W_FIL);
 constexpr unsigned I_MUL = (I_ACT + I_FIL);
-constexpr unsigned W_MAC = 32;      // todo: 24?
-constexpr unsigned I_MAC = 16;
+// constexpr unsigned W_MAC = 32;      // todo: 24?
+// constexpr unsigned I_MAC = 16;
+constexpr unsigned W_MAC = W_MUL+16;      // todo: 24?
+constexpr unsigned I_MAC = (I_MUL + 16);
 // constexpr unsigned log2_ceil(unsigned int n) {
 //     return (n <= 1) ? 0 : 1 + log2_ceil((n + 1) / 2);
 // }
