@@ -163,6 +163,9 @@ int main(){
 		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
 	);
 	// load input for test
+	std::cout << "base_addr_in: " << base_addr_in << std::endl;
+	std::cout << "in_size: " << in_size << std::endl;
+	std::cout << "ACT_MEM_HOST_SIZE: " << ACT_MEM_HOST_SIZE << std::endl;
 	read_bin<float>(base_fname+"input.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
 	for (int idx = 0; idx < in_size; idx++) act_in[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
 	// conv, bn
