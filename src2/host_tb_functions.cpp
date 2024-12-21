@@ -126,9 +126,9 @@ int main(){
 
 	// kernel IO
 	DTYPE_ACT act_in[ACT_IN_SIZE];
-	DTYPE_ACT act_out[ACT_out_SIZE];
+	DTYPE_ACT act_out[ACT_OUT_SIZE];
 	for (int idx = 0; idx < ACT_IN_SIZE; idx++) act_in[idx] = 0;
-	for (int idx = 0; idx < ACT_out_SIZE; idx++) act_out[idx] = 0;
+	for (int idx = 0; idx < ACT_OUT_SIZE; idx++) act_out[idx] = 0;
 
 	// kernel offchip memory
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
