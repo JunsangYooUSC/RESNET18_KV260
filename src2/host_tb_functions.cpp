@@ -125,10 +125,10 @@ int main(){
 	}
 
 	// kernel IO
-	DTYPE_ACT act_in[MAX_ACT_MEM_SIZE];
-	DTYPE_ACT act_out[MAX_ACT_MEM_SIZE];
-	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_in[idx] = 0;
-	for (int idx = 0; idx < MAX_ACT_MEM_SIZE; idx++) act_out[idx] = 0;
+	DTYPE_ACT act_in[ACT_IN_SIZE];
+	DTYPE_ACT act_out[ACT_out_SIZE];
+	for (int idx = 0; idx < ACT_IN_SIZE; idx++) act_in[idx] = 0;
+	for (int idx = 0; idx < ACT_out_SIZE; idx++) act_out[idx] = 0;
 
 	// kernel offchip memory
 	DTYPE_FIL weight_mem[WEIGHT_MEM_SIZE];
@@ -137,10 +137,10 @@ int main(){
 	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem[idx] = 0;
 	// load input, filter, bn_weight
 	std::string base_fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src2/data/";
-	// read_bin<DTYPE_ACT>(base_fname+"input.bin", act_in, 0, CONV1_IN_SIZE);
+	read_bin<DTYPE_ACT>(base_fname+"input.bin", act_in, 0, ACT_IN_SIZE);
 	read_bin<DTYPE_FIL>(base_fname+"conv_all_params.bin", weight_mem, 0, WEIGHT_MEM_SIZE);
 	read_bin<float>(base_fname+"bn_all_params.bin", bn_weight_mem, 0, BN_WEIGHT_MEM_SIZE);
-	// std::cout << "input, filter, bn_weight loaded" << std::endl << std::endl;
+	std::cout << "input, filter, bn_weight loaded" << std::endl << std::endl;
 
 //	// host memory
 //	float act_mem_host[ACT_MEM_HOST_SIZE];

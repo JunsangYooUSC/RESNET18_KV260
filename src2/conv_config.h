@@ -862,5 +862,7 @@ constexpr unsigned MAX_BN_WEIGHT_MEM_SIZE = std::max({
     });
 
 constexpr unsigned ACT_MEM_HOST_SIZE = ACT_MEM_SIZE * ACT_PACK;
+constexpr unsigned ACT_IN_SIZE = MAX_ACT_MEM_SIZE * ACT_PACK;
+constexpr unsigned ACT_OUT_SIZE = MAX_ACT_MEM_SIZE * ACT_PACK;
 
 #endif
