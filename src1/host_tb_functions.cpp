@@ -223,12 +223,12 @@ int main(){
 	compare_result<DTYPE_ACT, DTYPE_ACT>(act_out, fin_output, out_size);
 	// note that current implementation uses DTYPE_ACT as float
 	std::cout << "note that current implementation uses DTYPE_ACT as float" << std::endl;
-	float rmse = 0;
+	rmse = 0;
 	for (int idx = 0; idx < out_size; idx++) {
 		rmse += (act_out[idx] - fin_output[idx]) * (act_out[idx] - fin_output[idx]);
 	}
 	rmse = std::sqrt(rmse / out_size);
-	std::cout << "RMSE after conv1, bn1, relu: " << rmse << std::endl;
+	std::cout << "RMSE after max pool: " << rmse << std::endl;
 
 	// avg pool test
 	start_layer = 26;
