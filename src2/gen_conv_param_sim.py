@@ -169,9 +169,23 @@ def quantize_conv2d(model, total_bits, weight_int_bits, input_int_bits):
 import copy
 quantized_model = copy.deepcopy(model.base_model)
 
-total_bits = 8
-weight_int_bits = 2
-input_int_bits = 3
+# case 1:
+total_bits = 16
+weight_int_bits = 8
+input_int_bits = 8
+dtype_weight = np.int16
+dtype_bn_weight = np.float32
+dtype_input = np.int16
+dtype_output = np.int16
+# case 2:
+# total_bits = 8
+# weight_int_bits = 2
+# input_int_bits = 3
+# dtype_weight = np.int8
+# dtype_bn_weight = np.float32
+# dtype_input = np.int8
+# dtype_output = np.int8
+
 
 quantize_conv2d(quantized_model, total_bits, weight_int_bits, input_int_bits)
 quantized_model = quantized_model.to(device)
@@ -184,6 +198,8 @@ def save_to_bin(data, filename, dtype, total_bits, int_bits):
         data = data.cpu().detach().numpy()
     if dtype == np.int8:
         data = data * (2 ** (total_bits - int_bits))
+    if dtype == np.int16:
+        data = data * (2 ** (total_bits - int_bits))
     data = dtype(data)
     data.tofile(filename)
 
@@ -191,14 +207,11 @@ def load_from_bin(filename, dtype, total_bits, int_bits):
     data = np.fromfile(filename, dtype)
     if dtype == np.int8:
         data = data / (2 ** (total_bits - int_bits))
+    if dtype == np.int16:
+        data = data / (2 ** (total_bits - int_bits))
     return data
 
 ##
-dtype_weight = np.int8
-dtype_bn_weight = np.float32
-dtype_input = np.int8
-dtype_output = np.int8
-
 conv_weights_raw = np.array([])
 bn_params_raw = np.array([])
 eps = 1e-5
