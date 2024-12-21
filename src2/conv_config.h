@@ -56,10 +56,10 @@
 #endif
 
 // Bit widths
-constexpr unsigned W_ACT = 8;
-constexpr unsigned I_ACT = 3;
-constexpr unsigned W_FIL = 8;
-constexpr unsigned I_FIL = 2;
+// constexpr unsigned W_ACT = 8;
+// constexpr unsigned I_ACT = 3;
+// constexpr unsigned W_FIL = 8;
+// constexpr unsigned I_FIL = 2;
 constexpr unsigned W_ACT = 16;
 constexpr unsigned I_ACT = 8;
 constexpr unsigned W_FIL = 16;
