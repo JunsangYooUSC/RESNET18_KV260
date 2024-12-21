@@ -233,15 +233,6 @@ int main(){
 	for (int idx = 0; idx < in_size; idx++) act_mem[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
 	for (int idx = 0; idx < in_size; idx++) act_in[idx] = act_mem_host[base_addr_in+idx];
 	for (int idx = 0; idx < in_size; idx++) {
-		std::cout << "act_mem[" << idx << "]: " << act_mem[base_addr_in+idx] << std::endl;
-	}
-	for (int idx = 0; idx < in_size; idx++) {
-		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[base_addr_in+idx] << std::endl;
-	}
-	std::cout << "****************************************" << std::endl;
-	std::cout << "base_addr_in: " << base_addr_in << std::endl;
-	std::cout << "base_addr_out: " << base_addr_out << std::endl;
-	std::cout << "****************************************" << std::endl;
 	// avg pool
 	avg_pool_golden<float>(
 			act_mem_host, 
@@ -250,16 +241,6 @@ int main(){
 			nky, nkx, nof, nif, noy, nox, stride, pad, avg_pool_en);
 	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
 	// show all outputs for debugging
-#if SHOW_ALL_OUTPUT
-	std::cout << "act_out size: " << out_size << std::endl;
-	// for (int idx = 0; idx < out_size; idx++) {
-	for (int idx = 0; idx < out_size; idx++) {
-		std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
-	}
-	for (int idx = 0; idx < out_size; idx++) {
-		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[base_addr_out+idx] << std::endl;
-	}
-#endif
 
 	// fc test
 	start_layer = 27;
