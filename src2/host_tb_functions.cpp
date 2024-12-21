@@ -136,7 +136,7 @@ int main(){
 	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem[idx] = 0;
 	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem[idx] = 0;
 	// load input, filter, bn_weight
-	std::string base_fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src/data/";
+	std::string base_fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src2/data/";
 	read_bin<DTYPE_ACT>(base_fname+"input.bin", act_in, 0, CONV1_IN_SIZE);
 	read_bin<DTYPE_FIL>(base_fname+"conv_all_params.bin", weight_mem, 0, WEIGHT_MEM_SIZE);
 	read_bin<float>(base_fname+"bn_all_params.bin", bn_weight_mem, 0, BN_WEIGHT_MEM_SIZE);
