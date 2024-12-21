@@ -118,7 +118,9 @@ constexpr unsigned int FIFO_ARR_DEPTH = 1;  // todo: change if unnecessary
 #define CONV1_BB_EN                 1
 #define CONV1_CONV_EN               1
 #define CONV1_BN_EN                 1
+#define CONV1_BN_EN                 0 // change back!
 #define CONV1_SKIP_EN               0
+#define CONV1_RELU_EN               0   // change back!
 #define CONV1_RELU_EN               1
 #define CONV1_MAX_POOL_EN           0
 #define CONV1_AVG_POOL_EN           0
