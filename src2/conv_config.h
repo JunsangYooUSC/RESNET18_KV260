@@ -830,9 +830,9 @@ constexpr unsigned FC_OUT_SIZE = FC_C * FC_H * FC_W;
 // constexpr unsigned MEM1_SIZE = MAX_POOL_C  * MAX_POOL_H * MAX_POOL_W / ACT_PACK;
 // constexpr unsigned MEM2_SIZE = BB1_CONV2_C  * BB1_CONV2_H * BB1_CONV2_W / ACT_PACK;
 // size of mem blocks
-constexpr unsigned MEM0_SIZE = (CONV1_IN_SIZE / ACT_PACK > MAX_POOL_OUT_SIZE / ACT_PACK) ? CONV1_IN_SIZE / ACT_PACK : MAX_POOL_OUT_SIZE / ACT_PACK;
-constexpr unsigned MEM1_SIZE = CONV1_OUT_SIZE / ACT_PACK;
-constexpr unsigned MEM2_SIZE = MAX_POOL_OUT_SIZE / ACT_PACK;
+constexpr unsigned MEM0_SIZE = (CONV1_IN_SIZE > MAX_POOL_OUT_SIZE) ? CONV1_IN_SIZE : MAX_POOL_OUT_SIZE;
+constexpr unsigned MEM1_SIZE = CONV1_OUT_SIZE;
+constexpr unsigned MEM2_SIZE = MAX_POOL_OUT_SIZE;
 constexpr unsigned MEM0_BASE_ADDR = 0;
 constexpr unsigned MEM1_BASE_ADDR = MEM0_SIZE;
 constexpr unsigned MEM2_BASE_ADDR = (MEM0_SIZE + MEM1_SIZE);
@@ -844,7 +844,7 @@ constexpr unsigned BN_WEIGHT_MEM_SIZE = FC_BN_WEIGHT_BASE+FC_BN_WEIGHT_SIZE;
 // constexpr unsigned BN_WEIGHT_MEM_SIZE = BB7_SKIP_BN_WEIGHT_BASE;
 // #endif
 
-constexpr unsigned MAX_ACT_MEM_SIZE = std::max({MEM0_SIZE, MEM1_SIZE, MEM2_SIZE}) * ACT_PACK;
+constexpr unsigned MAX_ACT_MEM_SIZE = std::max({MEM0_SIZE, MEM1_SIZE, MEM2_SIZE});
 constexpr unsigned ACT_MEM_SIZE = MEM0_SIZE + MEM1_SIZE + MEM2_SIZE;
 constexpr unsigned MAX_WEIGHT_MEM_SIZE = std::max({
         CONV1_WEIGHT_SIZE, MAX_POOL_WEIGHT_SIZE, 
@@ -869,7 +869,7 @@ constexpr unsigned MAX_BN_WEIGHT_MEM_SIZE = std::max({
         BB8_CONV1_BN_WEIGHT_SIZE, BB8_CONV2_BN_WEIGHT_SIZE, BB8_SKIP_BN_WEIGHT_SIZE
     });
 
-constexpr unsigned ACT_MEM_HOST_SIZE = ACT_MEM_SIZE * ACT_PACK;
+constexpr unsigned ACT_MEM_HOST_SIZE = ACT_MEM_SIZE;
 constexpr unsigned ACT_IN_SIZE = MAX_ACT_MEM_SIZE;
 constexpr unsigned ACT_OUT_SIZE = MAX_ACT_MEM_SIZE;
 
