@@ -32,7 +32,7 @@
 // simulation settings vs synthesis settings
 #define SIM_MODE            1
 #if SIM_MODE
-#define SCALE_FACTOR                64
+#define SCALE_FACTOR                32
 #else
 #define SCALE_FACTOR                1
 #endif
@@ -47,26 +47,19 @@
 #define POF                 1       // change_to: if necessary
 #define MAX_STRIDE          2
 #define MAX_PAD             3
-
+#define PARTITION_FACTOR    (POY * POX)
 #define WEIGHT_PACK         1       // change_to: 8
 #if SIM_MODE
-#define ACT_PACK            1
+#define ACT_PACK            2
 #else
-#define ACT_PACK            1       // change to: 
+#define ACT_PACK            8       // change to: 
 #endif
 
 // Bit widths
-#if SIM_MODE
 constexpr unsigned W_ACT = 8;
 constexpr unsigned I_ACT = 3;
 constexpr unsigned W_FIL = 8;
 constexpr unsigned I_FIL = 2;
-#else
-constexpr unsigned W_ACT = 8;
-constexpr unsigned I_ACT = 3;
-constexpr unsigned W_FIL = 8;
-constexpr unsigned I_FIL = 2;
-#endif
 constexpr unsigned W_MUL = (W_ACT + W_FIL);
 constexpr unsigned I_MUL = (I_ACT + I_FIL);
 constexpr unsigned W_MAC = 32;      // todo: 24?
@@ -77,20 +70,17 @@ constexpr unsigned I_MAC = 16;
 // constexpr unsigned MAC_EXTRA_BITS = log2_ceil(NOF * NIF * NOX * NOY) + 1;
 
 // Data type definition
-// typedef ap_fixed<W_ACT, I_ACT> DTYPE_ACT;  // data type used for input / output activation
-// typedef ap_fixed<W_FIL, I_FIL> DTYPE_FIL;
-// typedef ap_fixed<W_MUL, I_MUL> DTYPE_MUL;
-// typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
-typedef float DTYPE_ACT;
-typedef float DTYPE_FIL;
-typedef float DTYPE_MUL;
-typedef float DTYPE_MAC;
+typedef ap_fixed<W_ACT, I_ACT> DTYPE_ACT;  // data type used for input / output activation
+typedef ap_fixed<W_FIL, I_FIL> DTYPE_FIL;
+typedef ap_fixed<W_MUL, I_MUL> DTYPE_MUL;
+typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
+
 
 // typedef ap_uint<ACT_PACK*W_ACT> DTYPE_MEM_ACT;
 // typedef ap_uint<WEIGHT_PACK*W_FIL> DTYPE_MEM_WEIGHT;
 
 // BUF2PE vectors
-constexpr unsigned int FIFO_ARR_DEPTH = 9;  // todo: reduce if unnecessary
+constexpr unsigned int FIFO_ARR_DEPTH = 1;  // todo: change if unnecessary
 
 // layer sizes
 // input
@@ -816,11 +806,6 @@ constexpr unsigned FC_BN_WEIGHT_SIZE = AVG_POOL_C * FC_C + FC_C;
 constexpr unsigned FC_IN_SIZE = AVG_POOL_C * AVG_POOL_H * AVG_POOL_W;
 constexpr unsigned FC_OUT_SIZE = FC_C * FC_H * FC_W;
 
-// size of mem blocks
-#define MEM0_BASE_ADDR          0
-#define MEM1_BASE_ADDR          MEM0_SIZE
-#define MEM2_BASE_ADDR          (MEM0_SIZE + MEM1_SIZE)
-#define NOMEM_BASE_ADDR         0
 
 // #if SIM_MODE
 // constexpr unsigned MEM0_SIZE = 100000;
@@ -836,9 +821,14 @@ constexpr unsigned FC_OUT_SIZE = FC_C * FC_H * FC_W;
 // constexpr unsigned MEM0_SIZE = CONV1_C  * CONV1_H * CONV1_W / ACT_PACK;
 // constexpr unsigned MEM1_SIZE = MAX_POOL_C  * MAX_POOL_H * MAX_POOL_W / ACT_PACK;
 // constexpr unsigned MEM2_SIZE = BB1_CONV2_C  * BB1_CONV2_H * BB1_CONV2_W / ACT_PACK;
-constexpr unsigned MEM0_SIZE = CONV1_IN_SIZE / ACT_PACK;
+// size of mem blocks
+constexpr unsigned MEM0_SIZE = (CONV1_IN_SIZE / ACT_PACK > MAX_POOL_OUT_SIZE / ACT_PACK) ? CONV1_IN_SIZE / ACT_PACK : MAX_POOL_OUT_SIZE / ACT_PACK;
 constexpr unsigned MEM1_SIZE = CONV1_OUT_SIZE / ACT_PACK;
 constexpr unsigned MEM2_SIZE = MAX_POOL_OUT_SIZE / ACT_PACK;
+constexpr unsigned MEM0_BASE_ADDR = 0;
+constexpr unsigned MEM1_BASE_ADDR = MEM0_SIZE;
+constexpr unsigned MEM2_BASE_ADDR = (MEM0_SIZE + MEM1_SIZE);
+constexpr unsigned NOMEM_BASE_ADDR = 0;
 
 constexpr unsigned WEIGHT_MEM_SIZE = BB8_CONV2_WEIGHT_BASE+BB8_CONV2_WEIGHT_SIZE;  // todo: temporary for now
 // constexpr unsigned WEIGHT_MEM_SIZE = BB7_SKIP_WEIGHT_BASE;  // todo: temporary for now
@@ -870,5 +860,7 @@ constexpr unsigned MAX_BN_WEIGHT_MEM_SIZE = std::max({
         BB7_CONV1_BN_WEIGHT_SIZE, BB7_CONV2_BN_WEIGHT_SIZE, BB7_SKIP_BN_WEIGHT_SIZE,
         BB8_CONV1_BN_WEIGHT_SIZE, BB8_CONV2_BN_WEIGHT_SIZE, BB8_SKIP_BN_WEIGHT_SIZE
     });
+
+constexpr unsigned ACT_MEM_HOST_SIZE = ACT_MEM_SIZE * ACT_PACK;
 
 #endif
