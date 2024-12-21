@@ -22,10 +22,12 @@ src2:
 	- packing
 	- use 8bit fixed
 
-to run the compilation:
+to run the C simulation:
+	0. note that small sizes were used to test the model due to large size of arrays having problem with simulation.
 	1. run the python in each src file (make sure to move the directory to that file)
 	2. run simulation using the dataset (change the base_fname in tb host code)
-	3. compare with the python file outputs
+	3. compare with the python file outputs. rmse is calculated after the testbench is complete
+	4. RMSE of 0.0247 for random input, random weight configuration. tested in C simulation on src1.
 
 conv_kernel:
 	- start_layer and end_layer variables are used to control the input and output stage.

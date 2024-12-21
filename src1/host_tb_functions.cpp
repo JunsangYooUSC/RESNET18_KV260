@@ -183,6 +183,18 @@ int main(){
 		act_mem[base_addr_out+idx] = (act_mem[base_addr_out+idx] > 0) ? act_mem[base_addr_out+idx] : 0;
 	}
 	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+	// rmse computation
+	DTYPE_ACT fin_output[MAX_ACT_MEM_SIZE];
+	read_bin<DTYPE_ACT>(base_fname+"after_relu.bin", fin_output, 0, out_size);
+	compare_result<DTYPE_ACT, DTYPE_ACT>(act_out, fin_output, out_size);
+	float rmse = 0;
+	for (int idx = 0; idx < out_size; idx++) {
+		rmse += (act_out[idx] - fin_output[idx]) * (act_out[idx] - fin_output[idx]);
+	}
+	rmse = std::sqrt(rmse / 10);
+	std::cout << "RMSE after conv1, bn1, relu: " << rmse << std::endl;
+
+	
 
 	// max pool test
 	start_layer = 1;
