@@ -119,6 +119,9 @@ template<typename T>
 void read_bin(const std::string &filename, T *data, unsigned int base_addr, unsigned int size) {
 	FILE *file = fopen(filename.c_str(), "rb");
 	unsigned total_reads = fread(data+base_addr, sizeof(T), size, file);
+	if (size != total_reads) {
+		std::cout << "read mismatch: " << size << " != " << total_reads << std::endl;
+	}
 	assert(size == total_reads && "read mismatch");
 	fclose(file);
 }
