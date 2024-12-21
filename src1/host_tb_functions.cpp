@@ -187,14 +187,14 @@ int main(){
 	DTYPE_ACT fin_output[MAX_ACT_MEM_SIZE];
 	read_bin<DTYPE_ACT>(base_fname+"after_relu.bin", fin_output, 0, out_size);
 	compare_result<DTYPE_ACT, DTYPE_ACT>(act_out, fin_output, out_size);
+	// note that current implementation uses DTYPE_ACT as float
+	std::cout << "note that current implementation uses DTYPE_ACT as float" << std::endl;
 	float rmse = 0;
 	for (int idx = 0; idx < out_size; idx++) {
 		rmse += (act_out[idx] - fin_output[idx]) * (act_out[idx] - fin_output[idx]);
 	}
-	rmse = std::sqrt(rmse / 10);
+	rmse = std::sqrt(rmse / out_size);
 	std::cout << "RMSE after conv1, bn1, relu: " << rmse << std::endl;
-
-	
 
 	// max pool test
 	start_layer = 1;
@@ -217,6 +217,18 @@ int main(){
 			base_addr_out, 
 			nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
 	conv_kernel(act_mem, act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+	// rmse computation
+	fin_output[MAX_ACT_MEM_SIZE];
+	read_bin<DTYPE_ACT>(base_fname+"after_maxpool.bin", fin_output, 0, out_size);
+	compare_result<DTYPE_ACT, DTYPE_ACT>(act_out, fin_output, out_size);
+	// note that current implementation uses DTYPE_ACT as float
+	std::cout << "note that current implementation uses DTYPE_ACT as float" << std::endl;
+	float rmse = 0;
+	for (int idx = 0; idx < out_size; idx++) {
+		rmse += (act_out[idx] - fin_output[idx]) * (act_out[idx] - fin_output[idx]);
+	}
+	rmse = std::sqrt(rmse / out_size);
+	std::cout << "RMSE after conv1, bn1, relu: " << rmse << std::endl;
 
 	// avg pool test
 	start_layer = 26;
