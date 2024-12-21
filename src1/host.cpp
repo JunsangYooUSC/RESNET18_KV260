@@ -172,7 +172,10 @@ int main(){
 
 	DTYPE_ACT fin_output[10];
 	read_bin<DTYPE_ACT>(base_fname+"output.bin", fin_output, 0, 10);
+	compare_result<DTYPE_ACT, DTYPE_ACT>(out_act, fin_output, 10);
+	// note that current implementation uses DTYPE_ACT as float
 
+	
 	// show all outputs for debugging
 #if SHOW_ALL_OUTPUT
 	std::cout << "act_out size: " << out_size << std::endl;
