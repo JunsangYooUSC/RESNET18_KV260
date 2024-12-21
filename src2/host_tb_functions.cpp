@@ -209,6 +209,12 @@ int main(){
 			base_addr_out, 
 			nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
 	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+	for (int idx = 0; idx < out_size; idx++) {
+		std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
+	}
+	for (int idx = 0; idx < out_size; idx++) {
+		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[base_addr_out+idx] << std::endl;
+	}
 
 	// avg pool test
 	start_layer = 26;
