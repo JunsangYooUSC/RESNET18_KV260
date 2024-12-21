@@ -1,4 +1,4 @@
-version 0
+version 2
 - uses on-chip memory for activations
 - pragmas applied
 - no parallel

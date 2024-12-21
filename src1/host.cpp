@@ -25,7 +25,7 @@
 
 // Print the configuration information
 #define CHECK_CONFIG		0
-#define SHOW_ALL_OUTPUT		1
+#define SHOW_ALL_OUTPUT		0
 
 int main(){
 	// Print configuration information
@@ -169,6 +169,10 @@ int main(){
 		&base_addr_in, &base_addr_out, &base_addr_add, 
 		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
 	);
+
+	DTYPE_ACT fin_output[10];
+	read_bin<DTYPE_ACT>(base_fname+"output.bin", fin_output, 0, 10);
+
 	// show all outputs for debugging
 #if SHOW_ALL_OUTPUT
 	std::cout << "act_out size: " << out_size << std::endl;

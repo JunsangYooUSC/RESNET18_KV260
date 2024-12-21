@@ -55,8 +55,8 @@ void load_input(
                             load_input_loop6:
                             for (int x = 0; x < POX; x++) {
                                 #pragma HLS PIPELINE II=1
-                                unsigned addr = (f_out+f)*noy*nox + (y0+y)*nox + x0+x;
-                                DTYPE_ACT in_val = act_mem[base_addr/ACT_PACK+addr/ACT_PACK].range((addr%ACT_PACK+1)*W_ACT-1, (addr%ACT_PACK)*W_ACT);
+                                unsigned addr = base_addr + (f_out+f)*noy*nox + (y0+y)*nox + x0+x;
+                                DTYPE_ACT in_val = act_mem[addr/ACT_PACK].range((addr%ACT_PACK+1)*W_ACT-1, (addr%ACT_PACK)*W_ACT);
                                 load_input_fifo.write(in_val);
                             }
                         }
@@ -91,8 +91,8 @@ void load_input(
                                             }
                                             else {
                                                 // unsigned addr = f_in*noy*nox + (y0+y+i-pad)*nox + (x0+x+j-pad); //////////////////////////////////////////////////////////////////////////////////////
-                                                unsigned addr = f_in*noy*stride*nox*stride + (y0+y+i-pad)*nox*stride + (x0+x+j-pad);
-                                                in_val = act_mem[base_addr/ACT_PACK+addr/ACT_PACK].range((addr%ACT_PACK+1)*W_ACT-1, (addr%ACT_PACK)*W_ACT);
+                                                unsigned addr = base_addr + f_in*noy*stride*nox*stride + (y0+y+i-pad)*nox*stride + (x0+x+j-pad);
+                                                in_val = act_mem[addr/ACT_PACK].range((addr%ACT_PACK+1)*W_ACT-1, (addr%ACT_PACK)*W_ACT);
                                             }
                                             load_input_fifo.write(in_val);
                                         }
@@ -285,8 +285,8 @@ void store_output(
                         for (int x = 0; x < POX; x++) {
                             #pragma HLS PIPELINE II=1
                             DTYPE_MEM_ACT pack;
-                            unsigned int addr = (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
-                            act_mem[base_addr/ACT_PACK+addr/ACT_PACK].range((addr%ACT_PACK+1)*W_ACT-1, (addr%ACT_PACK)*W_ACT) = out_fifo.read();
+                            unsigned int addr = base_addr + (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
+                            act_mem[addr/ACT_PACK].range((addr%ACT_PACK+1)*W_ACT-1, (addr%ACT_PACK)*W_ACT) = out_fifo.read();
                         }
                     }
                 }
@@ -380,8 +380,8 @@ void skip_conn(
                             #pragma HLS PIPELINE II=1
                             float val = in_fifo.read();
                             if (skip_en) {
-                                unsigned add_addr = (f_out+f)*noy*nox + (y0+y)*nox + x0+x;
-                                DTYPE_ACT add_val = act_mem[base_addr/ACT_PACK+add_addr/ACT_PACK].range((add_addr%ACT_PACK+1)*W_ACT-1, (add_addr%ACT_PACK)*W_ACT);
+                                unsigned add_addr = base_addr + (f_out+f)*noy*nox + (y0+y)*nox + x0+x;
+                                DTYPE_ACT add_val = act_mem[add_addr/ACT_PACK].range((add_addr%ACT_PACK+1)*W_ACT-1, (add_addr%ACT_PACK)*W_ACT);
                                 val = val + (float) add_val;
                             }
                             if (relu_en) {
@@ -437,8 +437,8 @@ void max_pool(
                             in_val = 0;
                         }
                         else {
-                            unsigned in_addr = f*noy*stride*nox*stride + (y*stride+i-pad)*nox*stride + (x*stride+j-pad);
-                            in_val = act_mem[in_base_addr/ACT_PACK + in_addr/ACT_PACK].range((in_addr%ACT_PACK+1)*W_ACT-1, (in_addr%ACT_PACK)*W_ACT);
+                            unsigned in_addr = in_base_addr + f*noy*stride*nox*stride + (y*stride+i-pad)*nox*stride + (x*stride+j-pad);
+                            in_val = act_mem[in_addr/ACT_PACK].range((in_addr%ACT_PACK+1)*W_ACT-1, (in_addr%ACT_PACK)*W_ACT);
                         }
                         max_pool_kernel[i * MAX_POOL_K + j] = in_val;
                     }
@@ -450,8 +450,8 @@ void max_pool(
                         max = max_pool_kernel[idx];
                     }
                 }
-                unsigned out_addr = f*noy*nox + y*nox + x;
-                act_mem[out_base_addr/ACT_PACK + out_addr/ACT_PACK].range((out_addr%ACT_PACK+1)*W_ACT-1, (out_addr%ACT_PACK)*W_ACT) = max;
+                unsigned out_addr = out_base_addr + f*noy*nox + y*nox + x;
+                act_mem[out_addr/ACT_PACK].range((out_addr%ACT_PACK+1)*W_ACT-1, (out_addr%ACT_PACK)*W_ACT) = max;
             }
         }
     }
@@ -487,12 +487,12 @@ void avg_pool(
             avg_pool_loop3:
             for (int x = 0; x < nix; x++) {
                 #pragma HLS PIPELINE II=1
-                unsigned in_addr = f*niy*nix + y*nix + x;
-                DTYPE_ACT in_val = act_mem[in_base_addr/ACT_PACK + in_addr/ACT_PACK].range((in_addr%ACT_PACK+1)*W_ACT-1, (in_addr%ACT_PACK)*W_ACT);
+                unsigned in_addr = in_base_addr + f*niy*nix + y*nix + x;
+                DTYPE_ACT in_val = act_mem[in_addr/ACT_PACK].range((in_addr%ACT_PACK+1)*W_ACT-1, (in_addr%ACT_PACK)*W_ACT);
                 sum = sum + (float) in_val;
             }
         }
-        act_mem[out_base_addr/ACT_PACK+f/ACT_PACK].range((f%ACT_PACK+1)*W_ACT-1, (f%ACT_PACK)*W_ACT) = (DTYPE_ACT) (sum / (noy * nox));
+        act_mem[(out_base_addr+f)/ACT_PACK].range((f%ACT_PACK+1)*W_ACT-1, (f%ACT_PACK)*W_ACT) = (DTYPE_ACT) (sum / (noy * nox));
     }
 }
 
@@ -516,11 +516,11 @@ void fc(
         fc_loop2:
         for (int f_in = 0; f_in < nif; f_in++) {
             #pragma HLS PIPELINE II=1
-            unsigned weight_addr = f_out*nif + f_in;
-            DTYPE_ACT in_val = act_mem[in_base_addr/ACT_PACK + f_in/ACT_PACK].range((f_in%ACT_PACK+1)*W_ACT-1, (f_in%ACT_PACK)*W_ACT);
+            unsigned weight_addr = in_base_addr + f_out*nif + f_in;
+            DTYPE_ACT in_val = act_mem[f_in/ACT_PACK].range((f_in%ACT_PACK+1)*W_ACT-1, (f_in%ACT_PACK)*W_ACT);
             sum = (float) in_val * bn_weight_mem[bn_weight_base_addr + weight_addr];
         }
-        act_mem[out_base_addr/ACT_PACK+f_out] = sum + (float) bn_weight_mem[bn_weight_base_addr + AVG_POOL_C*FC_C + f_out];
+        act_mem[(out_base_addr+f_out)/ACT_PACK] = sum + (float) bn_weight_mem[bn_weight_base_addr + AVG_POOL_C*FC_C + f_out];
     }
 }
 
@@ -1415,12 +1415,9 @@ void conv_kernel(
         // initial input
         if (layer_cnt == *start_layer) {
             // load input
-            for (int idx = 0; idx < in_size/ACT_PACK; idx++){
+            for (int idx = 0; idx < in_size; idx++) {
                 DTYPE_MEM_ACT pack;
-                for (int jdx = 0; jdx < ACT_PACK; jdx++) {
-                    pack.range(W_ACT*(jdx+1)-1, W_ACT*jdx) = act_in[idx*ACT_PACK+jdx].range();
-                }
-                act_mem[base_addr_in+idx] = pack;
+                pack.range(W_ACT*(idx%ACT_PACK+1)-1, W_ACT*(idx%ACT_PACK)) = act_in[idx].range();
             }
         }
 
@@ -1453,6 +1450,9 @@ void conv_kernel(
 
         // output back to host
         if (layer_cnt == *end_layer) {
+            for (int idx = 0; idx < out_size; idx++) {
+                act_out[idx] = act_mem[(base_addr_out+idx)/ACT_PACK].range(W_ACT*(idx%ACT_PACK+1)-1, W_ACT*(idx%ACT_PACK));
+            }
             for (int idx = 0; idx < out_size/ACT_PACK; idx++){
                 for (int jdx = 0; jdx < ACT_PACK; jdx++) {
                     act_out[idx*ACT_PACK+jdx].range() = act_mem[base_addr_out+idx].range(W_ACT*(jdx+1)-1, W_ACT*jdx);

@@ -319,3 +319,5 @@ with torch.no_grad():
     save_to_bin(after_layer4, "data/after_layer4.bin", dtype_output, total_bits, input_int_bits)
     save_to_bin(after_avgpool, "data/after_avgpool.bin", dtype_output, total_bits, input_int_bits)
     save_to_bin(after_fc, "data/after_fc.bin", dtype_output, total_bits, input_int_bits)
+
+##
