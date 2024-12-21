@@ -26,7 +26,7 @@
 #include "kernel.h"
 
 void load_input(
-    DTYPE_MEM *act_mem,
+    DTYPE_MEM_ACT *act_mem,
     hls::stream<DTYPE_ACT> &load_input_fifo,
     unsigned int base_addr,
     unsigned int nky,
@@ -257,7 +257,7 @@ void PE(
 }
 
 void store_output(
-    DTYPE_ACT *act_mem,
+    DTYPE_MEM_ACT *act_mem,
     hls::stream<float> &out_fifo,
     unsigned int base_addr,
     unsigned int nky,
