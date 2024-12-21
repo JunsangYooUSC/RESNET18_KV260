@@ -23,7 +23,7 @@ import time
 device = torch.device("cpu")
 print(f"Using device: {device}")
 
-SCALE = 64
+SCALE = 32
 
 ##
 import torch
@@ -183,6 +183,7 @@ def save_to_bin(data, filename, dtype, total_bits, int_bits):
         data = data.cpu().detach().numpy()
     if dtype == np.int8:
         data = data * (2 ** (total_bits - int_bits))
+    data = dtype(data)
     data.tofile(filename)
 
 def load_from_bin(filename, dtype, total_bits, int_bits):
@@ -192,10 +193,10 @@ def load_from_bin(filename, dtype, total_bits, int_bits):
     return data
 
 ##
-dtype_weight = np.float32
+dtype_weight = np.int8
 dtype_bn_weight = np.float32
-dtype_input = np.float32
-dtype_output = np.float32
+dtype_input = np.int8
+dtype_output = np.int8
 
 conv_weights_raw = np.array([])
 bn_params_raw = np.array([])
