@@ -163,7 +163,7 @@ int main(){
 		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
 	);
 	// load input for test
-	read_bin<float>(base_fname+"input.bin", act_mem_host, base_addr_in, in_size);
+	read_bin<float>(base_fname+"input.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
 	for (int idx = 0; idx < in_size; idx++) act_in[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
 	// conv, bn
 	convolution_bn_golden<float, float, float, float>(
@@ -197,7 +197,7 @@ int main(){
 		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
 	);
 	// load input for test
-	read_bin<float>(base_fname+"after_relu.bin", act_mem_host, base_addr_in, in_size);
+	read_bin<float>(base_fname+"after_relu.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
 	for (int idx = 0; idx < in_size; idx++) act_in[idx] = act_mem_host[base_addr_in+idx];
 	// max pool
 	max_pool_golden<float>(
@@ -218,7 +218,7 @@ int main(){
 		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
 	);
 	// load input for test
-	read_bin<float>(base_fname+"after_layer4.bin", act_mem_host, base_addr_in, in_size);
+	read_bin<float>(base_fname+"after_layer4.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
 	for (int idx = 0; idx < in_size; idx++) act_in[idx] = act_mem_host[base_addr_in+idx];
 	for (int idx = 0; idx < in_size; idx++) {
 		std::cout << "act_in[" << idx << "]: " << act_in[idx] << std::endl;
@@ -260,7 +260,7 @@ int main(){
 		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
 	);
 	// load input for test
-	read_bin<float>(base_fname+"after_avgpool.bin", act_mem_host, base_addr_in, in_size);
+	read_bin<float>(base_fname+"after_avgpool.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
 	for (int idx = 0; idx < in_size; idx++) act_in[idx] = act_mem_host[base_addr_in+idx];
 	// fc
 	fc_golden<float>(
