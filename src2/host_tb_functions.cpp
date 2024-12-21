@@ -164,28 +164,28 @@ int main(){
 	);
 	// load input for test
 	read_bin<float>(base_fname+"input.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
-	for (int idx = 0; idx < in_size; idx++) act_in[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
-	// conv, bn
-	convolution_bn_golden<float, float, float, float>(
-			act_mem_host+base_addr_in, 
-			weight_mem_host+weight_base, 
-			act_mem_host+base_addr_out, 
-			bn_weight_mem_host+bn_weight_base,
-			nky, nkx, nof, nif, noy, nox, stride, pad);
-	// relu
-	for (int idx = 0; idx < out_size; idx++) {
-		act_mem_host[base_addr_out+idx] = (act_mem_host[base_addr_out+idx] > 0) ? act_mem_host[base_addr_out+idx] : 0;
-	}
-	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
-	std::cout << "act_out size: " << out_size << std::endl;
-	// for (int idx = 0; idx < out_size; idx++) {
-	for (int idx = 0; idx < out_size; idx++) {
-		std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
-	}
-	for (int idx = 0; idx < out_size; idx++) {
-		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[base_addr_out+idx] << std::endl;
-	}
-
+//	for (int idx = 0; idx < in_size; idx++) act_in[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
+//	// conv, bn
+//	convolution_bn_golden<float, float, float, float>(
+//			act_mem_host+base_addr_in, 
+//			weight_mem_host+weight_base, 
+//			act_mem_host+base_addr_out, 
+//			bn_weight_mem_host+bn_weight_base,
+//			nky, nkx, nof, nif, noy, nox, stride, pad);
+//	// relu
+//	for (int idx = 0; idx < out_size; idx++) {
+//		act_mem_host[base_addr_out+idx] = (act_mem_host[base_addr_out+idx] > 0) ? act_mem_host[base_addr_out+idx] : 0;
+//	}
+//	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+//	std::cout << "act_out size: " << out_size << std::endl;
+//	// for (int idx = 0; idx < out_size; idx++) {
+//	for (int idx = 0; idx < out_size; idx++) {
+//		std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
+//	}
+//	for (int idx = 0; idx < out_size; idx++) {
+//		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[base_addr_out+idx] << std::endl;
+//	}
+//
 //	// max pool test
 //	start_layer = 1;
 //	end_layer = 1;
