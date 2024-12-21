@@ -35,3 +35,9 @@ conv_kernel:
 
 host_tb_functions.cpp is used to test each functions
 host.cpp is used for whole inference
+
+
+resnet18_src1 is used for hardware inference
+	- start_layer of 0 and end_layer of 0 is tested first
+	- plenty of room for act_mem memory was given
+*** currently output not generating ***
