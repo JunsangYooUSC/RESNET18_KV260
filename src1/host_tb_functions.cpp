@@ -25,7 +25,7 @@
 
 // Print the configuration information
 #define CHECK_CONFIG		0
-#define SHOW_ALL_OUTPUT		1
+#define SHOW_ALL_OUTPUT		0
 
 int main(){
 	// Print configuration information
