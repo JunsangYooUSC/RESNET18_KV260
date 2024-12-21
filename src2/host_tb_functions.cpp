@@ -200,17 +200,17 @@ int main(){
 		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
 	);
 	// load input for test
-	read_bin<float>(base_fname+"after_relu.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
-	for (int idx = 0; idx < in_size; idx++) act_in[idx] = act_mem_host[base_addr_in+idx];
-	// max pool
-	max_pool_golden<float>(
-			act_mem_host, 
-			base_addr_in, 
-			base_addr_out, 
-			nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
-	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
-
-	// avg pool test
+//	read_bin<float>(base_fname+"after_relu.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
+//	for (int idx = 0; idx < in_size; idx++) act_in[idx] = act_mem_host[base_addr_in+idx];
+//	// max pool
+//	max_pool_golden<float>(
+//			act_mem_host, 
+//			base_addr_in, 
+//			base_addr_out, 
+//			nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
+//	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+//
+//	// avg pool test
 //	start_layer = 26;
 //	end_layer = 26;
 //	layer_cnt = 26;
