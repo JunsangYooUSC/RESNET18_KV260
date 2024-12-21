@@ -175,6 +175,9 @@ int main(){
 	compare_result<DTYPE_ACT, DTYPE_ACT>(act_out, fin_output, 10);
 	// note that current implementation uses DTYPE_ACT as float
 
+	// compute rmse between ouput.bin golden file and calculated act_out
+	float rmse = compute_rmse<DTYPE_ACT, DTYPE_ACT>(act_out, fin_output, 10);
+	std::cout << "RMSE: " << rmse << std::endl;
 
 	// show all outputs for debugging
 #if SHOW_ALL_OUTPUT
