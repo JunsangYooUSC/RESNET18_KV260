@@ -119,7 +119,8 @@ def fixed_point_quantize(weights, total_bits, int_bits):
     delta = 2 ** (-frac_bits)
     max_val = (2 ** (total_bits - 1) - 1) * delta
     min_val = -2 ** (total_bits - 1) * delta
-
+    if not isinstance(weights, torch.Tensor):
+        weights = torch.tensor(weights)
     q_weights = torch.clamp(torch.round(weights / delta), min_val / delta, max_val / delta) * delta
     return q_weights
 
@@ -223,7 +224,8 @@ for name, module in quantized_model.named_modules():
         bn_params_raw = np.append(bn_params_raw, data)
         print(name, data.flatten().shape[0])
 
-conv_weights = dtype_weight(conv_weights_raw)
+
+conv_weights = fixed_point_quantize(conv_weights_raw, total_bits, weight_int_bits)
 bn_params = dtype_bn_weight(bn_params_raw)
 
 def count_parameters(model):
@@ -233,6 +235,7 @@ def count_parameters(model):
 x = torch.randn(1, input_channels, input_size, input_size)
 x = fixed_point_quantize(x, total_bits, input_int_bits)
 y = quantized_model(x)
+y = fixed_point_quantize(y, total_bits, input_int_bits)
 
 print()
 print(f"dtype weight: {dtype_weight}")
