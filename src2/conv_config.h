@@ -60,10 +60,10 @@
 // constexpr unsigned I_ACT = 3;
 // constexpr unsigned W_FIL = 8;
 // constexpr unsigned I_FIL = 2;
-constexpr unsigned W_ACT = 32;
-constexpr unsigned I_ACT = 16;
-constexpr unsigned W_FIL = 32;
-constexpr unsigned I_FIL = 16;
+constexpr unsigned W_ACT = 16;
+constexpr unsigned I_ACT = 8;
+constexpr unsigned W_FIL = 16;
+constexpr unsigned I_FIL = 8;
 constexpr unsigned W_MUL = (W_ACT + W_FIL);
 constexpr unsigned I_MUL = (I_ACT + I_FIL);
 // constexpr unsigned W_MAC = 32;      // todo: 24?
