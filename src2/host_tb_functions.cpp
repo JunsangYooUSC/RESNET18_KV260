@@ -166,7 +166,7 @@ int main(){
 	std::cout << "base_addr_in: " << base_addr_in << std::endl;
 	std::cout << "in_size: " << in_size << std::endl;
 	std::cout << "ACT_MEM_HOST_SIZE: " << ACT_MEM_HOST_SIZE << std::endl;
-	read_bin<float>(base_fname+"input.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
+	read_bin<DTYPE_ACT>(base_fname+"input.bin", act_mem_host, base_addr_in, in_size);
 	for (int idx = 0; idx < in_size; idx++) act_in[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
 	// conv, bn
 	convolution_bn_golden<float, float, float, float>(
@@ -200,91 +200,91 @@ int main(){
 		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
 	);
 	// load input for test
-//	read_bin<float>(base_fname+"after_relu.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
-//	for (int idx = 0; idx < in_size; idx++) act_in[idx] = act_mem_host[base_addr_in+idx];
-//	// max pool
-//	max_pool_golden<float>(
-//			act_mem_host, 
-//			base_addr_in, 
-//			base_addr_out, 
-//			nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
-//	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
-//
-//	// avg pool test
-//	start_layer = 26;
-//	end_layer = 26;
-//	layer_cnt = 26;
-//	controller (
-//		&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
-//		&bb_en, &conv_en, &bn_en, &skip_en, &relu_en, &max_pool_en, &avg_pool_en, &fc_en,
-//		&base_addr_in, &base_addr_out, &base_addr_add, 
-//		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
-//	);
-//	// load input for test
-//	read_bin<float>(base_fname+"after_layer4.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
-//	for (int idx = 0; idx < in_size; idx++) act_in[idx] = act_mem_host[base_addr_in+idx];
-//	for (int idx = 0; idx < in_size; idx++) {
-//		std::cout << "act_in[" << idx << "]: " << act_in[idx] << std::endl;
-//	}
-//	for (int idx = 0; idx < in_size; idx++) {
-//		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[base_addr_in+idx] << std::endl;
-//	}
-//	std::cout << "****************************************" << std::endl;
-//	std::cout << "base_addr_in: " << base_addr_in << std::endl;
-//	std::cout << "base_addr_out: " << base_addr_out << std::endl;
-//	std::cout << "****************************************" << std::endl;
-//	// avg pool
-//	avg_pool_golden<float>(
-//			act_mem_host, 
-//			base_addr_in, 
-//			base_addr_out, 
-//			nky, nkx, nof, nif, noy, nox, stride, pad, avg_pool_en);
-//	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
-//	// show all outputs for debugging
-//#if SHOW_ALL_OUTPUT
-//	std::cout << "act_out size: " << out_size << std::endl;
-//	// for (int idx = 0; idx < out_size; idx++) {
-//	for (int idx = 0; idx < out_size; idx++) {
-//		std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
-//	}
-//	for (int idx = 0; idx < out_size; idx++) {
-//		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[base_addr_out+idx] << std::endl;
-//	}
-//#endif
-//
-//	// fc test
-//	start_layer = 27;
-//	end_layer = 27;
-//	layer_cnt = 27;
-//	controller (
-//		&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
-//		&bb_en, &conv_en, &bn_en, &skip_en, &relu_en, &max_pool_en, &avg_pool_en, &fc_en,
-//		&base_addr_in, &base_addr_out, &base_addr_add, 
-//		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
-//	);
-//	// load input for test
-//	read_bin<float>(base_fname+"after_avgpool.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
-//	for (int idx = 0; idx < in_size; idx++) act_in[idx] = act_mem_host[base_addr_in+idx];
-//	// fc
-//	fc_golden<float>(
-//			act_mem_host,
-//			bn_weight_mem_host,
-//			base_addr_in, 
-//			base_addr_out, 
-//			bn_weight_base,
-//			nof, nif, fc_en);
-//	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
-//
-//	// show all outputs for debugging
-//#if SHOW_ALL_OUTPUT
-//	std::cout << "act_out size: " << out_size << std::endl;
-//	// for (int idx = 0; idx < out_size; idx++) {
-//	for (int idx = 0; idx < out_size; idx++) {
-//		std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
-//	}
-//	for (int idx = 0; idx < out_size; idx++) {
-//		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[base_addr_out+idx] << std::endl;
-//	}
-//#endif
+	read_bin<DTYPE_ACT>(base_fname+"after_relu.bin", act_mem_host, base_addr_in, in_size*);
+	for (int idx = 0; idx < in_size; idx++) act_in[idx] = act_mem_host[base_addr_in+idx];
+	// max pool
+	max_pool_golden<float>(
+			act_mem_host, 
+			base_addr_in, 
+			base_addr_out, 
+			nky, nkx, nof, nif, noy, nox, stride, pad, max_pool_en);
+	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+
+	// avg pool test
+	start_layer = 26;
+	end_layer = 26;
+	layer_cnt = 26;
+	controller (
+		&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
+		&bb_en, &conv_en, &bn_en, &skip_en, &relu_en, &max_pool_en, &avg_pool_en, &fc_en,
+		&base_addr_in, &base_addr_out, &base_addr_add, 
+		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
+	);
+	// load input for test
+	read_bin<DTYPE_ACT>(base_fname+"after_layer4.bin", act_mem_host, base_addr_in, in_size*);
+	for (int idx = 0; idx < in_size; idx++) act_in[idx] = act_mem_host[base_addr_in+idx];
+	for (int idx = 0; idx < in_size; idx++) {
+		std::cout << "act_in[" << idx << "]: " << act_in[idx] << std::endl;
+	}
+	for (int idx = 0; idx < in_size; idx++) {
+		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[base_addr_in+idx] << std::endl;
+	}
+	std::cout << "****************************************" << std::endl;
+	std::cout << "base_addr_in: " << base_addr_in << std::endl;
+	std::cout << "base_addr_out: " << base_addr_out << std::endl;
+	std::cout << "****************************************" << std::endl;
+	// avg pool
+	avg_pool_golden<float>(
+			act_mem_host, 
+			base_addr_in, 
+			base_addr_out, 
+			nky, nkx, nof, nif, noy, nox, stride, pad, avg_pool_en);
+	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+	// show all outputs for debugging
+#if SHOW_ALL_OUTPUT
+	std::cout << "act_out size: " << out_size << std::endl;
+	// for (int idx = 0; idx < out_size; idx++) {
+	for (int idx = 0; idx < out_size; idx++) {
+		std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
+	}
+	for (int idx = 0; idx < out_size; idx++) {
+		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[base_addr_out+idx] << std::endl;
+	}
+#endif
+
+	// fc test
+	start_layer = 27;
+	end_layer = 27;
+	layer_cnt = 27;
+	controller (
+		&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
+		&bb_en, &conv_en, &bn_en, &skip_en, &relu_en, &max_pool_en, &avg_pool_en, &fc_en,
+		&base_addr_in, &base_addr_out, &base_addr_add, 
+		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
+	);
+	// load input for test
+	read_bin<DTYPE_ACT>(base_fname+"after_avgpool.bin", act_mem_host, base_addr_in, in_size*);
+	for (int idx = 0; idx < in_size; idx++) act_in[idx] = act_mem_host[base_addr_in+idx];
+	// fc
+	fc_golden<float>(
+			act_mem_host,
+			bn_weight_mem_host,
+			base_addr_in, 
+			base_addr_out, 
+			bn_weight_base,
+			nof, nif, fc_en);
+	conv_kernel(act_in, act_out, weight_mem, bn_weight_mem, &start_layer, &end_layer);
+
+	// show all outputs for debugging
+#if SHOW_ALL_OUTPUT
+	std::cout << "act_out size: " << out_size << std::endl;
+	// for (int idx = 0; idx < out_size; idx++) {
+	for (int idx = 0; idx < out_size; idx++) {
+		std::cout << "act_out[" << idx << "]: " << act_out[idx] << std::endl;
+	}
+	for (int idx = 0; idx < out_size; idx++) {
+		std::cout << "act_mem_host[" << idx << "]: " << act_mem_host[base_addr_out+idx] << std::endl;
+	}
+#endif
 
 }
