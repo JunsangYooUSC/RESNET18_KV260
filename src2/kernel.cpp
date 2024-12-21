@@ -245,7 +245,8 @@ void PE(
                         for (int y = 0; y < POY; y++) {
                             pe_loop21:
                             for (int x = 0; x < POX; x++) {
-                                unsigned int addr = (f_out+f)*noy*nox + y*nox + x;
+                                // unsigned int addr = (f_out+f)*noy*nox + y*nox + x;
+                                unsigned int addr = (f_out+f)*noy*nox + (y0+y)*nox + (x0+x);
                                 pe_out_fifo.write(mac_vals[f][y][x]);
                             }
                         }
