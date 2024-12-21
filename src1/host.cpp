@@ -18,6 +18,7 @@
 // Include Vitis HLS headers
 #include "ap_fixed.h"
 // Include C++ headers
+#include <cmath>
 // Include project headers
 #include "conv_config.h"
 #include "host_utils.h"
@@ -176,8 +177,14 @@ int main(){
 	// note that current implementation uses DTYPE_ACT as float
 
 	// compute rmse between ouput.bin golden file and calculated act_out
-	float rmse = compute_rmse<DTYPE_ACT, DTYPE_ACT>(act_out, fin_output, 10);
+	// rmse computation
+	float rmse = 0;
+	for (int idx = 0; idx < 10; idx++) {
+		rmse += (act_out[idx] - fin_output[idx]) * (act_out[idx] - fin_output[idx]);
+	}
+	rmse = std::sqrt(rmse / 10);
 	std::cout << "RMSE: " << rmse << std::endl;
+
 
 	// show all outputs for debugging
 #if SHOW_ALL_OUTPUT
