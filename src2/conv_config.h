@@ -76,7 +76,7 @@ typedef ap_fixed<W_MUL, I_MUL> DTYPE_MUL;
 typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
 
 
-// typedef ap_uint<ACT_PACK*W_ACT> DTYPE_MEM_ACT;
+typedef ap_uint<ACT_PACK*W_ACT> DTYPE_MEM_ACT;
 // typedef ap_uint<WEIGHT_PACK*W_FIL> DTYPE_MEM_WEIGHT;
 
 // BUF2PE vectors
