@@ -138,35 +138,32 @@ int main(){
 	// load input, filter, bn_weight
 	std::string base_fname = "/home/junsang/projects/EE511/hw4/RESNET18_KV260/src2/data/";
 	read_bin<DTYPE_ACT>(base_fname+"input.bin", act_in, 0, ACT_IN_SIZE);
-	read_bin<DTYPE_FIL>(base_fname+"conv_all_params.bin", weight_mem, 0, WEIGHT_MEM_SIZE);
-	read_bin<float>(base_fname+"bn_all_params.bin", bn_weight_mem, 0, BN_WEIGHT_MEM_SIZE);
-	std::cout << "input, filter, bn_weight loaded" << std::endl << std::endl;
-
-	// host memory
-	float act_mem_host[ACT_MEM_HOST_SIZE];
-	float weight_mem_host[WEIGHT_MEM_SIZE];
-	float bn_weight_mem_host[BN_WEIGHT_MEM_SIZE];
-	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem_host[idx] = 0;
-	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem_host[idx] = 0;
-	// copy input, filter, bn_weight to host
-	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem_host[idx] = (float) weight_mem[idx];
-	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem_host[idx] = bn_weight_mem[idx];
-
-	// conv1 test
-	start_layer = 0;
-	end_layer = 0;
-	layer_cnt = 0;
-	controller (
-		&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
-		&bb_en, &conv_en, &bn_en, &skip_en, &relu_en, &max_pool_en, &avg_pool_en, &fc_en,
-		&base_addr_in, &base_addr_out, &base_addr_add, 
-		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
-	);
-	// load input for test
-	std::cout << "base_addr_in: " << base_addr_in << std::endl;
-	std::cout << "in_size: " << in_size << std::endl;
-	std::cout << "ACT_MEM_HOST_SIZE: " << ACT_MEM_HOST_SIZE << std::endl;
-	read_bin<float>(base_fname+"input.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
+//	read_bin<DTYPE_FIL>(base_fname+"conv_all_params.bin", weight_mem, 0, WEIGHT_MEM_SIZE);
+//	read_bin<float>(base_fname+"bn_all_params.bin", bn_weight_mem, 0, BN_WEIGHT_MEM_SIZE);
+//	std::cout << "input, filter, bn_weight loaded" << std::endl << std::endl;
+//
+//	// host memory
+//	float act_mem_host[ACT_MEM_HOST_SIZE];
+//	float weight_mem_host[WEIGHT_MEM_SIZE];
+//	float bn_weight_mem_host[BN_WEIGHT_MEM_SIZE];
+//	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem_host[idx] = 0;
+//	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem_host[idx] = 0;
+//	// copy input, filter, bn_weight to host
+//	for (int idx = 0; idx < WEIGHT_MEM_SIZE; idx++) weight_mem_host[idx] = (float) weight_mem[idx];
+//	for (int idx = 0; idx < BN_WEIGHT_MEM_SIZE; idx++) bn_weight_mem_host[idx] = bn_weight_mem[idx];
+//
+//	// conv1 test
+//	start_layer = 0;
+//	end_layer = 0;
+//	layer_cnt = 0;
+//	controller (
+//		&layer_cnt, &nif, &nof, &noy, &nox, &nkx, &nky, &stride, &pad,
+//		&bb_en, &conv_en, &bn_en, &skip_en, &relu_en, &max_pool_en, &avg_pool_en, &fc_en,
+//		&base_addr_in, &base_addr_out, &base_addr_add, 
+//		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
+//	);
+//	// load input for test
+//	read_bin<float>(base_fname+"input.bin", act_mem_host, base_addr_in, in_size*ACT_PACK);
 //	for (int idx = 0; idx < in_size; idx++) act_in[base_addr_in+idx] = act_mem_host[base_addr_in+idx];
 //	// conv, bn
 //	convolution_bn_golden<float, float, float, float>(
