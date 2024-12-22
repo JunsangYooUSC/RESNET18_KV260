@@ -77,14 +77,10 @@ constexpr unsigned I_MAC = 16;
 // constexpr unsigned MAC_EXTRA_BITS = log2_ceil(NOF * NIF * NOX * NOY) + 1;
 
 // Data type definition
-// typedef ap_fixed<W_ACT, I_ACT> DTYPE_ACT;  // data type used for input / output activation
-// typedef ap_fixed<W_FIL, I_FIL> DTYPE_FIL;
-// typedef ap_fixed<W_MUL, I_MUL> DTYPE_MUL;
-// typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
-typedef float DTYPE_ACT;
-typedef float DTYPE_FIL;
-typedef float DTYPE_MUL;
-typedef float DTYPE_MAC;
+typedef ap_fixed<W_ACT, I_ACT> DTYPE_ACT;  // data type used for input / output activation
+typedef ap_fixed<W_FIL, I_FIL> DTYPE_FIL;
+typedef ap_fixed<W_MUL, I_MUL> DTYPE_MUL;
+typedef ap_fixed<W_MAC, I_MAC> DTYPE_MAC;
 
 // typedef ap_uint<ACT_PACK*W_ACT> DTYPE_MEM_ACT;
 // typedef ap_uint<WEIGHT_PACK*W_FIL> DTYPE_MEM_WEIGHT;
@@ -816,11 +812,6 @@ constexpr unsigned FC_BN_WEIGHT_SIZE = AVG_POOL_C * FC_C + FC_C;
 constexpr unsigned FC_IN_SIZE = AVG_POOL_C * AVG_POOL_H * AVG_POOL_W;
 constexpr unsigned FC_OUT_SIZE = FC_C * FC_H * FC_W;
 
-// size of mem blocks
-#define MEM0_BASE_ADDR          0
-#define MEM1_BASE_ADDR          MEM0_SIZE
-#define MEM2_BASE_ADDR          (MEM0_SIZE + MEM1_SIZE)
-#define NOMEM_BASE_ADDR         0
 
 // #if SIM_MODE
 // constexpr unsigned MEM0_SIZE = 100000;
@@ -836,9 +827,14 @@ constexpr unsigned FC_OUT_SIZE = FC_C * FC_H * FC_W;
 // constexpr unsigned MEM0_SIZE = CONV1_C  * CONV1_H * CONV1_W / ACT_PACK;
 // constexpr unsigned MEM1_SIZE = MAX_POOL_C  * MAX_POOL_H * MAX_POOL_W / ACT_PACK;
 // constexpr unsigned MEM2_SIZE = BB1_CONV2_C  * BB1_CONV2_H * BB1_CONV2_W / ACT_PACK;
-constexpr unsigned MEM0_SIZE = CONV1_IN_SIZE / ACT_PACK;
+// size of mem blocks
+constexpr unsigned MEM0_SIZE = (CONV1_IN_SIZE / ACT_PACK > MAX_POOL_OUT_SIZE / ACT_PACK) ? CONV1_IN_SIZE / ACT_PACK : MAX_POOL_OUT_SIZE / ACT_PACK;
 constexpr unsigned MEM1_SIZE = CONV1_OUT_SIZE / ACT_PACK;
 constexpr unsigned MEM2_SIZE = MAX_POOL_OUT_SIZE / ACT_PACK;
+constexpr unsigned MEM0_BASE_ADDR = 0;
+constexpr unsigned MEM1_BASE_ADDR = MEM0_SIZE;
+constexpr unsigned MEM2_BASE_ADDR = (MEM0_SIZE + MEM1_SIZE);
+constexpr unsigned NOMEM_BASE_ADDR = 0;
 
 constexpr unsigned WEIGHT_MEM_SIZE = BB8_CONV2_WEIGHT_BASE+BB8_CONV2_WEIGHT_SIZE;  // todo: temporary for now
 // constexpr unsigned WEIGHT_MEM_SIZE = BB7_SKIP_WEIGHT_BASE;  // todo: temporary for now

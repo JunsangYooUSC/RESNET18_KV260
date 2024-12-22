@@ -18,6 +18,7 @@
 // Include Vitis HLS headers
 #include "ap_fixed.h"
 // Include C++ headers
+#include <cmath>
 // Include project headers
 #include "conv_config.h"
 #include "host_utils.h"
@@ -25,7 +26,7 @@
 
 // Print the configuration information
 #define CHECK_CONFIG		0
-#define SHOW_ALL_OUTPUT		1
+#define SHOW_ALL_OUTPUT		0
 
 int main(){
 	// Print configuration information
@@ -36,7 +37,7 @@ int main(){
 #endif
 
 	std::cout << "****************************************" << std::endl;
-	std::cout << "host.cpp" << std::endl;
+	std::cout << "host_tb_functions.cpp" << std::endl;
 	std::cout << "****************************************" << std::endl;
 
 	// mimic controller 
@@ -169,6 +170,23 @@ int main(){
 		&base_addr_in, &base_addr_out, &base_addr_add, 
 		&weight_base, &weight_size, &bn_weight_base, &bn_weight_size, &in_size, &out_size
 	);
+
+	DTYPE_ACT fin_output[10];
+	read_bin<DTYPE_ACT>(base_fname+"output.bin", fin_output, 0, 10);
+	compare_result<DTYPE_ACT, DTYPE_ACT>(act_out, fin_output, 10);
+	// note that current implementation uses DTYPE_ACT as float
+	std::cout << "note that current implementation uses DTYPE_ACT as float" << std::endl;
+
+	// compute rmse between ouput.bin golden file and calculated act_out
+	// rmse computation
+	float rmse = 0;
+	for (int idx = 0; idx < 10; idx++) {
+		rmse += (act_out[idx] - fin_output[idx]) * (act_out[idx] - fin_output[idx]);
+	}
+	rmse = std::sqrt(rmse / 10);
+	std::cout << "RMSE: " << rmse << std::endl;
+
+
 	// show all outputs for debugging
 #if SHOW_ALL_OUTPUT
 	std::cout << "act_out size: " << out_size << std::endl;

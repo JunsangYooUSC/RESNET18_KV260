@@ -12,6 +12,7 @@
 #include "conv_config.h"
 
 void conv_kernel(
+    DTYPE_ACT *act_mem,
     DTYPE_ACT *act_in,
     DTYPE_ACT *act_out,
     DTYPE_FIL *weight_mem,
@@ -50,7 +51,7 @@ void controller (
 );
 
 void load_input(
-    DTYPE_MEM_ACT *act_mem,
+    DTYPE_ACT *act_mem,
     hls::stream<DTYPE_ACT> &load_input_fifo,
     unsigned int base_addr,
     unsigned int nky,
@@ -92,7 +93,7 @@ void PE(
 );
 
 void store_output(
-    DTYPE_MEM_ACT *act_mem,
+    DTYPE_ACT *act_mem,
     hls::stream<float> &out_fifo,
     unsigned int base_addr,
     unsigned int nky,
@@ -105,7 +106,7 @@ void store_output(
 );
 
 void max_pool(
-    DTYPE_MEM_ACT *act_mem,
+    DTYPE_ACT *act_mem,
     unsigned int in_base_addr,
     unsigned int out_base_addr,
     unsigned int nky,
@@ -120,7 +121,7 @@ void max_pool(
 );
 
 void avg_pool(
-    DTYPE_MEM_ACT *act_mem,
+    DTYPE_ACT *act_mem,
     unsigned int in_base_addr,
     unsigned int out_base_addr,
     unsigned int nky,
@@ -135,7 +136,7 @@ void avg_pool(
 );
 
 void fc(
-    DTYPE_MEM_ACT *act_mem,
+    DTYPE_ACT *act_mem,
     float *bn_weight_mem,
     unsigned int in_base_addr,
     unsigned int out_base_addr,

@@ -1,6 +1,6 @@
-version 2
-- uses on-chip memory for activations
-- pragmas applied
+version 1
+- uses only off-chip memory
+- minimum pragmas applied
 - no parallel
-- packing
-- use 8bit fixed
+- no packing
+- use float

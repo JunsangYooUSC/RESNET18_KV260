@@ -1,0 +1,19 @@
+Todo before running anything
+	- check python script for generation 
+		- src1 only for float
+		- src2 only for fixed
+		- src3 with data packing
+	- check config files 
+		- src1 only for float
+		- src2 only for fixed
+		- src3 with data packing
+	- try SCALE of 32 when it is possible. If it not possible, do SCALE of 64
+
+	- change directory from what was src2 to src3
+
+Todo:
+	try from src1
+		- try with both SCALE==1 and SCALE==2
+	
+	try from src2
+		- 

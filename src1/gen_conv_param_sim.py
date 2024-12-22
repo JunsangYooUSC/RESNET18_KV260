@@ -262,6 +262,10 @@ print(f"bn_params_get: {bn_params_get.size}")
 print(f"input_get: {input_get.size}")
 print(f"output_get: {output_get.size}")
 
+print("*"*30)
+print(f"SCALE = {SCALE}")
+print("*"*30)
+
 if (conv_weights.flatten() == conv_weights_get).all():
     print("Conv weights match")
 else:

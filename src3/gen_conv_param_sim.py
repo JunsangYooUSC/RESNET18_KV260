@@ -23,7 +23,7 @@ import time
 device = torch.device("cpu")
 print(f"Using device: {device}")
 
-SCALE = 64
+SCALE = 32
 
 ##
 import torch
@@ -119,7 +119,8 @@ def fixed_point_quantize(weights, total_bits, int_bits):
     delta = 2 ** (-frac_bits)
     max_val = (2 ** (total_bits - 1) - 1) * delta
     min_val = -2 ** (total_bits - 1) * delta
-
+    if not isinstance(weights, torch.Tensor):
+        weights = torch.tensor(weights)
     q_weights = torch.clamp(torch.round(weights / delta), min_val / delta, max_val / delta) * delta
     return q_weights
 
@@ -168,9 +169,23 @@ def quantize_conv2d(model, total_bits, weight_int_bits, input_int_bits):
 import copy
 quantized_model = copy.deepcopy(model.base_model)
 
-total_bits = 8
-weight_int_bits = 2
-input_int_bits = 3
+# case 1:
+total_bits = 16
+weight_int_bits = 8
+input_int_bits = 8
+dtype_weight = np.int16
+dtype_bn_weight = np.float32
+dtype_input = np.int16
+dtype_output = np.int16
+# case 2:
+# total_bits = 8
+# weight_int_bits = 2
+# input_int_bits = 3
+# dtype_weight = np.int8
+# dtype_bn_weight = np.float32
+# dtype_input = np.int8
+# dtype_output = np.int8
+
 
 quantize_conv2d(quantized_model, total_bits, weight_int_bits, input_int_bits)
 quantized_model = quantized_model.to(device)
@@ -183,20 +198,20 @@ def save_to_bin(data, filename, dtype, total_bits, int_bits):
         data = data.cpu().detach().numpy()
     if dtype == np.int8:
         data = data * (2 ** (total_bits - int_bits))
+    if dtype == np.int16:
+        data = data * (2 ** (total_bits - int_bits))
+    data = dtype(data)
     data.tofile(filename)
 
 def load_from_bin(filename, dtype, total_bits, int_bits):
     data = np.fromfile(filename, dtype)
     if dtype == np.int8:
         data = data / (2 ** (total_bits - int_bits))
+    if dtype == np.int16:
+        data = data / (2 ** (total_bits - int_bits))
     return data
 
 ##
-dtype_weight = np.float32
-dtype_bn_weight = np.float32
-dtype_input = np.float32
-dtype_output = np.float32
-
 conv_weights_raw = np.array([])
 bn_params_raw = np.array([])
 eps = 1e-5
@@ -222,7 +237,8 @@ for name, module in quantized_model.named_modules():
         bn_params_raw = np.append(bn_params_raw, data)
         print(name, data.flatten().shape[0])
 
-conv_weights = dtype_weight(conv_weights_raw)
+
+conv_weights = fixed_point_quantize(conv_weights_raw, total_bits, weight_int_bits)
 bn_params = dtype_bn_weight(bn_params_raw)
 
 def count_parameters(model):
@@ -232,6 +248,7 @@ def count_parameters(model):
 x = torch.randn(1, input_channels, input_size, input_size)
 x = fixed_point_quantize(x, total_bits, input_int_bits)
 y = quantized_model(x)
+y = fixed_point_quantize(y, total_bits, input_int_bits)
 
 print()
 print(f"dtype weight: {dtype_weight}")
@@ -321,3 +338,8 @@ with torch.no_grad():
     save_to_bin(after_fc, "data/after_fc.bin", dtype_output, total_bits, input_int_bits)
 
 ##
+for idx in range(50):
+    print(idx, np.round(after_conv1.flatten()[idx].item(), 5))
+    # print(idx, np.round(after_bn1.flatten()[idx].item(), 5))
+
+

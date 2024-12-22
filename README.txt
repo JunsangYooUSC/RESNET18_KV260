@@ -15,7 +15,15 @@ src1: **most recent and verified version**
 	- use float
 
 src2:
-	version 2
+	version2
+	- uses only off-chip memory
+	- minimum pragmas applied
+	- no parallel
+	- no packing
+	- use fixed
+
+src3:
+	version 3
 	- uses on-chip memory for activations
 	- pragmas applied
 	- no parallel
